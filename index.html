@@ -4,15 +4,37 @@
   <link rel="stylesheet" type="text/css" href="styles/svg.css" />
 </head>
 
-<body>
+<body ng-app="pathsim">
   <h1>Pathsim</h1>
   <div id="map" >
 <!--    <svg height="400" width="650">
       <circle cx="100" cy="100" r="10" />
     </svg>-->
   </div>
+
+  <div ng-controller="MapController as map" cols="50" rows="30">
+    <svg ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
+      <g ng-repeat="row in map.map">
+        <rect ng-repeat="cell in row"
+        ng-attr-x="{{cell.col * map.cellSize}}"
+        ng-attr-y="{{cell.row * map.cellSize}}"
+        ng-attr-width="{{map.cellSize}}"
+        ng-attr-height="{{map.cellSize}}"
+        ng-class="{blocked:cell.isBlocked,current:cell.isCurrent, closed:cell.isClosed}"
+        ng-click="cell.isBlocked = !cell.isBlocked"></rect>
+      </g>
+    </svg>
+
+    <div style="margin:10px;">
+      <form>
+        <input type="button" ng-click="map.addRandomObstacles()" value="Add random blocks" />
+      </form>
+    </div>
+  </div>
 </body>
 
+<script src="node_modules/angular/angular.js"></script>
 <script src="node_modules/d3/d3.min.js"></script>
-<script src="scripts/pathsim.js"></script>
+<script src="scripts/map.js"></script>
+<script src="scripts/app.js"></script>
 </html>

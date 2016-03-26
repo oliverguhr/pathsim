@@ -5,6 +5,10 @@ rect {
   shape-rendering: crispEdges;
 }
 
+rect:hover{
+  fill: #DDD;
+}
+
 rect.blocked {
   fill: #666;
 }
