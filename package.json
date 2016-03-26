@@ -5,7 +5,7 @@
   "main": "index.html",
   "private": true,
   "dependencies": {
-    "d3": "^3.5.16"
+    "angular":"1.5.3"        
   },
   "devDependencies": {},
   "scripts": {
