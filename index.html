@@ -17,10 +17,10 @@
 
   <div ng-controller="MapController as map" cols="50" rows="30">
     <svg ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
-      <g ng-repeat="row in map.map">
+      <g ng-repeat="row in map.map.grid">
         <rect ng-repeat="cell in row"
-        ng-attr-x="{{cell.col * map.cellSize}}"
-        ng-attr-y="{{cell.row * map.cellSize}}"
+        ng-attr-x="{{cell.position.y * map.cellSize}}"
+        ng-attr-y="{{cell.position.x * map.cellSize}}"
         ng-attr-width="{{map.cellSize}}"
         ng-attr-height="{{map.cellSize}}"
         ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,

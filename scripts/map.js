@@ -17,10 +17,16 @@ class Moveable {
 
   moveTo(position) {
     if (this.position !== undefined) {
-      this.map.grid[this.position.x][this.position.y].type = CellType.Free;
+      this.map.updateCellOnPosition(position, cell => {
+        cell.type = CellType.Free;
+        return cell;
+      });
     }
     this.position = position;
-    this.map.grid[position.x][position.y].type = this.cellType;
+    this.map.updateCellOnPosition(position, cell => {
+      cell.type = this.cellType;
+      return cell;
+    });
   }
 }
 
@@ -29,7 +35,7 @@ class Map {
   constructor(rows, cols) {
     this.rows = rows;
     this.cols = cols;
-
+    this.changeListner = [];
     this.grid = [
       []
     ];
@@ -46,6 +52,26 @@ class Map {
     }
   }
 
+  //using this function will automatically singnalize that the map has changed
+  updateCellOnPosition(position, lambda) {
+    var updatedCellCell = lambda(this.grid[position.x][position.y]);
+    this.updateCell(updatedCellCell);
+  }
+
+  updateCell(cell) {
+      this.grid[cell.position.x][cell.position.y] = cell;
+      this.hasChanged(cell);
+  }
+
+  hasChanged(updatedCell) {
+    this.changeListner.forEach(changeListner => changeListner(updatedCell));
+  }
+
+  notifyOnChange(lambda){
+    this.changeListner.push(lambda);
+  }
+
+
   addRandomObstacles(count) {
     //flattens the grid
     var cells = [].concat.apply([], this.grid);
@@ -54,9 +80,9 @@ class Map {
       (prev, curr) => {
         if (curr.isFree) prev++;
         return prev;
-      },0);
+      }, 0);
 
-    if(count > freeCells)
+    if (count > freeCells)
       count = freeCells;
 
     for (var i = 0; i < count; i++) {
@@ -65,6 +91,7 @@ class Map {
 
       if (this.grid[row][col].isFree) {
         this.grid[row][col].type = CellType.Blocked;
+        this.hasChanged(this.grid[row][col]);
       } else {
         i--;
       }
@@ -74,8 +101,7 @@ class Map {
 
 class Cell {
   constructor(row, col, cellType = CellType.Free) {
-    this.row = row;
-    this.col = col;
+    this.position = new Position(row, col);
     this.cellType = cellType;
   }
 
