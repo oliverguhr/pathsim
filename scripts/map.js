@@ -1,5 +1,30 @@
 /*jshint esversion: 6 */
 
+class Position {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+class Moveable {
+  constructor(map, cellType) {
+
+    this.cellType = cellType;
+    this.map = map;
+    this.position = undefined;
+  }
+
+  moveTo(position) {
+    if (this.position !== undefined) {
+      this.map.grid[this.position.x][this.position.y].type = CellType.Free;
+    }
+    this.position = position;
+    this.map.grid[position.x][position.y].type = this.cellType;
+  }
+}
+
+
 class Map {
   constructor(rows, cols) {
     this.rows = rows;
@@ -22,35 +47,74 @@ class Map {
   }
 
   addRandomObstacles(count) {
+    //flattens the grid
+    var cells = [].concat.apply([], this.grid);
+    //apply some magic to count free cells
+    var freeCells = cells.reduce(
+      (prev, curr) => {
+        if (curr.isFree) prev++;
+        return prev;
+      },0);
+
+    if(count > freeCells)
+      count = freeCells;
 
     for (var i = 0; i < count; i++) {
       var row = Random.getRandomInt(0, this.rows - 1);
       var col = Random.getRandomInt(0, this.cols - 1);
-      this.grid[row][col].isBlocked = true;
+
+      if (this.grid[row][col].isFree) {
+        this.grid[row][col].type = CellType.Blocked;
+      } else {
+        i--;
+      }
     }
   }
-
-  setStart(row, col){
-      this.grid[row][col].isStart = true;
-  }
-  setGoal(row, col){
-      this.grid[row][col].isGoal = true;
-  }
-
 }
 
 class Cell {
-  constructor(row, col, isBlocked = false) {
+  constructor(row, col, cellType = CellType.Free) {
     this.row = row;
     this.col = col;
+    this.cellType = cellType;
+  }
 
-    this.isBlocked = isBlocked;
-    this.isClosed = false;
-    this.isCurrent = false;
-    this.isStart = false;
-    this.isGoal = false;
+  set type(cellType) {
+    this.cellType = cellType;
+  }
+  get type() {
+    return this.cellType;
+  }
+
+  get isFree() {
+    return this.type === CellType.Free;
+  }
+  get isBlocked() {
+    return this.type === CellType.Blocked;
+  }
+  get isVisited() {
+    return this.type === CellType.Visited;
+  }
+  get isCurrent() {
+    return this.type === CellType.Current;
+  }
+  get isStart() {
+    return this.type === CellType.Start;
+  }
+  get isGoal() {
+    return this.type === CellType.Goal;
   }
 }
+
+var CellType = Object.freeze({
+  Free: 0,
+  Blocked: 1,
+  Visited: 2,
+  Current: 3,
+  Start: 4,
+  Goal: 5
+});
+
 
 class Random {
   /**

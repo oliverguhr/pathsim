@@ -12,8 +12,12 @@ app.controller('MapController', function($attrs) {
   map.name = "test";
 
   var data = new Map($attrs.rows, $attrs.cols);
-  data.setStart($attrs.rows/2,Math.round($attrs.cols / 4));
-  data.setGoal($attrs.rows/2,Math.round(($attrs.cols / 4)*3));
+
+  var start = new Moveable(data, CellType.Start);
+  start.moveTo(new Position($attrs.rows / 2, Math.round($attrs.cols / 4)));
+
+  var goal = new Moveable(data, CellType.Goal);
+  goal.moveTo(new Position($attrs.rows / 2, Math.round(($attrs.cols / 4) * 3)));
 
   map.cellSize = 25;
   map.widthPx = data.cols * map.cellSize;
@@ -22,6 +26,18 @@ app.controller('MapController', function($attrs) {
   map.map = data.grid;
 
   map.addRandomObstacles = () => {
-    data.addRandomObstacles((data.cols*data.rows)*0.1);
+    data.addRandomObstacles((data.cols * data.rows) * 0.1);
+  };
+
+  map.clickOnCell = (cell) => {
+    switch (cell.type) {
+      case CellType.Blocked:
+        cell.type = CellType.Free;
+        break;
+      case CellType.Free:
+        cell.type = CellType.Blocked;
+        break;
+      default:
+    }
   };
 });

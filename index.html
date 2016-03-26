@@ -24,8 +24,8 @@
         ng-attr-width="{{map.cellSize}}"
         ng-attr-height="{{map.cellSize}}"
         ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,
-                   closed:cell.isClosed, start:cell.isStart, goal:cell.isGoal}"
-        ng-click="cell.isBlocked = !cell.isBlocked"></rect>
+                   start:cell.isStart, goal:cell.isGoal}"
+        ng-click="map.clickOnCell(cell)"></rect>
       </g>
     </svg>
 
