@@ -1,0 +1,70 @@
+rect {
+  stroke: #CCC;
+  stroke-width: 1px;
+  fill: #FFF;
+  shape-rendering: crispEdges;
+}
+
+rect.blocked {
+  fill: #666;
+}
+
+rect.goal {
+  fill: #F88;
+}
+
+rect.start {
+  fill: #8F8;
+}
+
+rect.current {
+  fill: #FF4;
+}
+
+rect.open {
+  fill: #BBF;
+}
+
+rect.closed {
+  fill: #DDD;
+}
+
+rect.forced {
+  fill: #C8F;
+}
+
+line {
+  stroke-width: 2px;
+  stroke-linecap: round;
+}
+
+line.previous {
+  stroke: #999;
+}
+
+line.current {
+  stroke: #44F;
+}
+
+line.examined {
+  stroke: #AAA;
+  stroke-dasharray: 3,3;
+}
+
+#arrowhead-previous {
+  fill: #999;
+  stroke: #999;
+  stroke-width: 1px;
+}
+
+#arrowhead-current {
+  fill: #44F;
+  stroke: #44F;
+  stroke-width: 1px;
+}
+
+#arrowhead-examined {
+  fill: #AAA;
+  stroke: #AAA;
+  stroke-width: 1px;
+}
