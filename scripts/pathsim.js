@@ -18,7 +18,6 @@ class Renderer {
     var svg = d3.select(this.targetElement).append("svg")
       .attr("width", this.map.cols * this.cellSize + 1)
       .attr("height", this.map.rows * this.cellSize + 1);
-
     d3.range(0, this.map.rows).forEach(row => {
       d3.range(0, this.map.cols).forEach(col => {
         svg.append("rect")
@@ -26,17 +25,16 @@ class Renderer {
           .attr("y", row * this.cellSize)
           .attr("width", this.cellSize)
           .attr("height", this.cellSize)
-          .on("mouseover", function() {
-            this.setAttribute("class", "closed")
+          .on("mouseover", function() {            
+            this.setAttribute("class", "closed");
           })
           .on("mouseout", function() {
-            this.setAttribute("class", "")
+            this.setAttribute("class", "");
           });
       });
     });
   }
 }
-
 var map = new Map(20, 30);
 var renderer = new Renderer("#map", map, 25);
 renderer.renderMap();
