@@ -15,7 +15,7 @@
     </svg>-->
   </div>
 
-  <div ng-controller="MapController as map" cols="50" rows="30">
+  <div ng-controller="MapController as map" cols="70" rows="36">
     <svg ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
       <g ng-repeat="row in map.map.grid">
         <rect ng-repeat="cell in row"
@@ -25,7 +25,8 @@
         ng-attr-height="{{map.cellSize}}"
         ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,
                    start:cell.isStart, goal:cell.isGoal}"
-        ng-click="map.clickOnCell(cell)"></rect>
+        ng-mousedown="map.clickOnCell(cell)"
+        ng-mouseover="map.mouseOverCell(cell, $event)"></rect>
       </g>
     </svg>
 

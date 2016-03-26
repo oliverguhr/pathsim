@@ -37,7 +37,13 @@ app.controller('MapController', function($attrs) {
         break;
       default:
     }
-
     this.map.updateCell(cell);
   };
+
+  map.mouseOverCell = (cell, event) => {
+    if(event.buttons == 1){
+      this.clickOnCell(cell)
+    }
+  };
+
 });
