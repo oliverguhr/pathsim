@@ -29,6 +29,14 @@ class Map {
       this.grid[row][col].isBlocked = true;
     }
   }
+
+  setStart(row, col){
+      this.grid[row][col].isStart = true;
+  }
+  setGoal(row, col){
+      this.grid[row][col].isGoal = true;
+  }
+
 }
 
 class Cell {
@@ -39,6 +47,8 @@ class Cell {
     this.isBlocked = isBlocked;
     this.isClosed = false;
     this.isCurrent = false;
+    this.isStart = false;
+    this.isGoal = false;
   }
 }
 

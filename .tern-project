@@ -5,7 +5,8 @@
     "jquery"
   ],
   "loadEagerly": [
-    "scripts/**/*.js"
+    "scripts/**/*.js",
+    "node_modules/angular/angular.js"
   ],
   "dontLoad": [
     "path/to/your/js/**/*.js"

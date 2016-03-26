@@ -12,13 +12,14 @@ app.controller('MapController', function($attrs) {
   map.name = "test";
 
   var data = new Map($attrs.rows, $attrs.cols);
+  data.setStart($attrs.rows/2,Math.round($attrs.cols / 4));
+  data.setGoal($attrs.rows/2,Math.round(($attrs.cols / 4)*3));
 
   map.cellSize = 25;
   map.widthPx = data.cols * map.cellSize;
   map.heightPx = data.rows * map.cellSize;
 
   map.map = data.grid;
-
 
   map.addRandomObstacles = () => {
     data.addRandomObstacles((data.cols*data.rows)*0.1);
