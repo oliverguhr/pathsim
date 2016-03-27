@@ -1,5 +1,4 @@
 # Pathsim
-
 Pathsim is playground for different path planning algorithms. Due to its focus on learning how the different algorithms work, I decided to use Javascript/Html.
 
 ## Done
@@ -9,28 +8,23 @@ Pathsim is playground for different path planning algorithms. Due to its focus o
 4. Add these obstacles via use input
 
 ## Todos
+1. Unit Tests
+2. Implement Dijkstra
+3. Implement A*
+4. Implement E*
+5. Implement RRT
+6. Save/Restore created maps
 
-4. Unit Tests
-5. Implement Dijkstra
-6. Implement A*
-7. Implement E*
-8. Implement RRT
-9. Save/Restore created maps
 
-## Licence
-
-MIT
-
-#Tests
-
+## Tests
 Run all tests:
-
 - npm test
 
 To watch test folder for changes and rerun tests please install:
-
 - npm install watch -g
 
 than type:
-
 - npm run watch-test
+
+## Licence
+MIT
