@@ -20,3 +20,17 @@ Pathsim is playground for different path planning algorithms. Due to its focus o
 ## Licence
 
 MIT
+
+#Tests
+
+Run all tests:
+
+- npm test
+
+To watch test folder for changes and rerun tests please install:
+
+- npm install watch -g
+
+than type:
+
+- npm run watch-test
