@@ -45,7 +45,7 @@ app.controller('MapController', function ($attrs, $interval) {
 
         let stepper = () => {
             if (pathFinder.step()) {
-                $interval(stepper, 50);
+                $interval(stepper, 100);
             }
         };
         stepper();

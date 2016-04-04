@@ -34,6 +34,7 @@ class Dijkstra {
     }
 
     step() {
+        let isRunning = true;
         let currentCell = _.minBy(this.cells, c => c.distance);
 
         if (currentCell.isGoal) {
@@ -45,9 +46,17 @@ class Dijkstra {
 
         let neighbors = this.getNeighbors(currentCell);
 
-        neighbors.forEach(neighbor => this.updateDistance(currentCell, neighbor));
+        for (let neighbor of neighbors) {
+            if (isRunning)
+                this.updateDistance(currentCell, neighbor);
 
-        return true;
+            if (neighbor.isGoal) {
+                this.paintShortestPath();
+                isRunning = false;
+                break;
+            }
+        }
+        return isRunning;
     }
 
     getNeighbors(cell) {
