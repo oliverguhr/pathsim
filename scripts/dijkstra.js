@@ -6,7 +6,8 @@ class Dijkstra {
     }
 
     initialize() {
-        for (let cell of this.map.cells) {
+        let cells = this.map.cells.filter(cell => !cell.isBlocked);
+        for (let cell of cells) {
             cell.distance = Number.POSITIVE_INFINITY;
             cell.previous = undefined;
             this.cells.push(cell);
