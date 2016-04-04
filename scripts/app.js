@@ -1,12 +1,11 @@
 /*jshint esversion: 6 */
 var app = angular.module('pathsim', []);
 
-
 /* Change map from regular js
 angular.element($0).scope().$apply((scope) => {scope.map.map[0][0].isBlocked = scope.map.map[0][0].isBlocked!})
 */
 
-app.controller('MapController', function ($attrs) {
+app.controller('MapController', function ($attrs, $interval) {
     var map = this;
     map.name = "test";
 
@@ -23,7 +22,10 @@ app.controller('MapController', function ($attrs) {
     map.widthPx = map.map.cols * map.cellSize;
     map.heightPx = map.map.rows * map.cellSize;
 
-
+    let pathFinder = new Dijkstra(map.map);
+    map.calulateNextStep = () => {
+        pathFinder.step();
+    };
 
     map.addRandomObstacles = () => {
         map.map.reset();
@@ -32,10 +34,22 @@ app.controller('MapController', function ($attrs) {
     };
 
     map.calulatePath = () => {
-        console.time("Dijkstra");
-        var pathFinder = new Dijkstra(map.map);
-        pathFinder.run();
-        console.timeEnd("Dijkstra");
+        /* console.time("Dijkstra");
+         //console.profile("Dijkstra");
+         var pathFinder = new Dijkstra(map.map);
+         pathFinder.run();
+         //console.profileEnd("Dijkstra");
+         console.timeEnd("Dijkstra");*/
+
+        pathFinder = new Dijkstra(map.map);
+
+        let stepper = () => {
+            if (pathFinder.step()) {
+                $interval(stepper, 50);
+            }
+        };
+        stepper();
+
     };
 
     map.clickOnCell = (cell) => {
@@ -54,6 +68,7 @@ app.controller('MapController', function ($attrs) {
     };
 
     map.mouseOverCell = (cell, event) => {
+        console.log(cell);
         if (event.buttons == 1) {
             this.clickOnCell(cell)
         }

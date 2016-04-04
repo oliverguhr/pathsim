@@ -129,6 +129,7 @@ class Cell {
     constructor(row, col, cellType = CellType.Free) {
         this.position = new Position(col, row);
         this.cellType = cellType;
+        this.distance = Number.POSITIVE_INFINITY;
     }
 
     set type(cellType) {

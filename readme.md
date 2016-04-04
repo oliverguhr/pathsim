@@ -16,6 +16,11 @@ Pathsim is playground for different path planning algorithms. Due to its focus o
 6. Save/Restore created maps
 
 
+Moveable Objects
+Cost visualization
+Step Execution
+ToolTipps with meta information
+
 ## Tests
 Run all tests:
 - npm test

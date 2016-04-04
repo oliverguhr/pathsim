@@ -8,8 +8,8 @@ class Dijkstra {
     initialize() {
         let cells = this.map.cells.filter(cell => !cell.isBlocked);
         for (let cell of cells) {
-            cell.distance = Number.POSITIVE_INFINITY;
             cell.previous = undefined;
+            cell.distance = Number.POSITIVE_INFINITY;
             this.cells.push(cell);
         }
 
@@ -17,16 +17,37 @@ class Dijkstra {
     }
 
     run() {
-        do {
-            let nearestCell = _.minBy(this.cells, c => c.distance);
-            _.pull(this.cells, nearestCell);
+        /*  do {
+              let nearestCell = _.minBy(this.cells, c => c.distance);
+              _.pull(this.cells, nearestCell);
 
-            let neighbors = this.getNeighbors(nearestCell);
+              let neighbors = this.getNeighbors(nearestCell);
 
-            neighbors.forEach(nextCell => this.updateDistance(nearestCell, nextCell));
+              neighbors.forEach(nextCell => this.updateDistance(nearestCell, nextCell));
+          }
+          while (!_.isEmpty(this.cells))
+          this.paintShortestPath();*/
+
+        while (this.step()) {
+
         }
-        while (!_.isEmpty(this.cells))
-        this.paintShortestPath();
+    }
+
+    step() {
+        let currentCell = _.minBy(this.cells, c => c.distance);
+
+        if (currentCell.isGoal) {
+            this.paintShortestPath();
+            return false;
+        }
+
+        _.pull(this.cells, currentCell);
+
+        let neighbors = this.getNeighbors(currentCell);
+
+        neighbors.forEach(neighbor => this.updateDistance(currentCell, neighbor));
+
+        return true;
     }
 
     getNeighbors(cell) {
@@ -36,25 +57,28 @@ class Dijkstra {
 
         let useIfFree = (x, y) => {
             let cell = map.getCell(x, y);
-            if (cell != undefined && !cell.isBlocked) {
+            if (cell !== undefined && (cell.isFree || cell.isGoal)) {
                 neighbors.push(cell);
             }
         }
 
-        /*     useIfFree(cell.position.x + 1, cell.position.y + 1);
-             useIfFree(cell.position.x - 1, cell.position.y + 1);
-             useIfFree(cell.position.x + 1, cell.position.y - 1);
-             useIfFree(cell.position.x - 1, cell.position.y - 1);*/
+        useIfFree(cell.position.x + 1, cell.position.y + 0);
         useIfFree(cell.position.x + 0, cell.position.y + 1);
         useIfFree(cell.position.x + 0, cell.position.y - 1);
-        useIfFree(cell.position.x + 1, cell.position.y + 0);
         useIfFree(cell.position.x - 1, cell.position.y + 0);
+
+
+        useIfFree(cell.position.x + 1, cell.position.y + 1);
+        useIfFree(cell.position.x - 1, cell.position.y + 1);
+        useIfFree(cell.position.x + 1, cell.position.y - 1);
+        useIfFree(cell.position.x - 1, cell.position.y - 1);
 
         return neighbors;
     }
 
     updateDistance(previousCell, currentCell) {
-        let distance = previousCell.distance + 1;
+        let manhattanDistance = Math.abs(previousCell.position.x - currentCell.position.x) + Math.abs(previousCell.position.y - currentCell.position.y);
+        let distance = previousCell.distance + manhattanDistance;
         if (distance < currentCell.distance) {
             currentCell.distance = distance;
             currentCell.previous = previousCell;
