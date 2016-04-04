@@ -28,6 +28,7 @@ app.controller('MapController', function ($attrs) {
     map.addRandomObstacles = () => {
         map.map.reset();
         map.map.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
+        map.calulatePath();
     };
 
     map.calulatePath = () => {
@@ -49,6 +50,7 @@ app.controller('MapController', function ($attrs) {
         default:
         }
         this.map.updateCell(cell);
+        map.calulatePath();
     };
 
     map.mouseOverCell = (cell, event) => {
