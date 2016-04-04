@@ -10,7 +10,7 @@ app.controller('MapController', function ($attrs, $interval) {
     map.name = "test";
 
     map.map = new Map($attrs.rows, $attrs.cols);
-    map.map.notifyOnChange(cell => console.log(cell.position.toString(), cell));
+    // map.map.notifyOnChange(cell => console.log(cell.position.toString(), cell));
 
     var start = new Moveable(map.map, CellType.Start);
     start.moveTo(new Position(Math.round($attrs.cols / 4), Math.round($attrs.rows / 2)));
@@ -22,9 +22,15 @@ app.controller('MapController', function ($attrs, $interval) {
     map.widthPx = map.map.cols * map.cellSize;
     map.heightPx = map.map.rows * map.cellSize;
 
-    let pathFinder = new Dijkstra(map.map);
-    map.calulateNextStep = () => {
-        pathFinder.step();
+    map.runStepByStep = () => {
+        map.map.reset();
+        let pathFinder = new Dijkstra(map.map);
+        let stepper = () => {
+            if (pathFinder.step()) {
+                $interval(stepper, 100);
+            }
+        };
+        stepper();
     };
 
     map.addRandomObstacles = () => {
@@ -34,22 +40,12 @@ app.controller('MapController', function ($attrs, $interval) {
     };
 
     map.calulatePath = () => {
-        /* console.time("Dijkstra");
-         //console.profile("Dijkstra");
-         var pathFinder = new Dijkstra(map.map);
-         pathFinder.run();
-         //console.profileEnd("Dijkstra");
-         console.timeEnd("Dijkstra");*/
-
-        pathFinder = new Dijkstra(map.map);
-
-        let stepper = () => {
-            if (pathFinder.step()) {
-                $interval(stepper, 100);
-            }
-        };
-        stepper();
-
+        console.time("Dijkstra");
+        //console.profile("Dijkstra");
+        let pathFinder = new Dijkstra(map.map);
+        pathFinder.run();
+        //console.profileEnd("Dijkstra");
+        console.timeEnd("Dijkstra");
     };
 
     map.clickOnCell = (cell) => {
@@ -68,7 +64,6 @@ app.controller('MapController', function ($attrs, $interval) {
     };
 
     map.mouseOverCell = (cell, event) => {
-        console.log(cell);
         if (event.buttons == 1) {
             this.clickOnCell(cell)
         }

@@ -121,7 +121,10 @@ class Map {
         }
     }
     reset() {
-        this.cells.filter(cell => cell.isVisited || cell.isCurrent).forEach(cell => cell.type = CellType.Free)
+        this.cells.filter(cell => cell.isVisited || cell.isCurrent).forEach(cell => {
+            cell.type = CellType.Free;
+            cell.color = undefined;
+        })
     }
 }
 

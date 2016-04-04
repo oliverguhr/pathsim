@@ -21,14 +21,14 @@
         <svg ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
             <g ng-repeat="row in map.map.grid">
                 <rect ng-repeat="cell in row" ng-attr-x="{{cell.position.x * map.cellSize}}" ng-attr-y="{{cell.position.y * map.cellSize}}" ng-attr-width="{{map.cellSize}}" ng-attr-height="{{map.cellSize}}" ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,closed:cell.isVisited,
-                   start:cell.isStart, goal:cell.isGoal}" ng-mousedown="map.clickOnCell(cell)" ng-mouseover="map.mouseOverCell(cell, $event)"></rect>
+                   start:cell.isStart, goal:cell.isGoal}" ng-mousedown="map.clickOnCell(cell)" ng-mouseover="map.mouseOverCell(cell, $event)" ng-attr-style="fill:{{cell.color}};"></rect>
             </g>
         </svg>
 
         <div style="margin:10px;">
             <form>
                 <input type="button" ng-click="map.addRandomObstacles()" value="Add random blocks" />
-                <input type="button" ng-click="map.calulateNextStep()" value="next step" />
+                <input type="button" ng-click="map.runStepByStep()" value="Run step by step" />
             </form>
         </div>
     </div>
