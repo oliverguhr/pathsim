@@ -10,6 +10,7 @@ app.controller('MapController', function ($attrs, $interval) {
     map.name = "test";
     map.cols = $attrs.cols;
     map.rows = $attrs.rows;
+    map.robots;
 
 
     map.initializeMap = () => {
@@ -32,16 +33,17 @@ app.controller('MapController', function ($attrs, $interval) {
     map.cleanMap = () => {
         map.map.resetPath();
         map.map.resetBlocks();
+        map.clearRobots();
     };
     map.runStepByStep = () => {
         map.map.resetPath();
         let pathFinder = new Dijkstra(map.map);
-        let stepper = () => {
-            if (pathFinder.step()) {
-                $interval(stepper, 100);
+
+        var intervall = $interval(() => {
+            if (!pathFinder.step()) {
+                $interval.cancel(intervall)
             }
-        };
-        stepper();
+        }, 10);
     };
 
     map.visualizePath = () => {
@@ -57,6 +59,28 @@ app.controller('MapController', function ($attrs, $interval) {
         generator.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
         map.calulatePath();
     };
+
+    map.addDynamicObstacle = () => {
+        if (map.robots == undefined) {
+            map.robots = new DynmicObstacleGenerator(map.map)
+        }
+        map.robots.add();
+
+        if (map.robotIntervall !== undefined) {
+            $interval.cancel(map.robotIntervall)
+        }
+
+        map.robotIntervall = $interval(() => {
+            map.map.resetPath();
+            map.robots.update();
+            map.calulatePath();
+        }, 800);
+    };
+
+    map.clearRobots = () => {
+        $interval.cancel(map.robotIntervall);
+        map.robots = undefined;
+    }
 
     map.calulatePath = () => {
         console.time("Dijkstra");

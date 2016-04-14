@@ -21,7 +21,7 @@ class Moveable {
 
     moveTo(position) {
         if (this.position !== undefined) {
-            this.map.updateCellOnPosition(position, cell => {
+            this.map.updateCellOnPosition(this.position, cell => {
                 cell.type = CellType.Free;
                 return cell;
             });
