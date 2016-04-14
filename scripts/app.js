@@ -9,7 +9,7 @@ app.controller('MapController', function ($attrs, $interval) {
     var map = this;
     map.name = "test";
     map.cols = $attrs.cols;
-    map.rows = $attrs.rows
+    map.rows = $attrs.rows;
 
 
     map.initializeMap = () => {
@@ -44,10 +44,15 @@ app.controller('MapController', function ($attrs, $interval) {
         stepper();
     };
 
+    map.visualizePath = () => {
+        if (map.isVisualizePathEnabled == true) {
+            let visual = new PathCostVisualizer(map.map);
+            visual.paint();
+        }
+    };
 
     map.addRandomObstacles = () => {
         map.map.resetPath();
-        //map.map.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
         let generator = new ObstacleGenerator(map.map);
         generator.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
         map.calulatePath();
@@ -60,6 +65,8 @@ app.controller('MapController', function ($attrs, $interval) {
         pathFinder.run();
         //console.profileEnd("Dijkstra");
         console.timeEnd("Dijkstra");
+
+        map.visualizePath();
     };
 
     map.clickOnCell = (cell) => {

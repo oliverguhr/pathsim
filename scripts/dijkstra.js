@@ -109,13 +109,13 @@ class Dijkstra {
             node = node.previous;
         }
 
-        var distanceMulti = 1 / _.maxBy(this.map.cells.filter(cell => cell.isVisited), cell => cell.distance).distance;
+        /* var distanceMulti = 1 / _.maxBy(this.map.cells.filter(cell => cell.isVisited), cell => cell.distance).distance;
 
-        this.map.cells.filter(cell => cell.isVisited).forEach(cell => {
-            cell.color = this.numberToColorHsl(1-(cell.distance * distanceMulti), 0, 1);
-        });
+         this.map.cells.filter(cell => cell.isVisited).forEach(cell => {
+             cell.color = this.numberToColorHsl(1-(cell.distance * distanceMulti), 0, 1);
+         });
 
-
+         */
     }
 
     /**
