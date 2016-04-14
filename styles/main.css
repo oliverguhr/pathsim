@@ -1,72 +1,80 @@
- .flex-container {
-     display: flex;
-     flex-direction: row;
-     flex-wrap: wrap;
-     justify-content: center;
-     align-content: flex-start;
-     align-items: flex-start;
- }
- 
- .flex-items-default {
-     width: 300px;
-     height: 250px;
-     flex-grow: 0;
-     flex-shrink: 0;
-     flex-basis: 0;
- }
- 
- .header {
-     display: flex;
-     flex-grow: 1;
-     flex-shrink: 0;
-     flex-basis: 95%;
-     justify-content: center;
- }
- 
- .map {
-     display: flex;
-     flex-grow: 1;
-     flex-shrink: 0;
-     flex-basis: 95%;
-     justify-content: center;
- }
- 
- .flex-item-3 {
-     display: flex;
-     height: 250px;
-     flex-grow: 1;
-     flex-shrink: 0;
-     flex-basis: 200px;
- }
- 
- .controls {
-     width: 14em;
-     margin-left: 1em;
- }
- 
- .controls fieldset {
-     padding: 0.7em;
-     margin-bottom: 1em;
- }
- 
- .controls input,
- label {
-     display: block;
-     width: 100%;
-     margin-bottom: 0.7em;
- }
- 
- .controls label>span {
-     width: 4em;
-     float: left;
- }
- 
- .controls label>select {
-     width: 9.6em;
- }
- 
- .controls label>input {
-     display: inline;
-     width: auto;
-     vertical-align: top;
- }
+body {
+    font-family: sans-serif;
+}
+
+h1 {
+    font-weight: normal;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    align-items: flex-start;
+}
+
+.flex-items-default {
+    width: 300px;
+    height: 250px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 0;
+}
+
+.header {
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 95%;
+    justify-content: center;
+}
+
+.map {
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 95%;
+    justify-content: center;
+}
+
+.flex-item-3 {
+    display: flex;
+    height: 250px;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 200px;
+}
+
+.controls {
+    width: 14em;
+    margin-left: 1em;
+}
+
+.controls fieldset {
+    padding: 0.7em;
+    margin-bottom: 1em;
+}
+
+.controls input,
+label {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.7em;
+}
+
+.controls label>span {
+    width: 4em;
+    float: left;
+}
+
+.controls label>select {
+    width: 9.6em;
+}
+
+.controls label>input {
+    display: inline;
+    width: auto;
+    vertical-align: top;
+}
