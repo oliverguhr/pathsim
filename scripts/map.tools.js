@@ -32,8 +32,13 @@ class DynmicObstacleGenerator {
     }
 
     getRandomPosition() {
-        let y = _.random(0, this.map.rows - 1);
-        let x = _.random(0, this.map.cols - 1);
+        let y;
+        let x;
+        do {
+            y = _.random(0, this.map.rows - 1);
+            x = _.random(0, this.map.cols - 1);
+        } while (!this.isPositionFree(x, y))
+
         return new Position(x, y);
     }
 }
