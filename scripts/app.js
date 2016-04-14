@@ -8,22 +8,33 @@ angular.element($0).scope().$apply((scope) => {scope.map.map[0][0].isBlocked = s
 app.controller('MapController', function ($attrs, $interval) {
     var map = this;
     map.name = "test";
+    map.cols = $attrs.cols;
+    map.rows = $attrs.rows
 
-    map.map = new Map($attrs.rows, $attrs.cols);
-    // map.map.notifyOnChange(cell => console.log(cell.position.toString(), cell));
 
-    var start = new Moveable(map.map, CellType.Start);
-    start.moveTo(new Position(Math.round($attrs.cols / 4), Math.round($attrs.rows / 2)));
+    map.initializeMap = () => {
+        map.map = new Map(map.rows, map.cols);
+        // map.map.notifyOnChange(cell => console.log(cell.position.toString(), cell));
 
-    var goal = new Moveable(map.map, CellType.Goal);
-    goal.moveTo(new Position(Math.round(($attrs.cols / 4) * 3), Math.round($attrs.rows / 2)));
+        var start = new Moveable(map.map, CellType.Start);
+        start.moveTo(new Position(Math.round($attrs.cols / 4), Math.round($attrs.rows / 2)));
 
-    map.cellSize = 25;
-    map.widthPx = map.map.cols * map.cellSize;
-    map.heightPx = map.map.rows * map.cellSize;
+        var goal = new Moveable(map.map, CellType.Goal);
+        goal.moveTo(new Position(Math.round(($attrs.cols / 4) * 3), Math.round($attrs.rows / 2)));
 
+        map.cellSize = 25;
+        map.widthPx = map.map.cols * map.cellSize;
+        map.heightPx = map.map.rows * map.cellSize;
+    };
+    map.initializeMap();
+
+
+    map.cleanMap = () => {
+        map.map.resetPath();
+        map.map.resetBlocks();
+    };
     map.runStepByStep = () => {
-        map.map.reset();
+        map.map.resetPath();
         let pathFinder = new Dijkstra(map.map);
         let stepper = () => {
             if (pathFinder.step()) {
@@ -33,8 +44,9 @@ app.controller('MapController', function ($attrs, $interval) {
         stepper();
     };
 
+
     map.addRandomObstacles = () => {
-        map.map.reset();
+        map.map.resetPath();
         map.map.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
         map.calulatePath();
     };
@@ -49,7 +61,7 @@ app.controller('MapController', function ($attrs, $interval) {
     };
 
     map.clickOnCell = (cell) => {
-        map.map.reset();
+        map.map.resetPath();
         switch (cell.type) {
         case CellType.Blocked:
             cell.type = CellType.Free;

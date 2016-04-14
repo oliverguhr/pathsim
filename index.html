@@ -28,10 +28,11 @@
                 <form>
                     <fieldset>
                         <legend>Map Options</legend>
+                        <input type="button" ng-click="map.cleanMap()" value="Reset map" />
                         <input type="button" ng-click="map.addRandomObstacles()" value="Add random blocks" />
 
                         <label for="algorithm">
-                            <input type="checkbox" ng-click="map.addRandomObstacles()" /> Visualize path cost
+                            <input type="checkbox" ng-click="map.visualizePath()" ng-model="visualizePath" /> Visualize path cost
                         </label>
                     </fieldset>
 
