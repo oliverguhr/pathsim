@@ -47,7 +47,9 @@ app.controller('MapController', function ($attrs, $interval) {
 
     map.addRandomObstacles = () => {
         map.map.resetPath();
-        map.map.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
+        //map.map.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
+        let generator = new ObstacleGenerator(map.map);
+        generator.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
         map.calulatePath();
     };
 

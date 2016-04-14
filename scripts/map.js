@@ -76,31 +76,6 @@ class Map {
         this.changeListner.push(lambda);
     }
 
-
-    addRandomObstacles(count) {
-        //apply some magic to count free cells
-        var freeCells = this.cells.reduce(
-            (prev, curr) => {
-                if (curr.isFree) prev++;
-                return prev;
-            }, 0);
-
-        if (count > freeCells)
-            count = freeCells;
-
-        for (var i = 0; i < count; i++) {
-            var row = _.random(0, this.rows - 1);
-            var col = _.random(0, this.cols - 1);
-
-            if (this.grid[row][col].isFree) {
-                this.grid[row][col].type = CellType.Blocked;
-                this.hasChanged(this.grid[row][col]);
-            } else {
-                i--;
-            }
-        }
-    }
-
     getStartCell() {
         return this.cells.find(cell => cell.isStart);
     }
