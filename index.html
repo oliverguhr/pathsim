@@ -7,29 +7,49 @@
     <script src="scripts/dijkstra.js"></script>
     <script src="scripts/app.js"></script>
     <link rel="stylesheet" type="text/css" href="styles/svg.css" />
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+
 </head>
 
 <body ng-app="pathsim">
-    <h1>Pathsim</h1>
-    <div id="map">
-        <!--    <svg height="400" width="650">
-      <circle cx="100" cy="100" r="10" />
-    </svg>-->
-    </div>
-
-    <div ng-controller="MapController as map" cols="60" rows="35">
-        <svg ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
-            <g ng-repeat="row in map.map.grid">
-                <rect ng-repeat="cell in row" ng-attr-x="{{cell.position.x * map.cellSize}}" ng-attr-y="{{cell.position.y * map.cellSize}}" ng-attr-width="{{map.cellSize}}" ng-attr-height="{{map.cellSize}}" ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,closed:cell.isVisited,
+    <div class="flex-container">
+        <div class="header">
+            <h1>Pathsim</h1>
+        </div>
+        <div ng-controller="MapController as map" cols="60" rows="35" class="map">
+            <svg ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
+                <g ng-repeat="row in map.map.grid">
+                    <rect ng-repeat="cell in row" ng-attr-x="{{cell.position.x * map.cellSize}}" ng-attr-y="{{cell.position.y * map.cellSize}}" ng-attr-width="{{map.cellSize}}" ng-attr-height="{{map.cellSize}}" ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,closed:cell.isVisited,
                    start:cell.isStart, goal:cell.isGoal}" ng-mousedown="map.clickOnCell(cell)" ng-mouseover="map.mouseOverCell(cell, $event)" ng-attr-style="fill:{{cell.color}};"></rect>
-            </g>
-        </svg>
+                </g>
+            </svg>
 
-        <div style="margin:10px;">
-            <form>
-                <input type="button" ng-click="map.addRandomObstacles()" value="Add random blocks" />
-                <input type="button" ng-click="map.runStepByStep()" value="Run step by step" />
-            </form>
+            <div class="controls">
+                <form>
+                    <fieldset>
+                        <legend>Map Options</legend>
+                        <input type="button" ng-click="map.addRandomObstacles()" value="Add random blocks" />
+
+                        <label for="algorithm">
+                            <input type="checkbox" ng-click="map.addRandomObstacles()" /> Visualize path cost
+                        </label>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Algorithm</legend>
+                        <label for="algorithm">
+                            <span>Typ:</span>
+                            <select name="algorithm" id="algorithm">
+                                <option>Dijkstra</option>
+                            </select>
+                        </label>
+
+                        <input type="button" ng-click="map.runStepByStep()" value="Run step by step" />
+
+                    </fieldset>
+
+                </form>
+            </div>
         </div>
     </div>
 </body>
