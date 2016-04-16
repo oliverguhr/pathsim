@@ -10,7 +10,8 @@ app.controller('MapController', function ($attrs, $interval) {
     map.name = "test";
     map.cols = $attrs.cols;
     map.rows = $attrs.rows;
-    map.robots;
+    map.robots = undefined;
+    map.algorithm = "AStar";
 
 
     map.initializeMap = () => {
@@ -37,17 +38,21 @@ app.controller('MapController', function ($attrs, $interval) {
     };
     map.runStepByStep = () => {
         map.map.resetPath();
-        let pathFinder = new Dijkstra(map.map);
+        map.clearRobots();
+        let pathFinder = map.getAlgorithmInstance();
 
         var intervall = $interval(() => {
             if (!pathFinder.step()) {
-                $interval.cancel(intervall)
+                $interval.cancel(intervall);
+            }
+            else {
+              map.visualizePath();
             }
         }, 10);
     };
 
     map.visualizePath = () => {
-        if (map.isVisualizePathEnabled == true) {
+        if (map.isVisualizePathEnabled === true) {
             let visual = new PathCostVisualizer(map.map);
             visual.paint();
         }
@@ -61,13 +66,13 @@ app.controller('MapController', function ($attrs, $interval) {
     };
 
     map.addDynamicObstacle = () => {
-        if (map.robots == undefined) {
-            map.robots = new DynmicObstacleGenerator(map.map)
+        if (map.robots === undefined) {
+            map.robots = new DynmicObstacleGenerator(map.map);
         }
         map.robots.add();
 
         if (map.robotIntervall !== undefined) {
-            $interval.cancel(map.robotIntervall)
+            $interval.cancel(map.robotIntervall);
         }
 
         map.robotIntervall = $interval(() => {
@@ -79,16 +84,18 @@ app.controller('MapController', function ($attrs, $interval) {
 
     map.clearRobots = () => {
         $interval.cancel(map.robotIntervall);
+        if(map.robots !== undefined)
+          map.robots.robots.forEach( robot => map.map.getCell(robot.position.x,robot.position.y).cellType = 0);
         map.robots = undefined;
-    }
+    };
 
     map.calulatePath = () => {
-        console.time("Dijkstra");
+        console.time(map.algorithm);
         //console.profile("Dijkstra");
-        let pathFinder = new Dijkstra(map.map);
+        let pathFinder = map.getAlgorithmInstance();
         pathFinder.run();
         //console.profileEnd("Dijkstra");
-        console.timeEnd("Dijkstra");
+        console.timeEnd(map.algorithm);
 
         map.visualizePath();
     };
@@ -110,7 +117,16 @@ app.controller('MapController', function ($attrs, $interval) {
 
     map.mouseOverCell = (cell, event) => {
         if (event.buttons == 1) {
-            this.clickOnCell(cell)
+            this.clickOnCell(cell);
+        }
+    };
+
+    map.getAlgorithmInstance = () => {
+        switch (map.algorithm) {
+          case 'Dijkstra':
+              return new Dijkstra(map.map);
+          default:
+            return new AStar(map.map);
         }
     };
 

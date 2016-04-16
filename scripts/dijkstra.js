@@ -1,5 +1,49 @@
-class Dijkstra {
+class Distance {
+    static manhattan(previousCell, currentCell) {
+        return Math.abs(previousCell.position.x - currentCell.position.x) + Math.abs(previousCell.position.y - currentCell.position.y);
+    }
+}
+
+class PathAlgorithm{
+  getNeighbors(cell) {
+
+      let neighbors = [];
+      let map = this.map;
+
+      let useIfFree = (x, y) => {
+          let cell = map.getCell(x, y);
+          if (cell !== undefined && (cell.isFree || cell.isGoal)) {
+              neighbors.push(cell);
+          }
+      };
+
+      useIfFree(cell.position.x + 1, cell.position.y + 0);
+      useIfFree(cell.position.x + 0, cell.position.y + 1);
+      useIfFree(cell.position.x + 0, cell.position.y - 1);
+      useIfFree(cell.position.x - 1, cell.position.y + 0);
+
+      useIfFree(cell.position.x + 1, cell.position.y + 1);
+      useIfFree(cell.position.x - 1, cell.position.y + 1);
+      useIfFree(cell.position.x + 1, cell.position.y - 1);
+      useIfFree(cell.position.x - 1, cell.position.y - 1);
+
+      return neighbors;
+  }
+  paintShortestPath() {
+    let node = this.map.getGoalCell().previous;
+    while (node !== undefined) {
+      if (node.isVisited) {
+        node.type = CellType.Current;
+        node.color = undefined;
+      }
+      node = node.previous;
+    }
+  }
+}
+
+class Dijkstra extends PathAlgorithm {
     constructor(map) {
+        super();
         this.map = map;
         this.cells = [];
         this.initialize();
@@ -46,34 +90,8 @@ class Dijkstra {
         return isRunning;
     }
 
-    getNeighbors(cell) {
-
-        let neighbors = [];
-        let map = this.map;
-
-        let useIfFree = (x, y) => {
-            let cell = map.getCell(x, y);
-            if (cell !== undefined && (cell.isFree || cell.isGoal)) {
-                neighbors.push(cell);
-            }
-        }
-
-        useIfFree(cell.position.x + 1, cell.position.y + 0);
-        useIfFree(cell.position.x + 0, cell.position.y + 1);
-        useIfFree(cell.position.x + 0, cell.position.y - 1);
-        useIfFree(cell.position.x - 1, cell.position.y + 0);
-
-        useIfFree(cell.position.x + 1, cell.position.y + 1);
-        useIfFree(cell.position.x - 1, cell.position.y + 1);
-        useIfFree(cell.position.x + 1, cell.position.y - 1);
-        useIfFree(cell.position.x - 1, cell.position.y - 1);
-
-        return neighbors;
-    }
-
     updateDistance(previousCell, currentCell) {
-        let manhattanDistance = Math.abs(previousCell.position.x - currentCell.position.x) + Math.abs(previousCell.position.y - currentCell.position.y);
-        let distance = previousCell.distance + manhattanDistance;
+        let distance = previousCell.distance + Distance.manhattan(previousCell, currentCell);
         if (distance < currentCell.distance) {
             currentCell.distance = distance;
             currentCell.previous = previousCell;
@@ -83,13 +101,4 @@ class Dijkstra {
         }
     }
 
-    paintShortestPath() {
-        let node = this.map.getGoalCell().previous;
-        while (node != undefined) {
-            if (node.isVisited) {
-                node.type = CellType.Current;
-            }
-            node = node.previous;
-        }
-    }
 }

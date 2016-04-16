@@ -99,14 +99,14 @@ class Map {
         this.cells.filter(cell => cell.isVisited || cell.isCurrent).forEach(cell => {
             cell.type = CellType.Free;
             cell.color = undefined;
-        })
+        });
     }
 
     resetBlocks() {
         this.cells.filter(cell => cell.isBlocked).forEach(cell => {
             cell.type = CellType.Free;
             cell.color = undefined;
-        })
+        });
     }
 }
 

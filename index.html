@@ -6,10 +6,13 @@
 
     <script src="node_modules/angular/angular.js"></script>
     <script src="node_modules/lodash/lodash.min.js"></script>
+    <script src="node_modules/js-priority-queue/priority-queue.min.js"></script>
     <script src="scripts/map.js"></script>
-    <script src="scripts/dijkstra.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/map.tools.js"></script>
+
+    <script src="scripts/dijkstra.js"></script>
+    <script src="scripts/astar.js"></script>
 </head>
 
 <body ng-app="pathsim">
@@ -42,8 +45,9 @@
                         <legend>Algorithm</legend>
                         <label for="algorithm">
                             <span>Typ:</span>
-                            <select name="algorithm" id="algorithm">
-                                <option>Dijkstra</option>
+                            <select name="algorithm" id="algorithm" ng-model="map.algorithm">
+                                <option value="Dijkstra">Dijkstra</option>
+                                <option value="AStar">A*</option>
                             </select>
                         </label>
 
