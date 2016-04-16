@@ -7,6 +7,7 @@ class DynmicObstacleGenerator {
     add() {
         let robot = new Moveable(this.map, CellType.Blocked);
         robot.moveTo(this.getRandomPosition());
+        robot.currentCell.color = '#BBF';
         this.robots.push(robot);
     }
 
@@ -17,15 +18,16 @@ class DynmicObstacleGenerator {
             do {
                 y = robot.position.y + _.random(-1, 1);
                 x = robot.position.x + _.random(-1, 1);
-            } while (!this.isPositionFree(x, y))
-
+            } while (!this.isPositionFree(x, y));
+            robot.currentCell.color = undefined;
             robot.moveTo(new Position(x, y));
+            robot.currentCell.color = '#BBF';
         }
     }
 
     isPositionFree(x, y) {
         var cell = this.map.getCell(x, y);
-        if (cell != undefined) {
+        if (cell !== undefined) {
             return cell.isFree || cell.isVisited;
         }
         return false;
@@ -37,7 +39,7 @@ class DynmicObstacleGenerator {
         do {
             y = _.random(0, this.map.rows - 1);
             x = _.random(0, this.map.cols - 1);
-        } while (!this.isPositionFree(x, y))
+        } while (!this.isPositionFree(x, y));
 
         return new Position(x, y);
     }
@@ -115,9 +117,17 @@ class PathCostVisualizer {
             //console.log(hue);
 
             // we convert hsl to rgb (saturation 100%, lightness 50%)
-            var rgb = this.hslToRgb(hue, 1, .5);
+            var rgb = this.hslToRgb(hue, 1, 0.5);
             // we format to css value and return
             return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+        }
+        hue2rgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
         }
         /**
          * http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
@@ -135,23 +145,14 @@ class PathCostVisualizer {
     hslToRgb(h, s, l) {
         var r, g, b;
 
-        if (s == 0) {
+        if (s === 0) {
             r = g = b = l; // achromatic
         } else {
-            function hue2rgb(p, q, t) {
-                if (t < 0) t += 1;
-                if (t > 1) t -= 1;
-                if (t < 1 / 6) return p + (q - p) * 6 * t;
-                if (t < 1 / 2) return q;
-                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-                return p;
-            }
-
             var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
             var p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1 / 3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1 / 3);
+            r = this.hue2rgb(p, q, h + 1 / 3);
+            g = this.hue2rgb(p, q, h);
+            b = this.hue2rgb(p, q, h - 1 / 3);
         }
 
         return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];

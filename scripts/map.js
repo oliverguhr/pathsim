@@ -17,6 +17,7 @@ class Moveable {
         this.cellType = cellType;
         this.map = map;
         this.position = undefined;
+        this.currentCell = undefined;
     }
 
     moveTo(position) {
@@ -29,6 +30,7 @@ class Moveable {
         this.position = position;
         this.map.updateCellOnPosition(position, cell => {
             cell.type = this.cellType;
+            this.currentCell = cell;
             return cell;
         });
     }
