@@ -14,27 +14,28 @@ class PathAlgorithm{
   getNeighbors(cell) {
 
       let neighbors = [];
-      let map = this.map;
 
-      let useIfFree = (x, y) => {
-          let cell = map.getCell(x, y);
-          if (cell !== undefined && (cell.isFree || cell.isGoal)) {
-              neighbors.push(cell);
-          }
-      };
+      this.addCellIfpassable(cell.position.x + 0, cell.position.y - 1,neighbors);
+      this.addCellIfpassable(cell.position.x + 0, cell.position.y + 1,neighbors);
+      this.addCellIfpassable(cell.position.x + 1, cell.position.y + 0,neighbors);
+      this.addCellIfpassable(cell.position.x - 1, cell.position.y + 0,neighbors);
 
-      useIfFree(cell.position.x + 1, cell.position.y + 0);
-      useIfFree(cell.position.x + 0, cell.position.y + 1);
-      useIfFree(cell.position.x + 0, cell.position.y - 1);
-      useIfFree(cell.position.x - 1, cell.position.y + 0);
-
-      useIfFree(cell.position.x + 1, cell.position.y + 1);
-      useIfFree(cell.position.x - 1, cell.position.y + 1);
-      useIfFree(cell.position.x + 1, cell.position.y - 1);
-      useIfFree(cell.position.x - 1, cell.position.y - 1);
+      this.addCellIfpassable(cell.position.x + 1, cell.position.y + 1,neighbors);
+      this.addCellIfpassable(cell.position.x - 1, cell.position.y + 1,neighbors);
+      this.addCellIfpassable(cell.position.x + 1, cell.position.y - 1,neighbors);
+      this.addCellIfpassable(cell.position.x - 1, cell.position.y - 1,neighbors);
 
       return neighbors;
   }
+
+  addCellIfpassable(x,y,neighbors){
+      let cell = this.map.getCell(x, y);
+      if (cell !== undefined && (cell.isFree || cell.isGoal)) {
+          neighbors.push(cell);
+      }
+  }
+
+
   paintShortestPath() {
     let node = this.map.getGoalCell().previous;
     while (node !== undefined) {

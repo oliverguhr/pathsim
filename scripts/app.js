@@ -1,4 +1,3 @@
-/*jshint esversion: 6 */
 var app = angular.module('pathsim', []);
 
 /* Change map from regular js
@@ -131,3 +130,28 @@ app.controller('MapController', function ($attrs, $interval) {
     };
 
 });
+
+function AStarTest(){
+
+  let cells = Math.round(Math.sqrt(80000));
+
+  let map = new Map(cells, cells);
+
+  var start = new Moveable(map, CellType.Start);
+  start.moveTo(new Position(Math.round(cells / 4), Math.round(cells / 2)));
+
+  var goal = new Moveable(map, CellType.Goal);
+  goal.moveTo(new Position(Math.round((cells / 4) * 3), Math.round(cells / 2)));
+
+  let generator = new ObstacleGenerator(map);
+  generator.addRandomObstacles((map.cols * map.rows) * 0.5);
+
+  let astar = new AStar(map);
+
+
+  console.time("astar");
+  console.profile("astar");
+  astar.run();
+  console.profileEnd("astar");
+  console.timeEnd("astar");
+}
