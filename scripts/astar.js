@@ -57,10 +57,10 @@ class AStar extends PathAlgorithm {
           // The distance from start to a neighbor
           let tentative_g = currentNode.distance + this.distanceBetween(neighbors[i],currentNode);
 
-          if (!neighbors[i].isOpen && tentative_g >= neighbors[i].distance) {
+          if (tentative_g >= neighbors[i].distance) {
               continue; // This is not a better path.
           }
-          else if (neighbors[i].isOpen) {
+          else {
             // This path is the best until now. Record it!
             neighbors[i].previous = currentNode;
             neighbors[i].distance = tentative_g;
@@ -70,10 +70,10 @@ class AStar extends PathAlgorithm {
                 neighbors[i].type = CellType.Visited;
             }
           }
-        }              
+        }
     }
     distanceBetween(successor,currentNode) {
-        return Distance.euklid(currentNode,successor); //todo: do something that makes sense..
+        return Distance.euklid(currentNode,successor);
     }
 
 }
