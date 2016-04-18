@@ -5,10 +5,12 @@ class AStar extends PathAlgorithm {
             comparator: (a, b) => a.estimatedDistance - b.estimatedDistance
         };
 
+        this.distance = Distance.euklid;
         this.map = map;
         this.openCells = new PriorityQueue(queueConfig);
         this.closedCells = [];
         this.goal = this.map.getGoalCell();
+        this.start = this.map.getStartCell();
         this.initialize();
     }
     initialize() {
@@ -20,10 +22,9 @@ class AStar extends PathAlgorithm {
           cells[i].isOpen = true;
         }
 
-        let start = this.map.getStartCell();
-        start.distance = 0;
-        start.estimatedDistance = this.distanceBetween(start, this.goal);
-        this.openCells.queue(start);
+        this.start.distance = 0;
+        this.start.estimatedDistance = this.distance(this.start, this.goal);
+        this.openCells.queue(this.start);
     }
 
     run() {
@@ -55,7 +56,7 @@ class AStar extends PathAlgorithm {
               continue; // Ignore the neighbor which is already evaluated.
           }
           // The distance from start to a neighbor
-          let tentative_g = currentNode.distance + this.distanceBetween(neighbors[i],currentNode);
+          let tentative_g = currentNode.distance + this.distance(neighbors[i],currentNode);
 
           if (tentative_g >= neighbors[i].distance) {
               continue; // This is not a better path.
@@ -64,7 +65,7 @@ class AStar extends PathAlgorithm {
             // This path is the best until now. Record it!
             neighbors[i].previous = currentNode;
             neighbors[i].distance = tentative_g;
-            neighbors[i].estimatedDistance = neighbors[i].distance  + this.distanceBetween(this.goal,neighbors[i]);
+            neighbors[i].estimatedDistance = neighbors[i].distance  + this.distance(this.goal,neighbors[i]);
             this.openCells.queue(neighbors[i]);
             if (neighbors[i].isFree) {
                 neighbors[i].type = CellType.Visited;
@@ -72,8 +73,4 @@ class AStar extends PathAlgorithm {
           }
         }
     }
-    distanceBetween(successor,currentNode) {
-        return Distance.euklid(currentNode,successor);
-    }
-
 }

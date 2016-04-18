@@ -149,6 +149,7 @@ function AStarTest(){
 
 
   let astar = new AStar(map);
+
   console.time("astar");
   //console.profile("astar");
   astar.run();
