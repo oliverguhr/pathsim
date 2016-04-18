@@ -146,12 +146,12 @@ function AStarTest(){
   let generator = new ObstacleGenerator(map);
   generator.addRandomObstacles((map.cols * map.rows) * 0.5);
 
+
+
   let astar = new AStar(map);
-
-
   console.time("astar");
-  console.profile("astar");
+  //console.profile("astar");
   astar.run();
-  console.profileEnd("astar");
+  //console.profileEnd("astar");
   console.timeEnd("astar");
 }

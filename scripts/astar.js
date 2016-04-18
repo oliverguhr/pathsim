@@ -13,10 +13,11 @@ class AStar extends PathAlgorithm {
     }
     initialize() {
         let cells = this.map.cells.filter(cell => !cell.isBlocked);
-        for (let cell of cells) {
-            cell.previous = undefined;
-            cell.distance = Number.POSITIVE_INFINITY;
-            cell.isOpen = true;
+
+        for (var i = 0; i < cells.length; i++) {
+          cells[i].previous = undefined;
+          cells[i].distance = Number.POSITIVE_INFINITY;
+          cells[i].isOpen = true;
         }
 
         let start = this.map.getStartCell();
@@ -48,27 +49,28 @@ class AStar extends PathAlgorithm {
     }
 
     expendNode(currentNode) {
-        for (let successor of this.getNeighbors(currentNode)) {
-            if (!successor.isOpen) {
-                continue; // Ignore the neighbor which is already evaluated.
-            }
-            // The distance from start to a neighbor
-            let tentative_g = currentNode.distance + this.distanceBetween(successor,currentNode);
+        let neighbors =  this.getNeighbors(currentNode)
+        for (var i = 0; i < neighbors.length; i++) {
+          if (!neighbors[i].isOpen) {
+              continue; // Ignore the neighbor which is already evaluated.
+          }
+          // The distance from start to a neighbor
+          let tentative_g = currentNode.distance + this.distanceBetween(neighbors[i],currentNode);
 
-            if (!successor.isOpen && tentative_g >= neighbor.distance) {
-                continue; // This is not a better path.
+          if (!neighbors[i].isOpen && tentative_g >= neighbors[i].distance) {
+              continue; // This is not a better path.
+          }
+          else if (neighbors[i].isOpen) {
+            // This path is the best until now. Record it!
+            neighbors[i].previous = currentNode;
+            neighbors[i].distance = tentative_g;
+            neighbors[i].estimatedDistance = neighbors[i].distance  + this.distanceBetween(this.goal,neighbors[i]);
+            this.openCells.queue(neighbors[i]);
+            if (neighbors[i].isFree) {
+                neighbors[i].type = CellType.Visited;
             }
-            else if (successor.isOpen) {
-              // This path is the best until now. Record it!
-              successor.previous = currentNode;
-              successor.distance = tentative_g;
-              successor.estimatedDistance = successor.distance  + this.distanceBetween(this.goal,successor);
-              this.openCells.queue(successor);
-              if (successor.isFree) {
-                  successor.type = CellType.Visited;
-              }
-            }
-        }
+          }
+        }              
     }
     distanceBetween(successor,currentNode) {
         return Distance.euklid(currentNode,successor); //todo: do something that makes sense..
