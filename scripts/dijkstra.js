@@ -2,6 +2,12 @@ class Distance {
     static manhattan(previousCell, currentCell) {
         return Math.abs(previousCell.position.x - currentCell.position.x) + Math.abs(previousCell.position.y - currentCell.position.y);
     }
+
+    static euklid(previousCell, currentCell) {
+      let x = previousCell.position.x - currentCell.position.x;
+      let y = previousCell.position.y - currentCell.position.y;
+      return Math.sqrt( x*x + y*y );
+    }
 }
 
 class PathAlgorithm{
@@ -91,7 +97,7 @@ class Dijkstra extends PathAlgorithm {
     }
 
     updateDistance(previousCell, currentCell) {
-        let distance = previousCell.distance + Distance.manhattan(previousCell, currentCell);
+        let distance = previousCell.distance + Distance.euklid(previousCell, currentCell);
         if (distance < currentCell.distance) {
             currentCell.distance = distance;
             currentCell.previous = previousCell;

@@ -71,7 +71,7 @@ class AStar extends PathAlgorithm {
         }
     }
     distanceBetween(successor,currentNode) {
-        return Distance.manhattan(successor,currentNode); //todo: do something that makes sense..
+        return Distance.euklid(currentNode,successor); //todo: do something that makes sense..
     }
 
 }
