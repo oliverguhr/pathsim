@@ -49,6 +49,7 @@ app.controller('MapController', function ($attrs, $interval) {
             else {
               map.visualizePath();
             }
+            map.calulateStatistic();
         }, 10);
     };
 
@@ -156,7 +157,7 @@ app.controller('MapController', function ($attrs, $interval) {
 
 function AStarTest(){
 
-  let cells = Math.round(Math.sqrt(160000));
+  let cells = Math.round(Math.sqrt(500000));
 
   let map = new Map(cells, cells);
 
@@ -173,9 +174,18 @@ function AStarTest(){
 
   let astar = new AStar(map);
 
-  console.time("astar");
+  console.time("astar euklid");
   //console.profile("astar");
   astar.run();
   //console.profileEnd("astar");
-  console.timeEnd("astar");
+  console.timeEnd("astar euklid");
+
+  map.resetPath();
+  astar = new AStar(map);
+  astar.distance = Distance.diagonalShortcut;
+  console.time("astar diagonalShortcut");
+  //console.profile("astar");
+  astar.run();
+  //console.profileEnd("astar");
+  console.timeEnd("astar diagonalShortcut");
 }

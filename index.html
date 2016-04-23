@@ -45,7 +45,7 @@
                         <legend>Algorithm</legend>
                         <label for="algorithm">
                             <span>Typ:</span>
-                            <select name="algorithm" id="algorithm" ng-model="map.algorithm">
+                            <select name="algorithm" id="algorithm" ng-model="map.algorithm" ng-change="map.map.resetPath();map.calulatePath();">
                                 <option value="Dijkstra">Dijkstra</option>
                                 <option value="AStar">A*</option>
                             </select>
