@@ -98,6 +98,13 @@ app.controller('MapController', function ($attrs, $interval) {
         console.timeEnd(map.algorithm);
 
         map.visualizePath();
+        map.calulateStatistic();
+    };
+
+    map.calulateStatistic = () => {
+      map.stat = {};
+      map.stat.pathLength = map.map.cells.filter(x => x.isCurrent).length;
+      map.stat.visitedCells = map.stat.pathLength + map.map.cells.filter(x => x.isVisited).length;
     };
 
     map.clickOnCell = (cell) => {
