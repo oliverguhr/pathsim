@@ -6,20 +6,18 @@ Pathsim is playground for different path planning algorithms. Due to its focus o
 2. We need a map
 3. Add obstacles to the map
 4. Add these obstacles via use input
+5. Implement Dijkstra
+6. Implement A*
+7. Moveable Objects
+8. Cost visualization
+9. Step Execution
 
 ## Todos
 1. Unit Tests
-2. Implement Dijkstra
-3. Implement A*
 4. Implement E*
 5. Implement RRT
 6. Save/Restore created maps
-
-
-Moveable Objects
-Cost visualization
-Step Execution
-ToolTipps with meta information
+7. ToolTipps with meta information
 
 ## Tests
 Run all tests:

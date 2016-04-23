@@ -3,9 +3,7 @@ class AStar extends PathAlgorithm {
         super();
         let queueConfig = {
             comparator: (a, b) => a.estimatedDistance - b.estimatedDistance
-        };
-
-        this.distance = Distance.euklid;
+        };        
         this.map = map;
         this.openCells = new PriorityQueue(queueConfig);
         this.closedCells = [];
@@ -39,9 +37,7 @@ class AStar extends PathAlgorithm {
                 this.paintShortestPath();
                 return false;
             }
-
             currentNode.isOpen = false;
-            //this.closedCells.push(currentNode); //todo, may we don't need this
 
             this.expendNode(currentNode);
             return true;
@@ -50,7 +46,7 @@ class AStar extends PathAlgorithm {
     }
 
     expendNode(currentNode) {
-        let neighbors =  this.getNeighbors(currentNode)
+        let neighbors =  this.getNeighbors(currentNode);
         for (var i = 0; i < neighbors.length; i++) {
           if (!neighbors[i].isOpen) {
               continue; // Ignore the neighbor which is already evaluated.

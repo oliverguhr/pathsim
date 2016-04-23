@@ -49,6 +49,12 @@
                                 <option value="Dijkstra">Dijkstra</option>
                                 <option value="AStar">A*</option>
                             </select>
+                            <span>Distance:</span>
+                            <select name="distance" id="distance" ng-model="map.distance" ng-change="map.map.resetPath();map.calulatePath();">
+                                <option value="euklid">Euklid</option>
+                                <option value="manhattan">Manhattan</option>
+                                <option value="diagonalShortcut">Diagonal Shortcut</option>
+                            </select>
                         </label>
 
                         <input type="button" ng-click="map.runStepByStep()" value="Run step by step" />

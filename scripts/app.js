@@ -11,6 +11,7 @@ app.controller('MapController', function ($attrs, $interval) {
     map.rows = $attrs.rows;
     map.robots = undefined;
     map.algorithm = "AStar";
+    map.distance = "euklid";
 
 
     map.initializeMap = () => {
@@ -121,19 +122,33 @@ app.controller('MapController', function ($attrs, $interval) {
     };
 
     map.getAlgorithmInstance = () => {
+      let algorithm;
         switch (map.algorithm) {
           case 'Dijkstra':
-              return new Dijkstra(map.map);
+              algorithm = new Dijkstra(map.map);
+              break;
           default:
-            return new AStar(map.map);
+            algorithm = new AStar(map.map);
         }
+
+        switch (map.distance) {
+          case "manhattan":
+             algorithm.distance = Distance.manhattan;
+            break;
+            case "diagonalShortcut":
+               algorithm.distance = Distance.diagonalShortcut;
+              break;
+          default:
+            algorithm.distance = Distance.euklid;
+        }
+        return algorithm;
     };
 
 });
 
 function AStarTest(){
 
-  let cells = Math.round(Math.sqrt(80000));
+  let cells = Math.round(Math.sqrt(160000));
 
   let map = new Map(cells, cells);
 

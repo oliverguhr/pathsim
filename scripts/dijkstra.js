@@ -4,13 +4,29 @@ class Distance {
     }
 
     static euklid(previousCell, currentCell) {
-      let x = previousCell.position.x - currentCell.position.x;
-      let y = previousCell.position.y - currentCell.position.y;
+      let x = Math.abs(previousCell.position.x - currentCell.position.x);
+      let y = Math.abs(previousCell.position.y - currentCell.position.y);
       return Math.sqrt( x*x + y*y );
     }
+
+    static diagonalShortcut(previousCell, currentCell) {
+      /* See  http://www.policyalmanac.org/games/heuristics.htm  for details*/
+      let xDistance = Math.abs(previousCell.position.x - currentCell.position.x)
+      let yDistance = Math.abs(previousCell.position.y - currentCell.position.y)
+      if (xDistance > yDistance)
+      {
+        return  14*yDistance + 10*(xDistance-yDistance);
+      }
+      else{
+        return  14*xDistance + 10*(yDistance-xDistance);
+     }
+   }
 }
 
 class PathAlgorithm{
+  constructor(){
+    this.distance = Distance.euklid;
+  }
   getNeighbors(cell) {
 
       let neighbors = [];
@@ -98,7 +114,7 @@ class Dijkstra extends PathAlgorithm {
     }
 
     updateDistance(previousCell, currentCell) {
-        let distance = previousCell.distance + Distance.euklid(previousCell, currentCell);
+        let distance = previousCell.distance + this.distance(previousCell, currentCell);
         if (distance < currentCell.distance) {
             currentCell.distance = distance;
             currentCell.previous = previousCell;
