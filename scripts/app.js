@@ -12,6 +12,7 @@ app.controller('MapController', function ($attrs, $interval) {
     map.robots = undefined;
     map.algorithm = "AStar";
     map.distance = "euklid";
+    map.isVisualizePathEnabled = true;
 
 
     map.initializeMap = () => {
