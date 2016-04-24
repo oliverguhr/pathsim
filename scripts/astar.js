@@ -3,10 +3,9 @@ class AStar extends PathAlgorithm {
         super();
         let queueConfig = {
             comparator: (a, b) => a.estimatedDistance - b.estimatedDistance
-        };        
+        };
         this.map = map;
-        this.openCells = new PriorityQueue(queueConfig);
-        this.closedCells = [];
+        this.openCells = new PriorityQueue(queueConfig);        
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();
         this.initialize();

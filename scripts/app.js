@@ -20,10 +20,10 @@ app.controller('MapController', function ($attrs, $interval) {
         // map.map.notifyOnChange(cell => console.log(cell.position.toString(), cell));
 
         var start = new Moveable(map.map, CellType.Start);
-        start.moveTo(new Position(Math.round($attrs.cols / 4), Math.round($attrs.rows / 2)));
+        start.moveTo(new Position(0, 0));
 
         var goal = new Moveable(map.map, CellType.Goal);
-        goal.moveTo(new Position(Math.round(($attrs.cols / 4) * 3), Math.round($attrs.rows / 2)));
+        goal.moveTo(new Position(map.cols -1 , map.rows-1));
 
         map.cellSize = 25;
         map.widthPx = map.map.cols * map.cellSize;
@@ -155,8 +155,8 @@ app.controller('MapController', function ($attrs, $interval) {
 
 });
 
-function AStarTest(){
-
+function GetTestMap()
+{
   let cells = Math.round(Math.sqrt(500000));
 
   let map = new Map(cells, cells);
@@ -170,7 +170,11 @@ function AStarTest(){
   let generator = new ObstacleGenerator(map);
   generator.addRandomObstacles((map.cols * map.rows) * 0.5);
 
+  return map;
+}
 
+function AStarTest(){
+  let map = GetTestMap();
 
   let astar = new AStar(map);
 
@@ -188,4 +192,13 @@ function AStarTest(){
   astar.run();
   //console.profileEnd("astar");
   console.timeEnd("astar diagonalShortcut");
+}
+
+function LpaStarTest()
+{
+  let map = GetTestMap();
+
+  let lpastar = new LpaStar(map);
+
+  lpastar.main();
 }
