@@ -157,7 +157,7 @@ app.controller('MapController', function ($attrs, $interval) {
 
 function GetTestMap()
 {
-  let cells = Math.round(Math.sqrt(500000));
+  let cells = 10; //Math.round(Math.sqrt(500000));
 
   let map = new Map(cells, cells);
 
@@ -168,7 +168,7 @@ function GetTestMap()
   goal.moveTo(new Position(Math.round((cells / 4) * 3), Math.round(cells / 2)));
 
   let generator = new ObstacleGenerator(map);
-  generator.addRandomObstacles((map.cols * map.rows) * 0.5);
+  generator.addRandomObstacles((map.cols * map.rows) * 0.1);
 
   return map;
 }

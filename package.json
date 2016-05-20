@@ -10,11 +10,13 @@
     "lodash": "^4.7.0"
   },
   "devDependencies": {
+    "lite-server": "^2.2.0",
     "tape": "^4.5.1"
   },
   "scripts": {
     "test": "node_modules/tape/bin/tape  'tests/**/*.js'",
-    "watch-test": "watch \"node_modules/tape/bin/tape 'tests/**/*.js'\" tests/"
+    "watch-test": "watch \"node_modules/tape/bin/tape 'tests/**/*.js'\" tests/",
+    "dev": "lite-server"
   },
   "author": "Oliver Guhr",
   "license": "MIT"

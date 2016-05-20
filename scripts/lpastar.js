@@ -22,52 +22,56 @@ class LpaStar extends PathAlgorithm {
 
     for (var i = 0; i < cells.length; i++) {
       cells[i].previous = undefined;
-      cells[i].g = Number.POSITIVE_INFINITY; // distance?
-      cells[i].rhs = Number.POSITIVE_INFINITY; // distance?
+      //g is the cost so far from the start node to the current node
+      cells[i].g = Number.POSITIVE_INFINITY;
+      /*
+        Right Hand Side value
+        is equal to the cost(g value) of the parent of a node plus
+        the cost to travel to that node.
+      */
+      cells[i].rhs = Number.POSITIVE_INFINITY;
     }
     this.start.rhs = 0;
     this.openCells.insert(this.start, this.calcKey(this.start));
   }
 
-  getPredecessors(cell) {
-    return this.map.cells.filter(c => c.previous == cell);
-  }
-
   updateVertex(cell) {
       if (cell !== this.start) {
-        //this could be done by a reduce function
-        let comperer = function(predecessor) {
-          return predecessor.g + this.distance(predecessor, cell);
-        };
+        let predecessors = this.getNeighbors(cell);
+        // we have to do this because all g values are infinity and
+        // infinity + 1 = infinity
+        predecessors.forEach(x => {if(!Number.isFinite(x.g))x.g=0;});
 
-        cell.rhs = _.sortBy(this.getPredecessors(cell), comperer).reverse().pop();
+        this.rhs = Math.min(...predecessors.map(x => x.g +this.distance(x,cell)));
       }
       if (this.openCells.has(cell)) {
         this.openCells.remove(cell);
       }
-
       if (cell.g !== cell.rhs) {
-        this.openCells.insert(cell, this.calcKey(this.start));
+        this.openCells.insert(cell,this.calcKey(cell));
       }
     }
     //find a shortest path from the start to the goal
-  computeSortestPath() {
+  computeShortestPath() {
     while (this.openCells.topKey() < this.calcKey(this.goal) ||
       this.goal.g !== this.goal.rhs) {
       let item = this.openCells.pop();
       if (item.g > item.rhs) {
         item.g = item.rhs;
+        this.getNeighbors(item).forEach(x => this.updateVertex(x));
+
       } else {
         item.g = Number.POSITIVE_INFINITY;
-        this.updateVertex(item);
+        let itemAndNeighbors = this.getNeighbors(item);
+        itemAndNeighbors.push(item);
+        itemAndNeighbors.forEach(x => this.updateVertex(x));
       }
-      this.getNeighbors(item).forEach(x => this.updateVertex(x));
     }
   }
 
   main() {
     this.initialize();
-    this.computeSortestPath();
+    this.computeShortestPath();
     return;
 
     while (isActive) {

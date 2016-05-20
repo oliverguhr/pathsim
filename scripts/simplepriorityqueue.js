@@ -17,7 +17,7 @@ class SimplePriorityQueue {
   }
 
   has(item) {
-    return _.findIndex(this.items, x = x === item) !== -1;
+    return _.findIndex(this.items, x => x === item) !== -1;
   }
 
   topKey() {
@@ -26,6 +26,12 @@ class SimplePriorityQueue {
 
   pop() {
     return this.items.shift();
+  }
+
+  updateKey(item, key){
+    //quick and dirty solution
+    this.remove(item);
+    this.insert(item,key);
   }
 
 }
