@@ -46,7 +46,7 @@ class PathAlgorithm{
 
   addCellIfpassable(x,y,neighbors){
       let cell = this.map.getCell(x, y);
-      if (cell !== undefined && (cell.isFree || cell.isGoal)) {
+      if (cell !== undefined && (cell.isFree || cell.isGoal || cell.isStart)) {
           neighbors.push(cell);
       }
   }

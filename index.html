@@ -15,6 +15,7 @@
     <script src="scripts/dijkstra.js"></script>
     <script src="scripts/astar.js"></script>
     <script src="scripts/lpastar.js"></script>
+    <script src="tests/lpastar.test.js"></script>
 </head>
 
 <body ng-app="pathsim">
@@ -22,7 +23,7 @@
         <div class="header">
             <h1>Pathsim</h1>
         </div>
-        <div ng-controller="MapController as map" cols="60" rows="35" class="map">
+        <div ng-controller="MapController as map" cols="60" rows="35" class="map" id="map">
             <svg ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
                 <g ng-repeat="row in map.map.grid">
                     <rect ng-repeat="cell in row" ng-attr-x="{{cell.position.x * map.cellSize}}" ng-attr-y="{{cell.position.y * map.cellSize}}" ng-attr-width="{{map.cellSize}}" ng-attr-height="{{map.cellSize}}" ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,closed:cell.isVisited,
@@ -50,6 +51,7 @@
                             <select name="algorithm" id="algorithm" ng-model="map.algorithm" ng-change="map.map.resetPath();map.calulatePath();">
                                 <option value="Dijkstra">Dijkstra</option>
                                 <option value="AStar">A*</option>
+                                <option value="LpaStar">Lifelong Planning A*</option>
                             </select>
                             <span>Distance:</span>
                             <select name="distance" id="distance" ng-model="map.distance" ng-change="map.map.resetPath();map.calulatePath();">

@@ -14,8 +14,7 @@ Pathsim is playground for different path planning algorithms. Due to its focus o
 
 ## Todos
 1. Unit Tests
-4. Implement E*
-5. Implement RRT
+5. Generate Maps
 6. Save/Restore created maps
 7. ToolTipps with meta information
 

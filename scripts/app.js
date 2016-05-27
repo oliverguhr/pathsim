@@ -2,6 +2,7 @@ var app = angular.module('pathsim', []);
 
 /* Change map from regular js
 angular.element($0).scope().$apply((scope) => {scope.map.map[0][0].isBlocked = scope.map.map[0][0].isBlocked!})
+angular.element($0).scope().$apply((scope) => {console.log(scope)})
 */
 
 app.controller('MapController', function ($attrs, $interval) {
@@ -15,15 +16,22 @@ app.controller('MapController', function ($attrs, $interval) {
     map.isVisualizePathEnabled = true;
 
 
-    map.initializeMap = () => {
-        map.map = new Map(map.rows, map.cols);
-        // map.map.notifyOnChange(cell => console.log(cell.position.toString(), cell));
+    map.initializeMap = (predefinedMap) => {
+        if(predefinedMap === undefined)
+        {
+          map.map = new Map(map.rows, map.cols);
+          // map.map.notifyOnChange(cell => console.log(cell.position.toString(), cell));
 
-        var start = new Moveable(map.map, CellType.Start);
-        start.moveTo(new Position(0, 0));
+          var start = new Moveable(map.map, CellType.Start);
+          start.moveTo(new Position(0, 0));
 
-        var goal = new Moveable(map.map, CellType.Goal);
-        goal.moveTo(new Position(map.cols -1 , map.rows-1));
+          var goal = new Moveable(map.map, CellType.Goal);
+          goal.moveTo(new Position(map.cols -1 , map.rows-1));
+
+        }
+        else {
+          map.map = predefinedMap;  
+        }
 
         map.cellSize = 25;
         map.widthPx = map.map.cols * map.cellSize;
@@ -136,6 +144,9 @@ app.controller('MapController', function ($attrs, $interval) {
           case 'Dijkstra':
               algorithm = new Dijkstra(map.map);
               break;
+          case 'LpaStar':
+                  algorithm = new LpaStar(map.map);
+                  break;
           default:
             algorithm = new AStar(map.map);
         }
@@ -192,13 +203,4 @@ function AStarTest(){
   astar.run();
   //console.profileEnd("astar");
   console.timeEnd("astar diagonalShortcut");
-}
-
-function LpaStarTest()
-{
-  let map = GetTestMap();
-
-  let lpastar = new LpaStar(map);
-
-  lpastar.main();
 }

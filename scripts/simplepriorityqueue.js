@@ -21,7 +21,13 @@ class SimplePriorityQueue {
   }
 
   topKey() {
-    return this.items[0].key;
+    //todo: review this. Can we return [0,0] if list is empty?
+    if(this.items[0] !== undefined){
+      return this.items[0].key;
+    }
+    else {
+      throw new Error("List is empty");
+    }
   }
 
   pop() {
