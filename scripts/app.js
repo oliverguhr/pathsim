@@ -14,6 +14,7 @@ app.controller('MapController', function ($attrs, $interval) {
     map.algorithm = "AStar";
     map.distance = "euklid";
     map.isVisualizePathEnabled = true;
+    map.stat = {};
 
 
     map.initializeMap = (predefinedMap) => {
@@ -30,7 +31,7 @@ app.controller('MapController', function ($attrs, $interval) {
 
         }
         else {
-          map.map = predefinedMap;  
+          map.map = predefinedMap;
         }
 
         map.cellSize = 25;
@@ -112,7 +113,6 @@ app.controller('MapController', function ($attrs, $interval) {
     };
 
     map.calulateStatistic = () => {
-      map.stat = {};
       map.stat.pathLength = map.map.cells.filter(x => x.isCurrent).length;
       map.stat.visitedCells = map.stat.pathLength + map.map.cells.filter(x => x.isVisited).length;
     };
@@ -136,6 +136,9 @@ app.controller('MapController', function ($attrs, $interval) {
         if (event.buttons == 1) {
             this.clickOnCell(cell);
         }
+
+        map.stat.cell = cell.toString();
+        map.hoveredCell = cell;
     };
 
     map.getAlgorithmInstance = () => {

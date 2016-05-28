@@ -115,8 +115,7 @@ class Map {
 class Cell {
     constructor(row, col, cellType = CellType.Free) {
         this.position = new Position(col, row);
-        this.cellType = cellType;
-        this.distance = Number.POSITIVE_INFINITY;
+        this.cellType = cellType;        
     }
 
     set type(cellType) {
@@ -143,6 +142,21 @@ class Cell {
     }
     get isGoal() {
         return this.type === CellType.Goal;
+    }
+
+    toString(){
+      let result = `[${this.position.x},${this.position.y}]`;
+
+      if(this.g !== undefined)
+        result += " g= " + this.g;
+
+      if(this.rhs !== undefined)
+        result += " rhs= " + this.rhs;
+
+      if(this.distance !== undefined)
+        result += " distance= " + this.distance;
+
+      return result;
     }
 }
 

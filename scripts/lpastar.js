@@ -32,7 +32,7 @@ class LpaStar extends PathAlgorithm {
 
     for (var i = 0; i < cells.length; i++) {
       //g is the cost so far from the start node to the current node
-      cells[i].g = Number.POSITIVE_INFINITY;
+      cells[i].g = cells[i].distance = Number.POSITIVE_INFINITY;
       /*
         Right Hand Side value:
         is equal to the minimum cost(g value) of the parents of a node plus

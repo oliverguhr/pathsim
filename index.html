@@ -70,6 +70,25 @@
                         <div>Visited Cells: <span>{{map.stat.visitedCells}}</span></div>
                         <div>Path Length: <span>{{map.stat.pathLength}}</span></div>
                     </fieldset>
+                    <fieldset>
+                        <legend>Cell</legend>
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td>Position</td><td>{{map.hoveredCell.position.x}} {{map.hoveredCell.position.y}}<td>
+                            </tr>
+                            <tr ng-show="map.hoveredCell.distance">
+                              <td>Distance</td><td>{{map.hoveredCell.distance | number:3}}<td>
+                            </tr>
+                            <tr ng-show="map.hoveredCell.g">
+                              <td>Distance</td><td>{{map.hoveredCell.g| number:3}}<td>
+                            </tr>
+                            <tr ng-show="map.hoveredCell.rhs">
+                              <td>Rhs</td><td>{{map.hoveredCell.rhs | number:3}}<td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </fieldset>
                 </form>
             </div>
         </div>
