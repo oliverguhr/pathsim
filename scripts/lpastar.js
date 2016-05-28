@@ -97,7 +97,7 @@ class LpaStar extends PathAlgorithm {
     do {
       let predecessors = this.getNeighbors(node).filter(node => Number.isFinite(node.distance));
 
-      if(predecessors.length == 0){ //deadend
+      if(predecessors.length === 0){ //deadend
         console.log("path is blocked");
         break;
       }

@@ -90,13 +90,7 @@ class DStarLite extends PathAlgorithm {
   main() {
     this.initialize();
     this.computeSortestPath();
-    return;
-
-    while (isActive) {
-      this.computeSortestPath();
-      //wait for changes in edge costs
-      //
-    }
+    return;  
   }
 }
 
