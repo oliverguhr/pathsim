@@ -5,7 +5,7 @@ angular.element($0).scope().$apply((scope) => {scope.map.map[0][0].isBlocked = s
 angular.element($0).scope().$apply((scope) => {console.log(scope)})
 */
 
-app.controller('MapController', function ($attrs, $interval) {
+app.controller('MapController', function($attrs, $interval) {
     var map = this;
     map.name = "test";
     map.cols = $attrs.cols;
@@ -18,38 +18,32 @@ app.controller('MapController', function ($attrs, $interval) {
     map.stat = {};
 
     map.initializeMap = (predefinedMap) => {
-        if(predefinedMap === undefined)
-        {
-          map.map = new Map(map.rows, map.cols);
+        if (predefinedMap === undefined) {
+            map.map = new Map(map.rows, map.cols);
 
-          var start = new Moveable(map.map, CellType.Start);
-          start.moveTo(new Position(0, 0));
+            var start = new Moveable(map.map, CellType.Start);
+            start.moveTo(new Position(0, 0));
 
-          var goal = new Moveable(map.map, CellType.Goal);
-          goal.moveTo(new Position(map.cols -1 , map.rows-1));
+            var goal = new Moveable(map.map, CellType.Goal);
+            goal.moveTo(new Position(map.cols - 1, map.rows - 1));
 
-        }
-        else {
-          map.map = predefinedMap;
+        } else {
+            map.map = predefinedMap;
         }
 
         map.cellSize = 25;
         map.widthPx = map.map.cols * map.cellSize;
         map.heightPx = map.map.rows * map.cellSize;
 
-        map.map.notifyOnChange(cell =>
-        {
-          if(map.algorithmInstance.isInitialized){
-            console.time(map.algorithm);
-            map.algorithmInstance.mapUpdate([cell]);
-            console.timeEnd(map.algorithm);
-          }
+        map.map.notifyOnChange(cell => {
+            if (map.algorithmInstance.isInitialized) {
+                console.time(map.algorithm);
+                map.algorithmInstance.mapUpdate([cell]);
+                console.timeEnd(map.algorithm);
+            }
         });
     };
     map.initializeMap();
-
-
-
 
     map.cleanMap = () => {
         map.map.resetPath();
@@ -64,9 +58,8 @@ app.controller('MapController', function ($attrs, $interval) {
         var intervall = $interval(() => {
             if (!pathFinder.step()) {
                 $interval.cancel(intervall);
-            }
-            else {
-              map.visualizePathCosts();
+            } else {
+                map.visualizePathCosts();
             }
             map.calulateStatistic();
         }, 10);
@@ -107,21 +100,20 @@ app.controller('MapController', function ($attrs, $interval) {
 
     map.clearRobots = () => {
         $interval.cancel(map.robotIntervall);
-        if(map.robots !== undefined)
-          map.robots.robots.forEach(robot => map.map.getCell(robot.position.x,robot.position.y).cellType = 0);
+        if (map.robots !== undefined)
+            map.robots.robots.forEach(robot => map.map.getCell(robot.position.x, robot.position.y).cellType = 0);
         map.robots = undefined;
     };
 
     map.calulatePath = () => {
 
         let pathFinder = map.getAlgorithmInstance();
-        if(pathFinder.isInitialized === undefined || pathFinder.isInitialized === false)
-        {
-          console.time(map.algorithm);
-          //console.profile("Dijkstra");
-          pathFinder.run();
-          //console.profileEnd("Dijkstra");
-          console.timeEnd(map.algorithm);
+        if (pathFinder.isInitialized === undefined || pathFinder.isInitialized === false) {
+            console.time(map.algorithm);
+            //console.profile("Dijkstra");
+            pathFinder.run();
+            //console.profileEnd("Dijkstra");
+            console.timeEnd(map.algorithm);
         }
 
 
@@ -130,20 +122,20 @@ app.controller('MapController', function ($attrs, $interval) {
     };
 
     map.calulateStatistic = () => {
-      map.stat.pathLength = map.map.cells.filter(x => x.isCurrent).length;
-      map.stat.visitedCells = map.stat.pathLength + map.map.cells.filter(x => x.isVisited).length;
+        map.stat.pathLength = map.map.cells.filter(x => x.isCurrent).length;
+        map.stat.visitedCells = map.stat.pathLength + map.map.cells.filter(x => x.isVisited).length;
     };
 
     map.clickOnCell = (cell) => {
         map.map.resetPath();
         switch (cell.type) {
-        case CellType.Blocked:
-            cell.type = CellType.Free;
-            break;
-        case CellType.Free:
-            cell.type = CellType.Blocked;
-            break;
-        default:
+            case CellType.Blocked:
+                cell.type = CellType.Free;
+                break;
+            case CellType.Free:
+                cell.type = CellType.Blocked;
+                break;
+            default:
         }
         this.map.updateCell(cell);
         map.calulatePath();
@@ -159,38 +151,36 @@ app.controller('MapController', function ($attrs, $interval) {
     };
 
     map.getAlgorithmInstance = () => {
-      let algorithm;
+        let algorithm;
         switch (map.algorithm) {
-          case 'Dijkstra':
-              algorithm = new Dijkstra(map.map);
-              break;
-          case 'LpaStar':
-                if(map.algorithmInstance instanceof LpaStar)
-                {
-                  algorithm = map.algorithmInstance;
-                }
-                else {
-                  algorithm = new LpaStar(map.map);
+            case 'Dijkstra':
+                algorithm = new Dijkstra(map.map);
+                break;
+            case 'LpaStar':
+                if (map.algorithmInstance instanceof LpaStar) {
+                    algorithm = map.algorithmInstance;
+                } else {
+                    algorithm = new LpaStar(map.map);
                 }
 
                 break;
-          default:
-            algorithm = new AStar(map.map);
+            default:
+                algorithm = new AStar(map.map);
         }
 
         switch (map.distance) {
-          case "manhattan":
-             algorithm.distance = Distance.manhattan;
-            break;
+            case "manhattan":
+                algorithm.distance = Distance.manhattan;
+                break;
             case "diagonalShortcut":
-               algorithm.distance = Distance.diagonalShortcut;
-              break;
-          default:
-            algorithm.distance = Distance.euklid;
+                algorithm.distance = Distance.diagonalShortcut;
+                break;
+            default:
+                algorithm.distance = Distance.euklid;
         }
 
-      map.algorithmInstance = algorithm;
-      return algorithm;
+        map.algorithmInstance = algorithm;
+        return algorithm;
     };
 
 });
