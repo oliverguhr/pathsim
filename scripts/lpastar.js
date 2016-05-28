@@ -14,12 +14,10 @@ class LpaStar extends PathAlgorithm {
     let k2 = Math.min(cell.distance, cell.rhs);
     let k1 = k2 + this.distance(cell, this.goal);
     let key = [k1, k2];
-
-  //  console.log("Key for Cell x="+cell.position.x+" y="+cell.position.y + " = "+ key)
     return key;
   }
 
-  //this method defines the neighbors rules
+  //this method defines the neighbors rules, it is used by the getNeighbors function
   addCellIfpassable(x,y,neighbors){
         let cell = this.map.getCell(x, y);
         if (cell !== undefined && (cell.isFree || cell.isGoal || cell.isStart || cell.isVisited)) {
@@ -68,7 +66,7 @@ class LpaStar extends PathAlgorithm {
   computeShortestPath() {
 
     while (this.openCells.topKey() < this.calcKey(this.goal) ||
-      this.goal.distance!== this.goal.rhs) {      
+      this.goal.distance!== this.goal.rhs) {
       let item = this.openCells.pop();
       if (item.distance> item.rhs) {
         item.distance= item.rhs;
@@ -81,12 +79,28 @@ class LpaStar extends PathAlgorithm {
         itemAndNeighbors.forEach(x => this.updateVertex(x));
       }
     }
-    //console.log(this.map)
+  }
+
+  paintShortestPath() {
+    if(!Number.isFinite(this.goal.distance))    {
+       return; // lpa* did not found a path
+    }
+    let node = this.goal;
+    let nodeDistance = cell => cell.distance + this.distance(node,cell);
+    do {
+      let predecessors = this.getNeighbors(node);
+      node = _.minBy(predecessors, nodeDistance);
+      if (node.isVisited) {
+        node.type = CellType.Current;
+        node.color = undefined;
+      }
+    } while (node !== this.start);
   }
 
   run() {
     this.initialize();
     this.computeShortestPath();
+    this.paintShortestPath();
     //this.paintShortestPath();
     return;
 
