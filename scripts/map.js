@@ -115,7 +115,7 @@ class Map {
 class Cell {
     constructor(row, col, cellType = CellType.Free) {
         this.position = new Position(col, row);
-        this.cellType = cellType;        
+        this.cellType = cellType;
     }
 
     set type(cellType) {
@@ -146,9 +146,6 @@ class Cell {
 
     toString(){
       let result = `[${this.position.x},${this.position.y}]`;
-
-      if(this.g !== undefined)
-        result += " g= " + this.g;
 
       if(this.rhs !== undefined)
         result += " rhs= " + this.rhs;

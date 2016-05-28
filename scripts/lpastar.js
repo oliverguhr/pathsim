@@ -1,7 +1,7 @@
 class LpaStar extends PathAlgorithm {
   constructor(map) {
     super();
-    this.isActive = true;
+    this.isInitialized = false;
 
     this.map = map;
     this.openCells = new SimplePriorityQueue();
@@ -59,8 +59,8 @@ class LpaStar extends PathAlgorithm {
       }
 
       //just to visualize the progress
-      if(!(cell.isGoal || cell.isStart))
-        cell.type = CellType.Visited;
+  /*    if(!(cell.isGoal || cell.isStart))
+        cell.type = CellType.Visited;*/
     }
     //find a shortest path from the start to the goal
   computeShortestPath() {
@@ -68,6 +68,7 @@ class LpaStar extends PathAlgorithm {
     while (this.openCells.topKey() < this.calcKey(this.goal) ||
       this.goal.distance!== this.goal.rhs) {
       let item = this.openCells.pop();
+      console.log("compute node"+ item.toString());
       if (item.distance> item.rhs) {
         item.distance= item.rhs;
         this.getNeighbors(item).forEach(x => this.updateVertex(x));
@@ -85,15 +86,28 @@ class LpaStar extends PathAlgorithm {
     if(!Number.isFinite(this.goal.distance))    {
        return; // lpa* did not found a path
     }
+    this.map.cells.forEach(cell => {
+      if(Number.isFinite(cell.distance) && cell.isFree){
+              cell.type = CellType.Visited;
+      }
+    });
+
     let node = this.goal;
     let nodeDistance = cell => cell.distance + this.distance(node,cell);
     do {
-      let predecessors = this.getNeighbors(node);
+      let predecessors = this.getNeighbors(node).filter(node => Number.isFinite(node.distance));
+
+      if(predecessors.length == 0){ //deadend
+        console.log("path is blocked");
+        break;
+      }
+
       node = _.minBy(predecessors, nodeDistance);
       if (node.isVisited) {
         node.type = CellType.Current;
         node.color = undefined;
       }
+      console.log("paint node"+ node.toString());
     } while (node !== this.start);
   }
 
@@ -101,12 +115,14 @@ class LpaStar extends PathAlgorithm {
     this.initialize();
     this.computeShortestPath();
     this.paintShortestPath();
+    this.isInitialized = true;
   }
 
 //this relates to line 20 to 23 within [aij04]
   mapUpdate(cells){
-      cell.forEach(this.updateVertex);
+      cells.forEach(cell => this.updateVertex(cell));
       this.computeShortestPath();
+      this.paintShortestPath();
   }
 }
 

@@ -12,16 +12,15 @@ app.controller('MapController', function ($attrs, $interval) {
     map.rows = $attrs.rows;
     map.robots = undefined;
     map.algorithm = "AStar";
+    map.algorithmInstance = {};
     map.distance = "euklid";
     map.isVisualizePathEnabled = true;
     map.stat = {};
-
 
     map.initializeMap = (predefinedMap) => {
         if(predefinedMap === undefined)
         {
           map.map = new Map(map.rows, map.cols);
-          // map.map.notifyOnChange(cell => console.log(cell.position.toString(), cell));
 
           var start = new Moveable(map.map, CellType.Start);
           start.moveTo(new Position(0, 0));
@@ -37,6 +36,15 @@ app.controller('MapController', function ($attrs, $interval) {
         map.cellSize = 25;
         map.widthPx = map.map.cols * map.cellSize;
         map.heightPx = map.map.rows * map.cellSize;
+
+        map.map.notifyOnChange(cell =>
+        {
+          if(map.algorithmInstance.isInitialized){
+            console.time(map.algorithm);
+            map.algorithmInstance.mapUpdate([cell]);
+            console.timeEnd(map.algorithm);
+          }
+        });
     };
     map.initializeMap();
 
@@ -91,22 +99,29 @@ app.controller('MapController', function ($attrs, $interval) {
             map.robots.update();
             map.calulatePath();
         }, 800);
+
+
     };
 
     map.clearRobots = () => {
         $interval.cancel(map.robotIntervall);
         if(map.robots !== undefined)
-          map.robots.robots.forEach( robot => map.map.getCell(robot.position.x,robot.position.y).cellType = 0);
+          map.robots.robots.forEach(robot => map.map.getCell(robot.position.x,robot.position.y).cellType = 0);
         map.robots = undefined;
     };
 
     map.calulatePath = () => {
-        console.time(map.algorithm);
-        //console.profile("Dijkstra");
+
         let pathFinder = map.getAlgorithmInstance();
-        pathFinder.run();
-        //console.profileEnd("Dijkstra");
-        console.timeEnd(map.algorithm);
+        if(pathFinder.isInitialized === undefined || pathFinder.isInitialized === false)
+        {
+          console.time(map.algorithm);
+          //console.profile("Dijkstra");
+          pathFinder.run();
+          //console.profileEnd("Dijkstra");
+          console.timeEnd(map.algorithm);
+        }
+
 
         map.visualizePathCosts();
         map.calulateStatistic();
@@ -148,8 +163,15 @@ app.controller('MapController', function ($attrs, $interval) {
               algorithm = new Dijkstra(map.map);
               break;
           case 'LpaStar':
+                if(map.algorithmInstance instanceof LpaStar)
+                {
+                  algorithm = map.algorithmInstance;
+                }
+                else {
                   algorithm = new LpaStar(map.map);
-                  break;
+                }
+
+                break;
           default:
             algorithm = new AStar(map.map);
         }
@@ -164,7 +186,9 @@ app.controller('MapController', function ($attrs, $interval) {
           default:
             algorithm.distance = Distance.euklid;
         }
-        return algorithm;
+
+      map.algorithmInstance = algorithm;
+      return algorithm;
     };
 
 });
