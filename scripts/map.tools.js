@@ -82,7 +82,7 @@ class PathCostVisualizer {
     }
 
     paint() {
-        var distanceMulti = 1 / _.maxBy(this.map.cells.filter(cell => cell.isVisited), cell => cell.distance).distance;
+        var distanceMulti = 1 / _.maxBy(this.map.cells.filter(cell => cell.isVisited && Number.isFinite(cell.distance)), cell => cell.distance).distance;
 
         this.map.cells.filter(cell => cell.isVisited).forEach(cell => {
             cell.color = this.numberToColorHsl(1 - (cell.distance * distanceMulti), 0, 1);

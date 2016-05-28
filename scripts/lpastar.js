@@ -11,7 +11,7 @@ class LpaStar extends PathAlgorithm {
   }
 
   calcKey(cell) {
-    let k2 = Math.min(cell.g, cell.rhs);
+    let k2 = Math.min(cell.distance, cell.rhs);
     let k1 = k2 + this.distance(cell, this.goal);
     let key = [k1, k2];
 
@@ -31,8 +31,8 @@ class LpaStar extends PathAlgorithm {
     let cells = this.map.cells.filter(cell => !cell.isBlocked);
 
     for (var i = 0; i < cells.length; i++) {
-      //g is the cost so far from the start node to the current node
-      cells[i].g = cells[i].distance = Number.POSITIVE_INFINITY;
+      //distance or g (in the lpa paper) is the cost so far from the start node to the current node
+      cells[i].distance = Number.POSITIVE_INFINITY;
       /*
         Right Hand Side value:
         is equal to the minimum cost(g value) of the parents of a node plus
@@ -46,32 +46,18 @@ class LpaStar extends PathAlgorithm {
 
   updateVertex(cell) {
       if (cell !== this.start) {
-        let predecessors = this.getNeighbors(cell);
-        // we have to do this because all g values are infinity and
-        // infinity + 1 = infinity
-        //predecessors.forEach(x => {if(!Number.isFinite(x.g))x.g=0;});
 
-      /*let predecessorsRhsValues = predecessors.map(
-          x => {
-            if(x.g === Number.POSITIVE_INFINITY){
-              return this.distance(x,cell);
-            }
-            else {
-              return x.g +this.distance(x,cell);
-            }
-          });*/
-
-          let predecessorsRhsValues = predecessors.map(x => x.g +this.distance(x,cell));
+        let predecessorsRhsValues = this.getNeighbors(cell).map(x => x.distance +this.distance(x,cell));
 
         cell.rhs = Math.min(...predecessorsRhsValues);
-        console.log("Cell ["+cell.position.x+","+cell.position.y +"] rhs= "+cell.rhs +" g= "+cell.g+ " width key " + this.calcKey(cell));
+        //console.log("Cell ["+cell.position.x+","+cell.position.y +"] rhs= "+cell.rhs +" g= "+cell.distance+ " width key " + this.calcKey(cell));
       }
       if (this.openCells.has(cell)) {
         this.openCells.remove(cell);
       }
-      if (cell.g !== cell.rhs) {
+      if (cell.distance !== cell.rhs) {
         this.openCells.insert(cell,this.calcKey(cell));
-        console.log("Adding Cell x="+cell.position.x+" y="+cell.position.y );
+        //console.log("Adding Cell x="+cell.position.x+" y="+cell.position.y );
       }
 
       //just to visualize the progress
@@ -80,25 +66,22 @@ class LpaStar extends PathAlgorithm {
     }
     //find a shortest path from the start to the goal
   computeShortestPath() {
-    let iteration = 1;
 
     while (this.openCells.topKey() < this.calcKey(this.goal) ||
-      this.goal.g !== this.goal.rhs) {
-      console.log("Iteration #" + iteration);
+      this.goal.distance!== this.goal.rhs) {      
       let item = this.openCells.pop();
-      if (item.g > item.rhs) {
-        item.g = item.rhs;
+      if (item.distance> item.rhs) {
+        item.distance= item.rhs;
         this.getNeighbors(item).forEach(x => this.updateVertex(x));
 
       } else {
-        item.g = Number.POSITIVE_INFINITY;
+        item.distance= Number.POSITIVE_INFINITY;
         let itemAndNeighbors = this.getNeighbors(item);
         itemAndNeighbors.push(item);
         itemAndNeighbors.forEach(x => this.updateVertex(x));
       }
-      iteration++;
     }
-    console.log(this.map)
+    //console.log(this.map)
   }
 
   run() {
