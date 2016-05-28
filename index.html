@@ -40,7 +40,7 @@
                         <input type="button" ng-click="map.addRandomObstacles()" value="Add random blocks" />
 
                         <label for="algorithm">
-                            <input type="checkbox" ng-click="map.visualizePath()" ng-model="map.isVisualizePathEnabled" /> Visualize path cost
+                            <input type="checkbox" ng-click="map.visualizePathCosts()" ng-model="map.isVisualizePathEnabled" /> Visualize path cost
                         </label>
                     </fieldset>
 
@@ -79,7 +79,7 @@
                             </tr>
                             <tr ng-show="map.hoveredCell.distance">
                               <td>Distance</td><td>{{map.hoveredCell.distance | number:3}}<td>
-                            </tr>                            
+                            </tr>
                             <tr ng-show="map.hoveredCell.rhs">
                               <td>Rhs</td><td>{{map.hoveredCell.rhs | number:3}}<td>
                             </tr>

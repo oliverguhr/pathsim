@@ -101,14 +101,12 @@ class LpaStar extends PathAlgorithm {
     this.initialize();
     this.computeShortestPath();
     this.paintShortestPath();
-    //this.paintShortestPath();
-    return;
+  }
 
-    while (isActive) {
-      this.computeSortestPath();
-      //wait for changes in edge costs
-      //
-    }
+//this relates to line 20 to 23 within [aij04]
+  mapUpdate(cells){
+      cell.forEach(this.updateVertex);
+      this.computeShortestPath();
   }
 }
 

@@ -56,13 +56,13 @@ app.controller('MapController', function ($attrs, $interval) {
                 $interval.cancel(intervall);
             }
             else {
-              map.visualizePath();
+              map.visualizePathCosts();
             }
             map.calulateStatistic();
         }, 10);
     };
 
-    map.visualizePath = () => {
+    map.visualizePathCosts = () => {
         if (map.isVisualizePathEnabled === true) {
             let visual = new PathCostVisualizer(map.map);
             visual.paint();
@@ -108,7 +108,7 @@ app.controller('MapController', function ($attrs, $interval) {
         //console.profileEnd("Dijkstra");
         console.timeEnd(map.algorithm);
 
-        map.visualizePath();
+        map.visualizePathCosts();
         map.calulateStatistic();
     };
 
