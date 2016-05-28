@@ -6,7 +6,7 @@ rect {
 }
 
 rect:hover {
-    fill: #DDD;
+      fill: #666 !important;
 }
 
 rect.blocked {
