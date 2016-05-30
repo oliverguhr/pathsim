@@ -1,3 +1,6 @@
+//todo: Blocked Cells distance values to infinity
+//todo: Doppel Key vergleich
+
 class LpaStar extends PathAlgorithm {
   constructor(map) {
     super();
@@ -68,7 +71,7 @@ class LpaStar extends PathAlgorithm {
     while (this.openCells.topKey() < this.calcKey(this.goal) ||
       this.goal.distance!== this.goal.rhs) {
       let item = this.openCells.pop();
-      console.log("compute node"+ item.toString());
+      //console.log("compute node"+ item.toString());
       if (item.distance> item.rhs) {
         item.distance= item.rhs;
         this.getNeighbors(item).forEach(x => this.updateVertex(x));
@@ -107,7 +110,7 @@ class LpaStar extends PathAlgorithm {
         node.type = CellType.Current;
         node.color = undefined;
       }
-      console.log("paint node"+ node.toString());
+      //console.log("paint node"+ node.toString());
     } while (node !== this.start);
   }
 
@@ -120,7 +123,14 @@ class LpaStar extends PathAlgorithm {
 
 //this relates to line 20 to 23 within [aij04]
   mapUpdate(cells){
-      cells.forEach(cell => this.updateVertex(cell));
+      // {21} all directed edges (u, v) with changed edge costs [aij04]
+      let updateList = cells.map(cell =>  this.getNeighbors(cell));
+      updateList = _.uniqBy(...updateList, x => x.position);
+
+      cells.filter(x => x.isFree).forEach(x => updateList.push(x));
+
+      updateList.forEach(cell => this.updateVertex(cell));
+
       this.computeShortestPath();
       this.paintShortestPath();
   }
