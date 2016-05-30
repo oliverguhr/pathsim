@@ -16,8 +16,7 @@ class LpaStar extends PathAlgorithm {
   calcKey(cell) {
     let k2 = Math.min(cell.distance, cell.rhs);
     let k1 = k2 + this.distance(cell, this.goal);
-    let key = [k1, k2];
-    return key;
+    return [Math.round(k1),Math.round(k2)];
   }
 
   //this method defines the neighbors rules, it is used by the getNeighbors function
@@ -68,7 +67,7 @@ class LpaStar extends PathAlgorithm {
     //find a shortest path from the start to the goal
   computeShortestPath() {
 
-    while (this.openCells.topKey() < this.calcKey(this.goal) ||
+    while (_.gt(this.calcKey(this.goal),this.openCells.topKey()) ||
       this.goal.distance!== this.goal.rhs) {
       let item = this.openCells.pop();
       //console.log("compute node"+ item.toString());

@@ -5,12 +5,8 @@ class SimplePriorityQueue {
 
   insert(item, key) {
     item.key = key;
-    let index = _.sortedIndexBy(this.items, item, 'key');
-    if (index === 0) {
-      this.items.unshift(item);
-    } else {
-      this.items.splice(index, 0, item);
-    }
+    this.items.push(item);
+    this.sort();
   }
   remove(item) {
     _.remove(this.items, item);
@@ -38,6 +34,33 @@ class SimplePriorityQueue {
     //quick and dirty solution
     this.remove(item);
     this.insert(item,key);
+  }
+
+  sort(){
+    this.item = this.items.sort(function (a, b) {
+      if (a.key[0] > b.key[0])
+      {
+            return 1;
+      }
+      else if (a.key[0] < b.key[0])
+      {
+            return -1;
+      }
+      else
+      {
+          if (a.key[1] > b.key[1] )
+          {
+            return 1;
+          }
+          if (a.key[1] < b.key[1]) {
+            return -1;
+          }
+          else
+          {
+            return 0;
+          }
+      }
+    });
   }
 
 }
