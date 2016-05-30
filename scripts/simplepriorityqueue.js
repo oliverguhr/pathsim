@@ -26,7 +26,7 @@ class SimplePriorityQueue {
       return this.items[0].key;
     }
     else {
-      throw new Error("List is empty");
+      return [Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY];
     }
   }
 
