@@ -28,7 +28,7 @@ class DynmicObstacleGenerator {
     isPositionFree(x, y) {
         var cell = this.map.getCell(x, y);
         if (cell !== undefined) {
-            return cell.isFree || cell.isVisited;
+            return cell.isFree || cell.isVisited || cell.isCurrent;
         }
         return false;
     }
@@ -75,6 +75,89 @@ class ObstacleGenerator {
         }
     }
 }
+
+class MazeGenerator {
+    constructor(map) {
+        this.map = map;
+    }
+
+    createMaze(walls = 5, minDistanceBetweenWalls = 5){
+        for (var i = 0; i < walls; i++) {
+            this.generateRandomWall(minDistanceBetweenWalls);
+        }
+    }
+
+    generateRandomWall(minDistanceBetweenWalls)
+    {
+            // will this be a vertical line or a horizontal
+            let vertical = _.random(0, 1);
+
+            let stepsY = this.map.rows / minDistanceBetweenWalls;
+            let stepsX = this.map.cols / minDistanceBetweenWalls;
+
+            let y = Math.round((this.map.rows/stepsY) * _.random(1, stepsY -1));
+            let x = Math.round((this.map.cols/stepsX) * _.random(1, stepsX -1));
+
+            console.log("map x=60 y=35 rand x"+x+" y="+y+ "steps  x="+stepsX +" y="+stepsY);
+            let postionStart, postionEnd;
+            if(vertical === 1)
+            {
+                postionStart = new Position(0,y);
+                postionEnd = new Position(this.map.cols,y);
+            }
+            else {
+              postionStart = new Position(x,0);
+              postionEnd = new Position(x,this.map.rows);
+            }
+
+            this.drawWall(postionStart, postionEnd);
+    }
+
+    drawWall(positionStart,positionEnd){
+        let diffX = positionEnd.x - positionStart.x;
+        let diffY = positionEnd.y - positionStart.y;
+
+        let cell;
+        for (var i = 0; i < diffX; i++) {
+          cell = this.map.grid[positionStart.y][positionStart.x+i];
+          if ( cell.isFree) {
+              cell.type = CellType.Blocked;
+              this.map.hasChanged([positionStart.y][positionStart.x+i]);
+          }
+          else if (cell.isBlocked) {
+            //throw a coin if we go ahead or stop here
+            if(_.random(0, 1) ===1)
+            {
+              break;
+            }
+          }
+        }
+        //add a door
+        if(diffX!==0)
+          this.map.grid[positionStart.y][positionStart.x+_.random(0, i)].type = CellType.Free;
+
+
+        for (i = 0; i < diffY; i++) {
+          cell = this.map.grid[positionStart.y+i][positionEnd.x];
+          if (cell.isFree) {
+              cell.type = CellType.Blocked;
+              this.map.hasChanged([positionStart.y+i][positionEnd.x]);
+          }
+          else if (cell.isBlocked) {
+            //throw a coin if we go ahead or stop here
+            if(_.random(0, 1) ===1)
+            {
+              break;
+            }
+          }
+        }
+      //add a door
+      if(diffY!==0)
+        this.map.grid[positionStart.y+_.random(0,i)][positionEnd.x].type = CellType.Free;
+    }
+
+}
+
 
 class PathCostVisualizer {
     constructor(map) {

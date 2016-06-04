@@ -35,7 +35,7 @@ app.controller('MapController', function($attrs, $interval) {
 
         map.cellSize = 25;
         map.widthPx = map.map.cols * map.cellSize;
-        map.heightPx = map.map.rows * map.cellSize;
+        map.heightPx = map.map.rows * map.cellSize;        
 
         map.map.notifyOnChange(cell => {
             if (map.algorithmInstance.isInitialized) {
@@ -78,6 +78,13 @@ app.controller('MapController', function($attrs, $interval) {
         map.map.resetPath();
         let generator = new ObstacleGenerator(map.map);
         generator.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
+        map.calulatePath();
+    };
+
+    map.addWalls = () => {
+        map.map.resetPath();
+        let generator = new MazeGenerator(map.map);
+        generator.createMaze();
         map.calulatePath();
     };
 
