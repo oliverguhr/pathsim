@@ -16,9 +16,18 @@ rect.blocked {
 rect.goal {
     fill: #F88;
 }
+rect.goal:hover {
+      fill: #F88 !important;
+      cursor: pointer;
+}
 
 rect.start {
     fill: #8F8;
+}
+
+rect.start:hover {
+      fill: #8F8 !important;
+      cursor: pointer;
 }
 
 rect.current {

@@ -16,16 +16,18 @@ app.controller('MapController', function($attrs, $interval) {
     map.distance = "euklid";
     map.isVisualizePathEnabled = true;
     map.stat = {};
+    map.start = undefined;
+    map.goal = undefined;
 
     map.initializeMap = (predefinedMap) => {
         if (predefinedMap === undefined) {
             map.map = new Map(map.rows, map.cols);
 
-            var start = new Moveable(map.map, CellType.Start);
-            start.moveTo(new Position(0, 0));
+            map.start = new Moveable(map.map, CellType.Start);
+            map.start.moveTo(new Position(0, 0));
 
-            var goal = new Moveable(map.map, CellType.Goal);
-            goal.moveTo(new Position(map.cols - 1, map.rows - 1));
+            map.goal = new Moveable(map.map, CellType.Goal);
+            map.goal.moveTo(new Position(map.cols - 1, map.rows - 1));
 
         } else {
             map.map = predefinedMap;
@@ -126,20 +128,42 @@ app.controller('MapController', function($attrs, $interval) {
         map.stat.visitedCells = map.stat.pathLength + map.map.cells.filter(x => x.isVisited).length;
     };
 
+    map.editStartCell = false;
+    map.editGoalCell = false;
     map.clickOnCell = (cell) => {
         map.map.resetPath();
-        switch (cell.type) {
-            case CellType.Blocked:
-                cell.type = CellType.Free;
-                break;
-            case CellType.Free:
-                cell.type = CellType.Blocked;
-                break;
-            default:
+
+        if(map.editStartCell)
+        {
+            map.start.moveTo(cell.position);
+            map.editStartCell = false;
         }
-        this.map.updateCell(cell);
+        else if(map.editGoalCell)
+        {
+            map.goal.moveTo(cell.position);
+            map.editGoalCell = false;
+        }
+        else {
+          switch (cell.type) {
+              case CellType.Blocked:
+                  cell.type = CellType.Free;
+                  break;
+              case CellType.Free:
+                  cell.type = CellType.Blocked;
+                  break;
+              case CellType.Start:
+                  map.editStartCell = true;
+                  break;
+              case CellType.Goal:
+                  map.editGoalCell = true;
+                  break;
+              default:
+          }
+          this.map.updateCell(cell);
+        }
         map.calulatePath();
     };
+
 
     map.mouseOverCell = (cell, event) => {
         if (event.buttons == 1) {
