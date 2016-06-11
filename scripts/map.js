@@ -143,6 +143,9 @@ class Cell {
     get isGoal() {
         return this.type === CellType.Goal;
     }
+    get isBlockable(){
+        return this.isFree || this.isCurrent || this.isVisited;
+    }
 
     toString(){
       let result = `[${this.position.x},${this.position.y}]`;

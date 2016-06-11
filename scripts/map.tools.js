@@ -55,7 +55,7 @@ class ObstacleGenerator {
         //apply some magic to count free cells
         var freeCells = this.map.cells.reduce(
             (prev, curr) => {
-                if (curr.isFree || curr.isVisited) prev++;
+                if (curr.isBlockable) prev++;
                 return prev;
             }, 0);
 
@@ -66,7 +66,7 @@ class ObstacleGenerator {
             let row = _.random(0, this.map.rows - 1);
             let col = _.random(0, this.map.cols - 1);
 
-            if (this.map.grid[row][col].isFree || this.map.grid[row][col].isVisited) {
+            if (this.map.grid[row][col].isBlockable) {
                 this.map.grid[row][col].type = CellType.Blocked;
                 //this.map.hasChanged(this.map.grid[row][col]);
             } else {
@@ -116,15 +116,18 @@ class MazeGenerator {
     drawWall(positionStart,positionEnd){
         let diffX = positionEnd.x - positionStart.x;
         let diffY = positionEnd.y - positionStart.y;
+        let lastDoor =0;
 
         let cell;
         for (var i = 0; i < diffX; i++) {
           cell = this.map.grid[positionStart.y][positionStart.x+i];
-          if ( cell.isFree) {
+          if ( cell.isBlockable) {
               cell.type = CellType.Blocked;
-              this.map.hasChanged([positionStart.y][positionStart.x+i]);
           }
           else if (cell.isBlocked) {
+            //add a door
+            this.map.grid[positionStart.y][positionStart.x+_.random(lastDoor, i-1)].type = CellType.Free;
+            lastDoor = i;
             //throw a coin if we go ahead or stop here
             if(_.random(0, 1) ===1)
             {
@@ -132,18 +135,17 @@ class MazeGenerator {
             }
           }
         }
-        //add a door
-        if(diffX!==0)
-          this.map.grid[positionStart.y][positionStart.x+_.random(0, i)].type = CellType.Free;
-
-
+        lastDoor =0;
         for (i = 0; i < diffY; i++) {
           cell = this.map.grid[positionStart.y+i][positionEnd.x];
-          if (cell.isFree) {
+          if (cell.isBlockable) {
               cell.type = CellType.Blocked;
-              this.map.hasChanged([positionStart.y+i][positionEnd.x]);
           }
           else if (cell.isBlocked) {
+            //add a door
+            //if(diffY!==0)
+            this.map.grid[positionStart.y+_.random(lastDoor, i-1)][positionEnd.x].type = CellType.Free;
+            lastDoor = i;
             //throw a coin if we go ahead or stop here
             if(_.random(0, 1) ===1)
             {
@@ -151,9 +153,6 @@ class MazeGenerator {
             }
           }
         }
-      //add a door
-      if(diffY!==0)
-        this.map.grid[positionStart.y+_.random(0,i)][positionEnd.x].type = CellType.Free;
     }
 
 }
