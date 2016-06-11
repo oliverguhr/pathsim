@@ -5,6 +5,9 @@ Pathsim is playground for different path planning algorithms. Due to its focus o
 
   [8f232bb3]: http://oliverguhr.github.io/pathsim/ "pathsim"
 
+![pathsim ui](pathsim.gif)
+
+
 ## Done
 1. Setup (Project / NPM / Build / Libs)
 2. We need a map
