@@ -10,12 +10,14 @@ Pathsim is playground for different path planning algorithms. Due to its focus o
 6. Implement A*
 7. Moveable Objects
 8. Cost visualization
-9. Step Execution
+9. Step by step execution
+10. Implement LPA*
 
 ## Todos
 1. Robot
-2. GitHub Repo
-3. Proper Tests
+2. Proper Tests
+3. D* Lite
+4. Add build steps, remove node_modules folder
 
 ## Tests
 Run all tests:
@@ -26,7 +28,6 @@ To watch test folder for changes and rerun tests please install:
 
 than type:
 - npm run watch-test
-
 
 ## Licence
 MIT
