@@ -11,6 +11,8 @@ class LpaStar extends PathAlgorithm {
 
     this.goal = this.map.getGoalCell();
     this.start = this.map.getStartCell();
+
+    this.neighborsFilter = x => !x.isBlocked && !x.isVisited;
   }
 
   calcKey(cell) {
@@ -51,12 +53,12 @@ class LpaStar extends PathAlgorithm {
     }
 
   //this method defines the neighbors rules, it is used by the getNeighbors function
-  addCellIfpassable(x,y,neighbors){
+/*  addCellIfpassable(x,y,neighbors){
         let cell = this.map.getCell(x, y);
-        if (cell !== undefined && (cell.isFree || cell.isGoal || cell.isStart || cell.isVisited)) {
+        if (cell !== undefined && !cell.isBlocked) {
             neighbors.push(cell);
         }
-  }
+  }*/
 
   initialize() {
     let cells = this.map.cells;
@@ -78,7 +80,7 @@ class LpaStar extends PathAlgorithm {
   updateVertex(cell) {
       if (cell !== this.start) {
 
-        let predecessorsRhsValues = this.getNeighbors(cell).map(x => x.distance +this.distance(x,cell));
+        let predecessorsRhsValues = this.getNeighbors(cell, this.neighborsFilter).map(x => x.distance +this.distance(x,cell));
         cell.rhs = Math.min(...predecessorsRhsValues);
         //console.log("Cell ["+cell.position.x+","+cell.position.y +"] rhs= "+cell.rhs +" g= "+cell.distance+ " width key " + this.calcKey(cell));
       }
@@ -101,11 +103,11 @@ class LpaStar extends PathAlgorithm {
       let item = this.openCells.pop();
       if (item.distance> item.rhs) {
         item.distance= item.rhs;
-        this.getNeighbors(item).forEach(x => this.updateVertex(x));
+        this.getNeighbors(item, this.neighborsFilter).forEach(x => this.updateVertex(x));
 
       } else {
         item.distance= Number.POSITIVE_INFINITY;
-        let itemAndNeighbors = this.getNeighbors(item);
+        let itemAndNeighbors = this.getNeighbors(item, this.neighborsFilter);
         itemAndNeighbors.push(item);
         itemAndNeighbors.forEach(x => this.updateVertex(x));
       }
@@ -125,7 +127,7 @@ class LpaStar extends PathAlgorithm {
     let node = this.goal;
     let nodeDistance = cell => cell.distance  /*+ this.distance(node,cell)*/;
     do {
-      let predecessors = this.getNeighbors(node).filter(node => Number.isFinite(node.distance));
+      let predecessors = this.getNeighbors(node,x=> !x.isBlocked).filter(node => Number.isFinite(node.distance));
 
       if(predecessors.length === 0){ //deadend
         console.log("path is blocked");
@@ -162,7 +164,7 @@ class LpaStar extends PathAlgorithm {
         }
         else
         {
-          updateList.push(...this.getNeighbors(cell));
+          updateList.push(...this.getNeighbors(cell, this.neighborsFilter));
         }
       });
 

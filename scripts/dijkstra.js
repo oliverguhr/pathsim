@@ -27,40 +27,58 @@ class PathAlgorithm{
   constructor(){
     this.distance = Distance.euklid;
   }
-  getNeighbors(cell) {
+  getNeighbors(cell, condition) {
 
       let neighbors = [];
 
-      this.addCellIfpassable(cell.position.x + 0, cell.position.y - 1,neighbors);
-      this.addCellIfpassable(cell.position.x + 0, cell.position.y + 1,neighbors);
-      this.addCellIfpassable(cell.position.x + 1, cell.position.y + 0,neighbors);
-      this.addCellIfpassable(cell.position.x - 1, cell.position.y + 0,neighbors);
+      this.addCellIfpassable(cell.position.x + 0, cell.position.y - 1,neighbors,condition);
+      this.addCellIfpassable(cell.position.x + 0, cell.position.y + 1,neighbors,condition);
+      this.addCellIfpassable(cell.position.x + 1, cell.position.y + 0,neighbors,condition);
+      this.addCellIfpassable(cell.position.x - 1, cell.position.y + 0,neighbors,condition);
 
-      this.addCellIfpassable(cell.position.x + 1, cell.position.y + 1,neighbors);
-      this.addCellIfpassable(cell.position.x - 1, cell.position.y + 1,neighbors);
-      this.addCellIfpassable(cell.position.x + 1, cell.position.y - 1,neighbors);
-      this.addCellIfpassable(cell.position.x - 1, cell.position.y - 1,neighbors);
+      this.addCellIfpassable(cell.position.x + 1, cell.position.y + 1,neighbors,condition);
+      this.addCellIfpassable(cell.position.x - 1, cell.position.y + 1,neighbors,condition);
+      this.addCellIfpassable(cell.position.x + 1, cell.position.y - 1,neighbors,condition);
+      this.addCellIfpassable(cell.position.x - 1, cell.position.y - 1,neighbors,condition);
 
       return neighbors;
   }
 
-  addCellIfpassable(x,y,neighbors){
+  addCellIfpassable(x,y,neighbors,condition){
       let cell = this.map.getCell(x, y);
-      if (cell !== undefined && (cell.isFree || cell.isGoal || cell.isStart)) {
+      if (cell !== undefined && condition(cell)) {
           neighbors.push(cell);
       }
   }
 
 
   paintShortestPath() {
-    let node = this.map.getGoalCell().previous;
+    /*let node = this.map.getGoalCell().previous;
     while (node !== undefined) {
       if (node.isVisited) {
         node.type = CellType.Current;
         node.color = undefined;
       }
       node = node.previous;
-    }
+    }*/
+    let start = this.map.getStartCell();
+    let node = this.map.getGoalCell();
+    let nodeDistance = cell => cell.distance ;
+    do {
+      let predecessors = this.getNeighbors(node, cell => !cell.isBlocked).filter(node => Number.isFinite(node.distance));
+
+      if(predecessors.length === 0){ //deadend
+        console.log("path is blocked");
+        break;
+      }
+
+      node = _.minBy(predecessors, nodeDistance);
+      if (node.isVisited) {
+        node.type = CellType.Current;
+        node.color = undefined;
+      }
+      //console.log("paint node"+ node.toString());
+    } while (node !== start);
   }
 }
 
@@ -98,7 +116,7 @@ class Dijkstra extends PathAlgorithm {
 
         _.pull(this.cells, currentCell);
 
-        let neighbors = this.getNeighbors(currentCell);
+        let neighbors = this.getNeighbors(currentCell, cell => !cell.isBlocked && !cell.isVisited);
 
         for (let neighbor of neighbors) {
             if (isRunning)

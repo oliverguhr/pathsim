@@ -5,7 +5,7 @@ class AStar extends PathAlgorithm {
             comparator: (a, b) => a.estimatedDistance - b.estimatedDistance
         };
         this.map = map;
-        this.openCells = new PriorityQueue(queueConfig);        
+        this.openCells = new PriorityQueue(queueConfig);
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();
         this.initialize();
@@ -45,7 +45,7 @@ class AStar extends PathAlgorithm {
     }
 
     expendNode(currentNode) {
-        let neighbors =  this.getNeighbors(currentNode);
+        let neighbors =  this.getNeighbors(currentNode, cell => !cell.isBlocked /*todo: && !cell.isVisited */);
         for (var i = 0; i < neighbors.length; i++) {
           if (!neighbors[i].isOpen) {
               continue; // Ignore the neighbor which is already evaluated.
