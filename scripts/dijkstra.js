@@ -6,7 +6,7 @@ class Distance {
     static euklid(previousCell, currentCell) {
       let x = previousCell.position.x - currentCell.position.x;
       let y = previousCell.position.y - currentCell.position.y;
-      return  Math.hypot(x,y); // == Math.sqrt( x*x + y*y )
+      return  Math.hypot(x,y);//  == Math.sqrt( x*x + y*y );
     }
 
     static diagonalShortcut(previousCell, currentCell) {

@@ -123,7 +123,7 @@ class LpaStar extends PathAlgorithm {
     });
 
     let node = this.goal;
-    let nodeDistance = cell => cell.distance + this.distance(node,cell);
+    let nodeDistance = cell => cell.distance  /*+ this.distance(node,cell)*/;
     do {
       let predecessors = this.getNeighbors(node).filter(node => Number.isFinite(node.distance));
 
@@ -155,6 +155,9 @@ class LpaStar extends PathAlgorithm {
       cells.forEach(cell =>{
         if(cell.isFree)
         {
+          //If the cell has a old distance value we need to remove it.
+          //This value is not valid anymore and will break the algorithm.
+          cell.distance = Number.POSITIVE_INFINITY;
           updateList.push(cell);
         }
         else
