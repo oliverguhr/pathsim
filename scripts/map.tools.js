@@ -119,7 +119,7 @@ class MazeGenerator {
 
         let cell;
         for (var i = 0; i < diffX; i++) {
-          cell = this.map.grid[positionStart.y][positionStart.x+i];
+          cell = this.map.grid[positionStart.y][positionStart.x+i];          
           if ( cell.isFree) {
               cell.type = CellType.Blocked;
               this.map.hasChanged([positionStart.y][positionStart.x+i]);

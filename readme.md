@@ -29,7 +29,6 @@ than type:
 
 ## Bugs
 
-* Distrance Crash with LPA*
 * Maze and Random Object crash with LPA*
 * Step by Step Crash with LPA *
 * LPA* Expension Bug (Cells sometimes will not be expended properly)

@@ -12,7 +12,7 @@ app.controller('MapController', function($attrs, $interval) {
     map.rows = $attrs.rows;
     map.robots = undefined;
     map.algorithm = "AStar";
-    map.algorithmInstance = {};
+    map.algorithmInstance = undefined;
     map.distance = "euklid";
     map.isVisualizePathEnabled = true;
     map.stat = {};
@@ -38,7 +38,7 @@ app.controller('MapController', function($attrs, $interval) {
         map.heightPx = map.map.rows * map.cellSize;
 
         map.map.notifyOnChange(cell => {
-            if (map.algorithmInstance.isInitialized) {
+            if (map.algorithmInstance && map.algorithmInstance.isInitialized) {
                 console.time(map.algorithm);
                 map.algorithmInstance.mapUpdate([cell]);
                 console.timeEnd(map.algorithm);
@@ -76,15 +76,19 @@ app.controller('MapController', function($attrs, $interval) {
 
     map.addRandomObstacles = () => {
         map.map.resetPath();
+        map.algorithmInstance = undefined;
         let generator = new ObstacleGenerator(map.map);
         generator.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
+        map.algorithmInstance = map.getAlgorithmInstance();
         map.calulatePath();
     };
 
     map.addWalls = () => {
         map.map.resetPath();
+        map.algorithmInstance = undefined;
         let generator = new MazeGenerator(map.map);
         generator.createMaze();
+        map.algorithmInstance = map.getAlgorithmInstance();
         map.calulatePath();
     };
 
