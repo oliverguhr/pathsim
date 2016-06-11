@@ -16,8 +16,39 @@ class LpaStar extends PathAlgorithm {
   calcKey(cell) {
     let k2 = Math.min(cell.distance, cell.rhs);
     let k1 = k2 + this.distance(cell, this.goal);
+
     return [Math.round(k1),Math.round(k2)];
   }
+  /*
+    Returns:
+      1 if a > b
+      0 if a == b
+      -1 if a < b
+  */
+    static compareKeys(a,b){
+      if (a[0] > b[0])
+      {
+            return 1;
+      }
+      else if (a[0] < b[0])
+      {
+            return -1;
+      }
+      else
+      {
+          if (a[1] > b[1] )
+          {
+            return 1;
+          }
+          if (a[1] < b[1]) {
+            return -1;
+          }
+          else
+          {
+            return 0;
+          }
+      }
+    }
 
   //this method defines the neighbors rules, it is used by the getNeighbors function
   addCellIfpassable(x,y,neighbors){
@@ -28,7 +59,7 @@ class LpaStar extends PathAlgorithm {
   }
 
   initialize() {
-    let cells = this.map.cells.filter(cell => !cell.isBlocked);
+    let cells = this.map.cells;
 
     for (var i = 0; i < cells.length; i++) {
       //distance or g (in the lpa paper) is the cost so far from the start node to the current node
@@ -48,7 +79,6 @@ class LpaStar extends PathAlgorithm {
       if (cell !== this.start) {
 
         let predecessorsRhsValues = this.getNeighbors(cell).map(x => x.distance +this.distance(x,cell));
-
         cell.rhs = Math.min(...predecessorsRhsValues);
         //console.log("Cell ["+cell.position.x+","+cell.position.y +"] rhs= "+cell.rhs +" g= "+cell.distance+ " width key " + this.calcKey(cell));
       }
@@ -66,11 +96,9 @@ class LpaStar extends PathAlgorithm {
     }
     //find a shortest path from the start to the goal
   computeShortestPath() {
-
-    while (_.gt(this.calcKey(this.goal),this.openCells.topKey()) ||
+    while (LpaStar.compareKeys(this.calcKey(this.goal),this.openCells.topKey()) === 1 ||
       this.goal.distance!== this.goal.rhs) {
       let item = this.openCells.pop();
-      //console.log("compute node"+ item.toString());
       if (item.distance> item.rhs) {
         item.distance= item.rhs;
         this.getNeighbors(item).forEach(x => this.updateVertex(x));
@@ -123,10 +151,17 @@ class LpaStar extends PathAlgorithm {
 //this relates to line 20 to 23 within [aij04]
   mapUpdate(cells){
       // {21} all directed edges (u, v) with changed edge costs [aij04]
-      let updateList = cells.map(cell =>  this.getNeighbors(cell));
-      updateList = _.uniqBy(...updateList, x => x.position);
-
-      cells.filter(x => x.isFree).forEach(x => updateList.push(x));
+      let updateList = [];
+      cells.forEach(cell =>{
+        if(cell.isFree)
+        {
+          updateList.push(cell);
+        }
+        else
+        {
+          updateList.push(...this.getNeighbors(cell));
+        }
+      });
 
       updateList.forEach(cell => this.updateVertex(cell));
 

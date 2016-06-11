@@ -28,8 +28,6 @@ than type:
 - npm run watch-test
 
 ## Bugs
-
-* Maze and Random Object crash with LPA*
 * Step by Step Crash with LPA *
 * LPA* Expension Bug (Cells sometimes will not be expended properly)
 
