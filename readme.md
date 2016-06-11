@@ -1,7 +1,7 @@
 # Pathsim
 Pathsim is playground for different path planning algorithms. Due to its focus on learning how the different algorithms work, I decided to use Javascript/HTML/CSS/SVG.
 
-[Live Playgroud][8f232bb3]
+[Live Playground][8f232bb3]
 
   [8f232bb3]: http://oliverguhr.github.io/pathsim/ "pathsim"
 
