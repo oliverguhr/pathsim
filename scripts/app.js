@@ -38,16 +38,25 @@ app.controller('MapController', function($attrs, $interval) {
         map.heightPx = map.map.rows * map.cellSize;
 
         map.map.notifyOnChange(cell => {
-            if (map.algorithmInstance && map.algorithmInstance.isInitialized) {
+            map.algorithmInstance = map.getAlgorithmInstance();
+            map.map.resetPath();
+            if (map.algorithmInstance.isInitialized) {
                 console.time(map.algorithm);
                 map.algorithmInstance.mapUpdate([cell]);
                 console.timeEnd(map.algorithm);
+                map.visualizePathCosts();
+                map.calulateStatistic();
+            }
+            if(map.algorithmInstance.isInitialized === undefined || map.algorithmInstance.isInitialized === false)
+            {
+               map.calulatePath();
             }
         });
     };
     map.initializeMap();
 
     map.cleanMap = () => {
+        map.algorithmInstance = undefined;
         map.map.resetPath();
         map.map.resetBlocks();
         map.clearRobots();
@@ -103,12 +112,8 @@ app.controller('MapController', function($attrs, $interval) {
         }
 
         map.robotIntervall = $interval(() => {
-            map.map.resetPath();
             map.robots.update();
-            map.calulatePath();
         }, 800);
-
-
     };
 
     map.clearRobots = () => {
@@ -119,7 +124,6 @@ app.controller('MapController', function($attrs, $interval) {
     };
 
     map.calulatePath = () => {
-
         let pathFinder = map.getAlgorithmInstance();
         if (pathFinder.isInitialized === undefined || pathFinder.isInitialized === false) {
             console.time(map.algorithm);
@@ -128,8 +132,6 @@ app.controller('MapController', function($attrs, $interval) {
             //console.profileEnd("Dijkstra");
             console.timeEnd(map.algorithm);
         }
-
-
         map.visualizePathCosts();
         map.calulateStatistic();
     };
@@ -142,8 +144,6 @@ app.controller('MapController', function($attrs, $interval) {
     map.editStartCell = false;
     map.editGoalCell = false;
     map.clickOnCell = (cell) => {
-        map.map.resetPath();
-
         if(map.editStartCell)
         {
             map.start.moveTo(cell.position);
@@ -159,7 +159,10 @@ app.controller('MapController', function($attrs, $interval) {
               case CellType.Blocked:
                   cell.type = CellType.Free;
                   break;
+              case CellType.Current:
+              case CellType.Visited:
               case CellType.Free:
+                  cell.color = undefined;
                   cell.type = CellType.Blocked;
                   break;
               case CellType.Start:
@@ -172,9 +175,7 @@ app.controller('MapController', function($attrs, $interval) {
           }
           this.map.updateCell(cell);
         }
-        map.calulatePath();
     };
-
 
     map.mouseOverCell = (cell, event) => {
         if (event.buttons == 1) {
@@ -183,6 +184,8 @@ app.controller('MapController', function($attrs, $interval) {
 
         map.stat.cell = cell.toString();
         map.hoveredCell = cell;
+
+        console.log(cell.type, CellType);
     };
 
     map.changeAlgorithm = ()  => {

@@ -55,7 +55,7 @@ class ObstacleGenerator {
         //apply some magic to count free cells
         var freeCells = this.map.cells.reduce(
             (prev, curr) => {
-                if (curr.isFree) prev++;
+                if (curr.isFree || curr.isVisited) prev++;
                 return prev;
             }, 0);
 
@@ -66,9 +66,9 @@ class ObstacleGenerator {
             let row = _.random(0, this.map.rows - 1);
             let col = _.random(0, this.map.cols - 1);
 
-            if (this.map.grid[row][col].isFree) {
+            if (this.map.grid[row][col].isFree || this.map.grid[row][col].isVisited) {
                 this.map.grid[row][col].type = CellType.Blocked;
-                this.map.hasChanged(this.map.grid[row][col]);
+                //this.map.hasChanged(this.map.grid[row][col]);
             } else {
                 i--;
             }
@@ -119,7 +119,7 @@ class MazeGenerator {
 
         let cell;
         for (var i = 0; i < diffX; i++) {
-          cell = this.map.grid[positionStart.y][positionStart.x+i];          
+          cell = this.map.grid[positionStart.y][positionStart.x+i];
           if ( cell.isFree) {
               cell.type = CellType.Blocked;
               this.map.hasChanged([positionStart.y][positionStart.x+i]);
