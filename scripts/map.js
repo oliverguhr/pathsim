@@ -43,8 +43,8 @@ class Map {
         this.cols = cols;
         this.changeListner = [];
         this.grid = [
-      []
-    ];
+            []
+        ];
 
         this.initializeGrid();
     }
@@ -143,20 +143,20 @@ class Cell {
     get isGoal() {
         return this.type === CellType.Goal;
     }
-    get isBlockable(){
+    get isBlockable() {
         return this.isFree || this.isCurrent || this.isVisited;
     }
 
-    toString(){
-      let result = `[${this.position.x},${this.position.y}]`;
+    toString() {
+        let result = `[${this.position.x},${this.position.y}]`;
 
-      if(this.rhs !== undefined)
-        result += " rhs= " + this.rhs;
+        if (this.rhs !== undefined)
+            result += " rhs= " + this.rhs;
 
-      if(this.distance !== undefined)
-        result += " distance= " + this.distance;
+        if (this.distance !== undefined)
+            result += " distance= " + this.distance;
 
-      return result;
+        return result;
     }
 }
 

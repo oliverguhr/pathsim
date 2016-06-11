@@ -4,82 +4,80 @@ class Distance {
     }
 
     static euklid(previousCell, currentCell) {
-      let x = previousCell.position.x - currentCell.position.x;
-      let y = previousCell.position.y - currentCell.position.y;
-      return  Math.hypot(x,y);//  == Math.sqrt( x*x + y*y );
+        let x = previousCell.position.x - currentCell.position.x;
+        let y = previousCell.position.y - currentCell.position.y;
+        return Math.hypot(x, y); //  == Math.sqrt( x*x + y*y );
     }
 
     static diagonalShortcut(previousCell, currentCell) {
-      /* See  http://www.policyalmanac.org/games/heuristics.htm  for details*/
-      let xDistance = Math.abs(previousCell.position.x - currentCell.position.x);
-      let yDistance = Math.abs(previousCell.position.y - currentCell.position.y);
-      if (xDistance > yDistance)
-      {
-        return  14*yDistance + 10*(xDistance-yDistance);
-      }
-      else{
-        return  14*xDistance + 10*(yDistance-xDistance);
-     }
-   }
+        /* See  http://www.policyalmanac.org/games/heuristics.htm  for details*/
+        let xDistance = Math.abs(previousCell.position.x - currentCell.position.x);
+        let yDistance = Math.abs(previousCell.position.y - currentCell.position.y);
+        if (xDistance > yDistance) {
+            return 14 * yDistance + 10 * (xDistance - yDistance);
+        } else {
+            return 14 * xDistance + 10 * (yDistance - xDistance);
+        }
+    }
 }
 
-class PathAlgorithm{
-  constructor(){
-    this.distance = Distance.euklid;
-  }
-  getNeighbors(cell, condition) {
+class PathAlgorithm {
+    constructor() {
+        this.distance = Distance.euklid;
+    }
+    getNeighbors(cell, condition) {
 
-      let neighbors = [];
+        let neighbors = [];
 
-      this.addCellIfpassable(cell.position.x + 0, cell.position.y - 1,neighbors,condition);
-      this.addCellIfpassable(cell.position.x + 0, cell.position.y + 1,neighbors,condition);
-      this.addCellIfpassable(cell.position.x + 1, cell.position.y + 0,neighbors,condition);
-      this.addCellIfpassable(cell.position.x - 1, cell.position.y + 0,neighbors,condition);
+        this.addCellIfpassable(cell.position.x + 0, cell.position.y - 1, neighbors, condition);
+        this.addCellIfpassable(cell.position.x + 0, cell.position.y + 1, neighbors, condition);
+        this.addCellIfpassable(cell.position.x + 1, cell.position.y + 0, neighbors, condition);
+        this.addCellIfpassable(cell.position.x - 1, cell.position.y + 0, neighbors, condition);
 
-      this.addCellIfpassable(cell.position.x + 1, cell.position.y + 1,neighbors,condition);
-      this.addCellIfpassable(cell.position.x - 1, cell.position.y + 1,neighbors,condition);
-      this.addCellIfpassable(cell.position.x + 1, cell.position.y - 1,neighbors,condition);
-      this.addCellIfpassable(cell.position.x - 1, cell.position.y - 1,neighbors,condition);
+        this.addCellIfpassable(cell.position.x + 1, cell.position.y + 1, neighbors, condition);
+        this.addCellIfpassable(cell.position.x - 1, cell.position.y + 1, neighbors, condition);
+        this.addCellIfpassable(cell.position.x + 1, cell.position.y - 1, neighbors, condition);
+        this.addCellIfpassable(cell.position.x - 1, cell.position.y - 1, neighbors, condition);
 
-      return neighbors;
-  }
+        return neighbors;
+    }
 
-  addCellIfpassable(x,y,neighbors,condition){
-      let cell = this.map.getCell(x, y);
-      if (cell !== undefined && condition(cell)) {
-          neighbors.push(cell);
-      }
-  }
+    addCellIfpassable(x, y, neighbors, condition) {
+        let cell = this.map.getCell(x, y);
+        if (cell !== undefined && condition(cell)) {
+            neighbors.push(cell);
+        }
+    }
 
 
-  paintShortestPath() {
-    /*let node = this.map.getGoalCell().previous;
-    while (node !== undefined) {
-      if (node.isVisited) {
-        node.type = CellType.Current;
-        node.color = undefined;
-      }
-      node = node.previous;
-    }*/
-    let start = this.map.getStartCell();
-    let node = this.map.getGoalCell();
-    let nodeDistance = cell => cell.distance ;
-    do {
-      let predecessors = this.getNeighbors(node, cell => !cell.isBlocked).filter(node => Number.isFinite(node.distance));
+    paintShortestPath() {
+        /*let node = this.map.getGoalCell().previous;
+        while (node !== undefined) {
+          if (node.isVisited) {
+            node.type = CellType.Current;
+            node.color = undefined;
+          }
+          node = node.previous;
+        }*/
+        let start = this.map.getStartCell();
+        let node = this.map.getGoalCell();
+        let nodeDistance = cell => cell.distance;
+        do {
+            let predecessors = this.getNeighbors(node, cell => !cell.isBlocked).filter(node => Number.isFinite(node.distance));
 
-      if(predecessors.length === 0){ //deadend
-        console.log("path is blocked");
-        break;
-      }
+            if (predecessors.length === 0) { //deadend
+                console.log("path is blocked");
+                break;
+            }
 
-      node = _.minBy(predecessors, nodeDistance);
-      if (node.isVisited) {
-        node.type = CellType.Current;
-        node.color = undefined;
-      }
-      //console.log("paint node"+ node.toString());
-    } while (node !== start);
-  }
+            node = _.minBy(predecessors, nodeDistance);
+            if (node.isVisited) {
+                node.type = CellType.Current;
+                node.color = undefined;
+            }
+            //console.log("paint node"+ node.toString());
+        } while (node !== start);
+    }
 }
 
 class Dijkstra extends PathAlgorithm {

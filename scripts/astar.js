@@ -14,9 +14,9 @@ class AStar extends PathAlgorithm {
         let cells = this.map.cells.filter(cell => !cell.isBlocked);
 
         for (var i = 0; i < cells.length; i++) {
-          cells[i].previous = undefined;
-          cells[i].distance = Number.POSITIVE_INFINITY;
-          cells[i].isOpen = true;
+            cells[i].previous = undefined;
+            cells[i].distance = Number.POSITIVE_INFINITY;
+            cells[i].isOpen = true;
         }
 
         this.start.distance = 0;
@@ -45,27 +45,26 @@ class AStar extends PathAlgorithm {
     }
 
     expendNode(currentNode) {
-        let neighbors =  this.getNeighbors(currentNode, cell => !cell.isBlocked /*todo: && !cell.isVisited */);
+        let neighbors = this.getNeighbors(currentNode, cell => !cell.isBlocked /*todo && !cell.isVisited */ );
         for (var i = 0; i < neighbors.length; i++) {
-          if (!neighbors[i].isOpen) {
-              continue; // Ignore the neighbor which is already evaluated.
-          }
-          // The distance from start to a neighbor
-          let tentative_g = currentNode.distance + this.distance(neighbors[i],currentNode);
-
-          if (tentative_g >= neighbors[i].distance) {
-              continue; // This is not a better path.
-          }
-          else {
-            // This path is the best until now. Record it!
-            neighbors[i].previous = currentNode;
-            neighbors[i].distance = tentative_g;
-            neighbors[i].estimatedDistance = neighbors[i].distance  + this.distance(this.goal,neighbors[i]);
-            this.openCells.queue(neighbors[i]);
-            if (neighbors[i].isFree) {
-                neighbors[i].type = CellType.Visited;
+            if (!neighbors[i].isOpen) {
+                continue; // Ignore the neighbor which is already evaluated.
             }
-          }
+            // The distance from start to a neighbor
+            let tentative_g = currentNode.distance + this.distance(neighbors[i], currentNode);
+
+            if (tentative_g >= neighbors[i].distance) {
+                continue; // This is not a better path.
+            } else {
+                // This path is the best until now. Record it!
+                neighbors[i].previous = currentNode;
+                neighbors[i].distance = tentative_g;
+                neighbors[i].estimatedDistance = neighbors[i].distance + this.distance(this.goal, neighbors[i]);
+                this.openCells.queue(neighbors[i]);
+                if (neighbors[i].isFree) {
+                    neighbors[i].type = CellType.Visited;
+                }
+            }
         }
     }
 }

@@ -81,77 +81,70 @@ class MazeGenerator {
         this.map = map;
     }
 
-    createMaze(walls = 5, minDistanceBetweenWalls = 5){
+    createMaze(walls = 5, minDistanceBetweenWalls = 5) {
         for (var i = 0; i < walls; i++) {
             this.generateRandomWall(minDistanceBetweenWalls);
         }
     }
 
-    generateRandomWall(minDistanceBetweenWalls)
-    {
-            // will this be a vertical line or a horizontal
-            let vertical = _.random(0, 1);
+    generateRandomWall(minDistanceBetweenWalls) {
+        // will this be a vertical line or a horizontal
+        let vertical = _.random(0, 1);
 
-            let stepsY = this.map.rows / minDistanceBetweenWalls;
-            let stepsX = this.map.cols / minDistanceBetweenWalls;
+        let stepsY = this.map.rows / minDistanceBetweenWalls;
+        let stepsX = this.map.cols / minDistanceBetweenWalls;
 
-            let y = Math.round((this.map.rows/stepsY) * _.random(1, stepsY -1));
-            let x = Math.round((this.map.cols/stepsX) * _.random(1, stepsX -1));
+        let y = Math.round((this.map.rows / stepsY) * _.random(1, stepsY - 1));
+        let x = Math.round((this.map.cols / stepsX) * _.random(1, stepsX - 1));
 
-            console.log("map x=60 y=35 rand x"+x+" y="+y+ "steps  x="+stepsX +" y="+stepsY);
-            let postionStart, postionEnd;
-            if(vertical === 1)
-            {
-                postionStart = new Position(0,y);
-                postionEnd = new Position(this.map.cols,y);
-            }
-            else {
-              postionStart = new Position(x,0);
-              postionEnd = new Position(x,this.map.rows);
-            }
+        console.log("map x=60 y=35 rand x" + x + " y=" + y + "steps  x=" + stepsX + " y=" + stepsY);
+        let postionStart, postionEnd;
+        if (vertical === 1) {
+            postionStart = new Position(0, y);
+            postionEnd = new Position(this.map.cols, y);
+        } else {
+            postionStart = new Position(x, 0);
+            postionEnd = new Position(x, this.map.rows);
+        }
 
-            this.drawWall(postionStart, postionEnd);
+        this.drawWall(postionStart, postionEnd);
     }
 
-    drawWall(positionStart,positionEnd){
+    drawWall(positionStart, positionEnd) {
         let diffX = positionEnd.x - positionStart.x;
         let diffY = positionEnd.y - positionStart.y;
-        let lastDoor =0;
+        let lastDoor = 0;
 
         let cell;
         for (var i = 0; i < diffX; i++) {
-          cell = this.map.grid[positionStart.y][positionStart.x+i];
-          if ( cell.isBlockable) {
-              cell.type = CellType.Blocked;
-          }
-          else if (cell.isBlocked) {
-            //add a door
-            this.map.grid[positionStart.y][positionStart.x+_.random(lastDoor, i-1)].type = CellType.Free;
-            lastDoor = i;
-            //throw a coin if we go ahead or stop here
-            if(_.random(0, 1) ===1)
-            {
-              break;
+            cell = this.map.grid[positionStart.y][positionStart.x + i];
+            if (cell.isBlockable) {
+                cell.type = CellType.Blocked;
+            } else if (cell.isBlocked) {
+                //add a door
+                this.map.grid[positionStart.y][positionStart.x + _.random(lastDoor, i - 1)].type = CellType.Free;
+                lastDoor = i;
+                //throw a coin if we go ahead or stop here
+                if (_.random(0, 1) === 1) {
+                    break;
+                }
             }
-          }
         }
-        lastDoor =0;
+        lastDoor = 0;
         for (i = 0; i < diffY; i++) {
-          cell = this.map.grid[positionStart.y+i][positionEnd.x];
-          if (cell.isBlockable) {
-              cell.type = CellType.Blocked;
-          }
-          else if (cell.isBlocked) {
-            //add a door
-            //if(diffY!==0)
-            this.map.grid[positionStart.y+_.random(lastDoor, i-1)][positionEnd.x].type = CellType.Free;
-            lastDoor = i;
-            //throw a coin if we go ahead or stop here
-            if(_.random(0, 1) ===1)
-            {
-              break;
+            cell = this.map.grid[positionStart.y + i][positionEnd.x];
+            if (cell.isBlockable) {
+                cell.type = CellType.Blocked;
+            } else if (cell.isBlocked) {
+                //add a door
+                //if(diffY!==0)
+                this.map.grid[positionStart.y + _.random(lastDoor, i - 1)][positionEnd.x].type = CellType.Free;
+                lastDoor = i;
+                //throw a coin if we go ahead or stop here
+                if (_.random(0, 1) === 1) {
+                    break;
+                }
             }
-          }
         }
     }
 
@@ -180,30 +173,30 @@ class PathCostVisualizer {
      * param max (floating point, range 0 to 1, all i at and above this is green)
      */
     numberToColorHsl(i, min, max) {
-            var ratio = i;
-            if (min > 0 || max < 1) {
-                if (i < min) {
-                    ratio = 0;
-                } else if (i > max) {
-                    ratio = 1;
-                } else {
-                    var range = max - min;
-                    ratio = (i - min) / range;
-                }
+        var ratio = i;
+        if (min > 0 || max < 1) {
+            if (i < min) {
+                ratio = 0;
+            } else if (i > max) {
+                ratio = 1;
+            } else {
+                var range = max - min;
+                ratio = (i - min) / range;
             }
-
-            // as the function expects a value between 0 and 1, and red = 0° and green = 120°
-            // we convert the input to the appropriate hue value
-            var hue = ratio * 1.2 / 3.60;
-            //if (minMaxFactor!=1) hue /= minMaxFactor;
-            //console.log(hue);
-
-            // we convert hsl to rgb (saturation 100%, lightness 50%)
-            var rgb = this.hslToRgb(hue, 1, 0.5);
-            // we format to css value and return
-            return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
         }
-        hue2rgb(p, q, t) {
+
+        // as the function expects a value between 0 and 1, and red = 0° and green = 120°
+        // we convert the input to the appropriate hue value
+        var hue = ratio * 1.2 / 3.60;
+        //if (minMaxFactor!=1) hue /= minMaxFactor;
+        //console.log(hue);
+
+        // we convert hsl to rgb (saturation 100%, lightness 50%)
+        var rgb = this.hslToRgb(hue, 1, 0.5);
+        // we format to css value and return
+        return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+    }
+    hue2rgb(p, q, t) {
             if (t < 0) t += 1;
             if (t > 1) t -= 1;
             if (t < 1 / 6) return p + (q - p) * 6 * t;

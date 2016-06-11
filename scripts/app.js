@@ -47,9 +47,8 @@ app.controller('MapController', function($attrs, $interval) {
                 map.visualizePathCosts();
                 map.calulateStatistic();
             }
-            if(map.algorithmInstance.isInitialized === undefined || map.algorithmInstance.isInitialized === false)
-            {
-               map.calulatePath();
+            if (map.algorithmInstance.isInitialized === undefined || map.algorithmInstance.isInitialized === false) {
+                map.calulatePath();
             }
         });
     };
@@ -144,36 +143,32 @@ app.controller('MapController', function($attrs, $interval) {
     map.editStartCell = false;
     map.editGoalCell = false;
     map.clickOnCell = (cell) => {
-        if(map.editStartCell)
-        {
+        if (map.editStartCell) {
             map.start.moveTo(cell.position);
             map.editStartCell = false;
-        }
-        else if(map.editGoalCell)
-        {
+        } else if (map.editGoalCell) {
             map.goal.moveTo(cell.position);
             map.editGoalCell = false;
-        }
-        else {
-          switch (cell.type) {
-              case CellType.Blocked:
-                  cell.type = CellType.Free;
-                  break;
-              case CellType.Current:
-              case CellType.Visited:
-              case CellType.Free:
-                  cell.color = undefined;
-                  cell.type = CellType.Blocked;
-                  break;
-              case CellType.Start:
-                  map.editStartCell = true;
-                  break;
-              case CellType.Goal:
-                  map.editGoalCell = true;
-                  break;
-              default:
-          }
-          this.map.updateCell(cell);
+        } else {
+            switch (cell.type) {
+                case CellType.Blocked:
+                    cell.type = CellType.Free;
+                    break;
+                case CellType.Current:
+                case CellType.Visited:
+                case CellType.Free:
+                    cell.color = undefined;
+                    cell.type = CellType.Blocked;
+                    break;
+                case CellType.Start:
+                    map.editStartCell = true;
+                    break;
+                case CellType.Goal:
+                    map.editGoalCell = true;
+                    break;
+                default:
+            }
+            this.map.updateCell(cell);
         }
     };
 
@@ -188,12 +183,12 @@ app.controller('MapController', function($attrs, $interval) {
         console.log(cell.type, CellType);
     };
 
-    map.changeAlgorithm = ()  => {
-      map.algorithmInstance = undefined;
-      map.algorithmInstance = map.getAlgorithmInstance();
-      map.map.resetPath();
-      map.calulatePath();
-    }
+    map.changeAlgorithm = () => {
+        map.algorithmInstance = undefined;
+        map.algorithmInstance = map.getAlgorithmInstance();
+        map.map.resetPath();
+        map.calulatePath();
+    };
 
     map.getAlgorithmInstance = () => {
         let algorithm;
