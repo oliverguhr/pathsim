@@ -35,7 +35,7 @@ app.controller('MapController', function($attrs, $interval) {
 
         map.cellSize = 25;
         map.widthPx = map.map.cols * map.cellSize;
-        map.heightPx = map.map.rows * map.cellSize;        
+        map.heightPx = map.map.rows * map.cellSize;
 
         map.map.notifyOnChange(cell => {
             if (map.algorithmInstance.isInitialized) {
@@ -180,6 +180,13 @@ app.controller('MapController', function($attrs, $interval) {
         map.stat.cell = cell.toString();
         map.hoveredCell = cell;
     };
+
+    map.changeAlgorithm = ()  => {
+      map.algorithmInstance = undefined;
+      map.algorithmInstance = map.getAlgorithmInstance();
+      map.map.resetPath();
+      map.calulatePath();
+    }
 
     map.getAlgorithmInstance = () => {
         let algorithm;

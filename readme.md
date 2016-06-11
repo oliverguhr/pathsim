@@ -13,10 +13,9 @@ Pathsim is playground for different path planning algorithms. Due to its focus o
 9. Step Execution
 
 ## Todos
-1. Unit Tests
-5. Generate Maps
-6. Save/Restore created maps
-7. ToolTipps with meta information
+1. Fix Bugs
+2. Robot
+3. GitHub Repo
 
 ## Tests
 Run all tests:
@@ -27,6 +26,14 @@ To watch test folder for changes and rerun tests please install:
 
 than type:
 - npm run watch-test
+
+## Bugs
+
+* Distrance Crash with LPA*
+* Maze and Random Object crash with LPA*
+* Step by Step Crash with LPA *
+* LPA* Expension Bug (Cells sometimes will not be expended properly)
+
 
 ## Licence
 MIT

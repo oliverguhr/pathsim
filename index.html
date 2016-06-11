@@ -50,20 +50,20 @@
                         <legend>Algorithm</legend>
                         <label for="algorithm">
                             <span>Typ:</span>
-                            <select name="algorithm" id="algorithm" ng-model="map.algorithm" ng-change="map.map.resetPath();map.calulatePath();">
+                            <select name="algorithm" id="algorithm" ng-model="map.algorithm" ng-change="map.changeAlgorithm();">
                                 <option value="Dijkstra">Dijkstra</option>
                                 <option value="AStar">A*</option>
                                 <option value="LpaStar">Lifelong Planning A*</option>
                             </select>
                             <span>Distance:</span>
-                            <select name="distance" id="distance" ng-model="map.distance" ng-change="map.map.resetPath();map.calulatePath();">
+                            <select name="distance" id="distance" ng-model="map.distance" ng-change="map.changeAlgorithm();">
                                 <option value="euklid">Euklid</option>
                                 <option value="manhattan">Manhattan</option>
                                 <option value="diagonalShortcut">Diagonal Shortcut</option>
                             </select>
                         </label>
 
-                        <input type="button" ng-click="map.runStepByStep()" value="Run step by step" />
+                        <input type="button" ng-click="map.runStepByStep()" value="Run step by step" ng-hide="map.algorithm == 'LpaStar'" />
 
                     </fieldset>
 
