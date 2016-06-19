@@ -24,10 +24,10 @@ app.controller('MapController', function($attrs, $interval) {
             map.map = new Map(map.rows, map.cols);
 
             map.start = new Moveable(map.map, CellType.Start);
-            map.start.moveTo(new Position(0, 0));
+            map.start.moveTo(new Position(Math.round($attrs.cols / 4), Math.round($attrs.rows / 2)));
 
             map.goal = new Moveable(map.map, CellType.Goal);
-            map.goal.moveTo(new Position(map.cols - 1, map.rows - 1));
+            map.goal.moveTo(new Position(Math.round(($attrs.cols / 4) * 3), Math.round($attrs.rows / 2)));
 
         } else {
             map.map = predefinedMap;
@@ -38,7 +38,12 @@ app.controller('MapController', function($attrs, $interval) {
         map.heightPx = map.map.rows * map.cellSize;
 
         map.map.notifyOnChange(cell => {
-            map.algorithmInstance = map.getAlgorithmInstance();
+            try {
+                map.algorithmInstance = map.getAlgorithmInstance();
+            } catch (e) {
+                console.error(e);
+                return;
+            }
             map.map.resetPath();
             if (map.algorithmInstance.isInitialized) {
                 console.time(map.algorithm);
@@ -179,8 +184,6 @@ app.controller('MapController', function($attrs, $interval) {
 
         map.stat.cell = cell.toString();
         map.hoveredCell = cell;
-
-        console.log(cell.type, CellType);
     };
 
     map.changeAlgorithm = () => {
