@@ -7,6 +7,7 @@ export class Cell {
     rhs : number;
     distance:number;
     color: string;
+    previous:Cell;
 
     constructor(row:number, col:number, cellType = CellType.Free) {
         this.position = new Position(col, row);
