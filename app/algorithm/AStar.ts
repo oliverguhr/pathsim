@@ -1,6 +1,5 @@
 import {Cell,Map, CellType} from '../Grid/index';
 import {PathAlgorithm} from './PathAlgorithm';
-import {SimplePriorityQueue} from '../SimplePriorityQueue';
 import * as PriorityQueue from "js-priority-queue";
 
 export class AStar extends PathAlgorithm {
