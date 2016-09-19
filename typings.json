@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "lodash": "registry:npm/lodash#4.0.0+20160723033700"
+  },
+  "globalDependencies": {
+    "js-priority-queue": "registry:dt/js-priority-queue#0.0.0+20160729154816"
+  }
+}
