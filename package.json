@@ -11,12 +11,20 @@
   },
   "devDependencies": {
     "lite-server": "^2.2.0",
-    "tape": "^4.5.1"
+    "tape": "^4.5.1",
+    "concurrently": "^2.0.0",
+    "typescript": "^1.8.10",
+    "typings":"^1.0.4"
   },
   "scripts": {
+    "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" " ,
     "test": "node_modules/tape/bin/tape  'tests/**/*.js'",
     "watch-test": "watch \"node_modules/tape/bin/tape 'tests/**/*.js'\" tests/",
-    "dev": "lite-server"
+    "lite": "lite-server",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "typings": "typings",
+    "postinstall": "typings install"
   },
   "author": "Oliver Guhr",
   "license": "MIT"

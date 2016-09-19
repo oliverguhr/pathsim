@@ -13,7 +13,6 @@ class Position {
 
 class Moveable {
     constructor(map, cellType) {
-
         this.cellType = cellType;
         this.map = map;
         this.position = undefined;
