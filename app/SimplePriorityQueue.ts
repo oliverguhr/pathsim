@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 
-class SimplePriorityQueue {
+export class SimplePriorityQueue {
     items:any[];
     constructor() {
     }

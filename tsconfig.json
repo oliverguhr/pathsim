@@ -1,0 +1,14 @@
+{
+"compilerOptions": {
+      "module": "system",
+      "noImplicitAny": false,
+      "noEmitOnError": true,
+      "sourceMap": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "target": "es6",
+      "outFile": "./script.js"
+  },
+  "exclude": ["node_modules"],
+  "compileOnSave": true
+}

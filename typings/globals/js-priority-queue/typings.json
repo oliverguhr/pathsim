@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/72031fce99f42fd9a1c6e2976435d30f621b025b/js-priority-queue/js-priority-queue.d.ts",
+    "raw": "registry:dt/js-priority-queue#0.0.0+20160729154816",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/72031fce99f42fd9a1c6e2976435d30f621b025b/js-priority-queue/js-priority-queue.d.ts"
+  }
+}
