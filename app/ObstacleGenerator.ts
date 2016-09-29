@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { Map, Moveable, CellType, Cell, Position } from "./Grid/index";
 
 
-export default class ObstacleGenerator {
+export class ObstacleGenerator {
     constructor(private map: Map) {}
 
     addRandomObstacles(count) {

@@ -6,7 +6,7 @@ import * as _ from "lodash";
 //todo: Blocked Cells distance values to infinity
 //todo: Doppel Key vergleich
 
-class LpaStar extends PathAlgorithm {
+export class LpaStar extends PathAlgorithm {
     private isInitialized:boolean;
     private openCells:SimplePriorityQueue;
     private goal:Cell;

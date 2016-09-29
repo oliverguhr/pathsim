@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { Map, Moveable, CellType, Cell,Position } from "./Grid/index";
 
 
-export default class DynmicObstacleGenerator {
+export class DynmicObstacleGenerator {
   robots:Moveable[]
     constructor(private map:Map) {}
 

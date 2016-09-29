@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import { Map, Moveable, CellType } from "./Grid/index";
 
-export default class Robot {
+export class Robot {
     currentDistance:number;
     robot: Moveable;
 

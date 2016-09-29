@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { Map, Moveable, CellType, Cell,Position } from "./Grid/index";
 
 
-export default class MazeGenerator {
+export class MazeGenerator {
     constructor(private map:Map) {}
 
     createMaze(walls = 5, minDistanceBetweenWalls = 5) {

@@ -3,6 +3,8 @@
     "lodash": "registry:npm/lodash#4.0.0+20160723033700"
   },
   "globalDependencies": {
+    "angular": "registry:dt/angular#1.5.0+20160922195358",
+    "jquery": "registry:dt/jquery#1.10.0+20160908203239",
     "js-priority-queue": "registry:dt/js-priority-queue#0.0.0+20160729154816"
   }
 }

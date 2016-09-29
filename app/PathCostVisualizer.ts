@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import { Map, Moveable, CellType, Cell,Position } from "./Grid/index";
 
-export default class PathCostVisualizer {
+export class PathCostVisualizer {
     constructor(private map:Map) {
     }
 
