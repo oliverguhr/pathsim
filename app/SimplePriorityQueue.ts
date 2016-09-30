@@ -5,16 +5,16 @@ export class SimplePriorityQueue {
     constructor() {
     }
 
-    insert(item, key) {
+    insert(item:any, key:Array<number>) {
         item.key = key;
         this.items.push(item);
         this.sort();
     }
-    remove(item) {
+    remove(item:any) {
         _.remove(this.items, item);
     }
 
-    has(item) {
+    has(item:any) {
         return _.findIndex(this.items, x => x === item) !== -1;
     }
 
@@ -31,7 +31,7 @@ export class SimplePriorityQueue {
         return this.items.shift();
     }
 
-    updateKey(item, key) {
+    updateKey(item:any, key:Array<number>) {
         //quick and dirty solution
         this.remove(item);
         this.insert(item, key);

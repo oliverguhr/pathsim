@@ -10,10 +10,10 @@ export class AStar extends PathAlgorithm {
     constructor(map:Map) {
         super();
         let queueConfig = {
-            comparator: (a, b) => a.estimatedDistance - b.estimatedDistance
+            comparator: (a:Cell, b:Cell) => a.estimatedDistance - b.estimatedDistance
         };
-        this.map = map;
-        this.openCells = new PriorityQueue<Cell>(queueConfig);
+        this.map = map;        
+        this.openCells = new PriorityQueue.ArrayStrategy<Cell>(queueConfig);
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();
         this.initialize();
@@ -53,7 +53,7 @@ export class AStar extends PathAlgorithm {
     }
 
     expendNode(currentNode:Cell) {
-        let neighbors = this.getNeighbors(currentNode, cell => !cell.isBlocked /*todo && !cell.isVisited */ );
+        let neighbors = this.getNeighbors(currentNode, (cell:Cell) => !cell.isBlocked /*todo && !cell.isVisited */ );
         for (var i = 0; i < neighbors.length; i++) {
             if (!neighbors[i].isOpen) {
                 continue; // Ignore the neighbor which is already evaluated.

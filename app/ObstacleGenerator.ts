@@ -5,7 +5,7 @@ import { Map, Moveable, CellType, Cell, Position } from "./Grid/index";
 export class ObstacleGenerator {
     constructor(private map: Map) {}
 
-    addRandomObstacles(count) {
+    addRandomObstacles(count:number) {
         //apply some magic to count free cells
         var freeCells = this.map.cells.reduce(
             (prev, curr) => {

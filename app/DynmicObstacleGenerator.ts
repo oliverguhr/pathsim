@@ -15,8 +15,8 @@ export class DynmicObstacleGenerator {
 
     update() {
         for (let robot of this.robots) {
-            let y;
-            let x;
+            let y:number;
+            let x:number;
             do {
                 y = robot.position.y + _.random(-1, 1);
                 x = robot.position.x + _.random(-1, 1);
@@ -27,7 +27,7 @@ export class DynmicObstacleGenerator {
         }
     }
 
-    private isPositionFree(x, y) {
+    private isPositionFree(x:number, y:number) {
         var cell = this.map.getCell(x, y);
         if (cell !== undefined) {
             return cell.isFree || cell.isVisited || cell.isCurrent;
@@ -36,8 +36,8 @@ export class DynmicObstacleGenerator {
     }
 
     private getRandomPosition() {
-        let y;
-        let x;
+        let y:number;
+        let x:number;
         do {
             y = _.random(0, this.map.rows - 1);
             x = _.random(0, this.map.cols - 1);

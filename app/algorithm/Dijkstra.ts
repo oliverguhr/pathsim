@@ -7,7 +7,7 @@ import * as _ from "lodash";
 export class Dijkstra extends PathAlgorithm {
     private cells:Cell[];
 
-    constructor(map) {
+    constructor(map:Map) {
         super();
         this.map = map;
         this.cells = [];
@@ -40,7 +40,7 @@ export class Dijkstra extends PathAlgorithm {
 
         _.pull(this.cells, currentCell);
 
-        let neighbors = this.getNeighbors(currentCell, cell => !cell.isBlocked && !cell.isVisited);
+        let neighbors = this.getNeighbors(currentCell, (cell:Cell) => !cell.isBlocked && !cell.isVisited);
 
         for (let neighbor of neighbors) {
             if (isRunning)

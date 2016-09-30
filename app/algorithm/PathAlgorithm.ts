@@ -10,7 +10,7 @@ export class PathAlgorithm {
     }
     getNeighbors(cell:Cell, condition:Function) {
 
-        let neighbors = [];
+        let neighbors = new Array();
 
         this.addCellIfpassable(cell.position.x + 0, cell.position.y - 1, neighbors, condition);
         this.addCellIfpassable(cell.position.x + 0, cell.position.y + 1, neighbors, condition);
@@ -25,7 +25,7 @@ export class PathAlgorithm {
         return neighbors;
     }
 
-    addCellIfpassable(x:Number, y:Number, neighbors:Cell[], condition:Function) {
+    addCellIfpassable(x:number, y:number, neighbors:Cell[], condition:Function) {
         let cell = this.map.getCell(x, y);
         if (cell !== undefined && condition(cell)) {
             neighbors.push(cell);
@@ -44,9 +44,9 @@ export class PathAlgorithm {
         }*/
         let start = this.map.getStartCell();
         let node = this.map.getGoalCell();
-        let nodeDistance = cell => cell.distance;
+        let nodeDistance = (cell:Cell) => cell.distance;
         do {
-            let predecessors = this.getNeighbors(node, cell => !cell.isBlocked).filter(node => Number.isFinite(node.distance));
+            let predecessors = this.getNeighbors(node, (cell:Cell) => !cell.isBlocked).filter(node => Number.isFinite(node.distance));
 
             if (predecessors.length === 0) { //deadend
                 console.log("path is blocked");

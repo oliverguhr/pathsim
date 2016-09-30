@@ -22,7 +22,7 @@ export class MazeGenerator {
         let x = Math.round((this.map.cols / stepsX) * _.random(1, stepsX - 1));
 
         console.log("map x=60 y=35 rand x" + x + " y=" + y + "steps  x=" + stepsX + " y=" + stepsY);
-        let postionStart, postionEnd;
+        let postionStart : Position, postionEnd:Position;
         if (vertical === 1) {
             postionStart = new Position(0, y);
             postionEnd = new Position(this.map.cols, y);
@@ -34,12 +34,12 @@ export class MazeGenerator {
         this.drawWall(postionStart, postionEnd);
     }
 
-    private drawWall(positionStart, positionEnd) {
+    private drawWall(positionStart:Position, positionEnd:Position) {
         let diffX = positionEnd.x - positionStart.x;
         let diffY = positionEnd.y - positionStart.y;
         let lastDoor = 0;
 
-        let cell;
+        let cell:Cell;
         for (var i = 0; i < diffX; i++) {
             cell = this.map.grid[positionStart.y][positionStart.x + i];
             if (cell.isBlockable) {

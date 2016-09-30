@@ -11,6 +11,7 @@ export class Map {
         this.grid = [
             []
         ];
+        this.changeListner = new Array<Function>();
         this.initializeGrid();
     }
 
@@ -35,7 +36,7 @@ export class Map {
         this.hasChanged(cell);
     }
 
-    hasChanged(updatedCell:Cell) {
+    hasChanged(updatedCell:Cell) {        
         this.changeListner.forEach(changeListner => changeListner(updatedCell));
     }
 
@@ -55,7 +56,7 @@ export class Map {
         return _.flatten(this.grid);
     }
 
-    getCell(x, y) {
+    getCell(x:number, y:number) {
         if (x >= 0 && y >= 0 && x < this.cols && y < this.rows) {
             return this.grid[y][x];
         } else {

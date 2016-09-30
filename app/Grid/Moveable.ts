@@ -9,15 +9,15 @@ export class Moveable {
     constructor(public map: Map, public cellType: CellType) {
     }
 
-    moveTo(position) {
+    moveTo(position:Position) {
         if (this.position !== undefined) {
-            this.map.updateCellOnPosition(this.position, cell => {
+            this.map.updateCellOnPosition(this.position, (cell:Cell) => {
                 cell.type = CellType.Free;
                 return cell;
             });
         }
         this.position = position;
-        this.map.updateCellOnPosition(position, cell => {
+        this.map.updateCellOnPosition(position, (cell:Cell) => {
             cell.type = this.cellType;
             this.currentCell = cell;
             return cell;

@@ -67,7 +67,7 @@ export class PathCostVisualizer {
          * @return  Array           The RGB representation
     */
     private hslToRgb(h:number, s:number, l:number) {
-        var r, g, b;
+        var r:number, g:number, b:number;
 
         if (s === 0) {
             r = g = b = l; // achromatic

@@ -17,7 +17,7 @@ export class Robot {
         if (nextCell === undefined) {
             return;
         }
-        this.robot.moveTo(nextCell);
+        this.robot.moveTo(nextCell.position);
         this.currentDistance = nextCell.distance;
     }
 }

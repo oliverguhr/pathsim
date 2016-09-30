@@ -11,9 +11,9 @@ export class LpaStar extends PathAlgorithm {
     private openCells:SimplePriorityQueue;
     private goal:Cell;
     private start:Cell;
-    private neighborsFilter = x => !x.isBlocked && !x.isVisited;
+    private neighborsFilter = (x:Cell) => !x.isBlocked && !x.isVisited;
 
-    constructor(map) {
+    constructor(map:Map) {
         super();
         this.isInitialized = false;
 
@@ -24,7 +24,7 @@ export class LpaStar extends PathAlgorithm {
         this.start = this.map.getStartCell();
     }
 
-    calcKey(cell) {
+    calcKey(cell:Cell) {
             let k2 = Math.min(cell.distance, cell.rhs);
             let k1 = k2 + this.distance(cell, this.goal);
 
@@ -36,7 +36,7 @@ export class LpaStar extends PathAlgorithm {
             0 if a == b
             -1 if a < b
         */
-    static compareKeys(a, b) {
+    static compareKeys(a:Array<number>, b:Array<number>) {
         if (a[0] > b[0]) {
             return 1;
         } else if (a[0] < b[0]) {
@@ -78,7 +78,7 @@ export class LpaStar extends PathAlgorithm {
         this.openCells.insert(this.start, this.calcKey(this.start));
     }
 
-    updateVertex(cell) {
+    updateVertex(cell:Cell) {
             if (cell !== this.start) {
 
                 let predecessorsRhsValues = this.getNeighbors(cell, this.neighborsFilter).map(x => x.distance + this.distance(x, cell));
@@ -126,9 +126,9 @@ export class LpaStar extends PathAlgorithm {
         });
 
         let node = this.goal;
-        let nodeDistance = cell => cell.distance /*+ this.distance(node,cell)*/ ;
+        let nodeDistance = (cell:Cell) => cell.distance /*+ this.distance(node,cell)*/ ;
         do {
-            let predecessors = this.getNeighbors(node, x => !x.isBlocked).filter(node => Number.isFinite(node.distance));
+            let predecessors = this.getNeighbors(node, (x:Cell) => !x.isBlocked).filter(node => Number.isFinite(node.distance));
 
             if (predecessors.length === 0) { //deadend
                 console.log("path is blocked");
@@ -152,9 +152,9 @@ export class LpaStar extends PathAlgorithm {
     }
 
     //this relates to line 20 to 23 within [aij04]
-    mapUpdate(cells) {
+    mapUpdate(cells:Array<Cell>) {
         // {21} all directed edges (u, v) with changed edge costs [aij04]
-        let updateList = [];
+        let updateList = new Array();
         cells.forEach(cell => {
             if (cell.isFree) {
                 //If the cell has a old distance value we need to remove it.
