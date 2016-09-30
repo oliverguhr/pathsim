@@ -11,6 +11,7 @@ System.register(["lodash"], function(exports_1, context_1) {
         execute: function() {
             class SimplePriorityQueue {
                 constructor() {
+                    this.items = new Array();
                 }
                 insert(item, key) {
                     item.key = key;

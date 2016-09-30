@@ -3,6 +3,7 @@ import * as _ from "lodash";
 export class SimplePriorityQueue {
     items:any[];
     constructor() {
+        this.items = new Array();
     }
 
     insert(item:any, key:Array<number>) {
