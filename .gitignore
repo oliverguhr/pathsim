@@ -1,4 +1,5 @@
-node_modules
+#currently we need this folder to make the app work in gh-pages
+#node_modules
 script.js
 script.js.map
 npm-debug.log
