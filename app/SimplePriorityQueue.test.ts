@@ -1,6 +1,5 @@
 import { SimplePriorityQueue } from "./SimplePriorityQueue";
 
-
 describe("SimplePriorityQueue", () => {
     let subject: SimplePriorityQueue;
 
@@ -8,7 +7,7 @@ describe("SimplePriorityQueue", () => {
         subject = new SimplePriorityQueue();
     });
 
-    describe("#basic operations", () => {
+    describe("basic operations", () => {
         it("insert item", () => {
             let dummy = { name: "dummy" };
             subject.insert(dummy, [1, 1]);
