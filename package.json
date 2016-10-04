@@ -27,6 +27,7 @@
     "lite": "lite-server",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
+    "lint":"tslint --project tsconfig.json",
     "typings": "typings",
     "postinstall": "typings install"
   },
