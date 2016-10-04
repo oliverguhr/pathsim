@@ -1,4 +1,4 @@
-System.register(['../Grid/index', './PathAlgorithm', "js-priority-queue"], function(exports_1, context_1) {
+System.register(['../grid/index', './PathAlgorithm', "js-priority-queue"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var index_1, PathAlgorithm_1, PriorityQueue;

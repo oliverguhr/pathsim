@@ -1,5 +1,5 @@
 import {Distance} from "./Distance";
-import {Cell, Map, CellType} from '../Grid/index';
+import {Cell, Map, CellType} from '../grid/index';
 import * as _ from "lodash";
 
 export class PathAlgorithm {

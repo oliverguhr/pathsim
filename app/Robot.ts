@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { Map, Moveable, CellType } from "./Grid/index";
+import { Map, Moveable, CellType } from "./grid/index";
 
 export class Robot {
     currentDistance:number;

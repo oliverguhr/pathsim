@@ -1,4 +1,4 @@
-import {Cell} from '../Grid/index'
+import {Cell} from '../grid/index'
 
 export class Distance {
     public static manhattan(previousCell:Cell, currentCell:Cell) {

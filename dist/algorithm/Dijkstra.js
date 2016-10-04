@@ -1,4 +1,4 @@
-System.register(["./PathAlgorithm", '../Grid/index', "lodash"], function(exports_1, context_1) {
+System.register(["./PathAlgorithm", '../grid/index', "lodash"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var PathAlgorithm_1, index_1, _;

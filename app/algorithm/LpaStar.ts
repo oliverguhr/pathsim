@@ -1,4 +1,4 @@
-import {Cell,Map, CellType} from '../Grid/index';
+import {Cell,Map, CellType} from '../grid/index';
 import {PathAlgorithm} from './PathAlgorithm';
 import {SimplePriorityQueue} from '../SimplePriorityQueue';
 import * as _ from "lodash";

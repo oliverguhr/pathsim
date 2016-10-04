@@ -1,5 +1,5 @@
 import {LpaStar, AStar, Dijkstra, Distance} from "./algorithm/index";
-import { Map, Moveable, CellType, Position, Cell } from "./Grid/index";
+import { Map, Moveable, CellType, Position, Cell } from "./grid/index";
 import {MazeGenerator} from "./MazeGenerator";
 import {PathCostVisualizer} from "./PathCostVisualizer";
 import {ObstacleGenerator} from "./ObstacleGenerator";

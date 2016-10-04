@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { Map, Moveable, CellType, Cell, Position } from "./Grid/index";
+import { Map, Moveable, CellType, Cell, Position } from "./grid/index";
 
 
 export class ObstacleGenerator {

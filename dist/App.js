@@ -1,4 +1,4 @@
-System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./PathCostVisualizer", "./ObstacleGenerator", "./DynmicObstacleGenerator", "angular"], function(exports_1, context_1) {
+System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./PathCostVisualizer", "./ObstacleGenerator", "./DynmicObstacleGenerator", "angular"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var index_1, index_2, MazeGenerator_1, PathCostVisualizer_1, ObstacleGenerator_1, DynmicObstacleGenerator_1, angular;
