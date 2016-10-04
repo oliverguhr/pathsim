@@ -12,14 +12,14 @@ System.register(["lodash", "./grid/index"], function(exports_1, context_1) {
                 index_1 = index_1_1;
             }],
         execute: function() {
-            class DynmicObstacleGenerator {
+            DynmicObstacleGenerator = class DynmicObstacleGenerator {
                 constructor(map) {
                     this.map = map;
                 }
                 add() {
                     let robot = new index_1.Moveable(this.map, index_1.CellType.Blocked);
                     robot.moveTo(this.getRandomPosition());
-                    robot.currentCell.color = '#BBF';
+                    robot.currentCell.color = "#BBF";
                     this.robots.push(robot);
                 }
                 update() {
@@ -32,11 +32,11 @@ System.register(["lodash", "./grid/index"], function(exports_1, context_1) {
                         } while (!this.isPositionFree(x, y));
                         robot.currentCell.color = undefined;
                         robot.moveTo(new index_1.Position(x, y));
-                        robot.currentCell.color = '#BBF';
+                        robot.currentCell.color = "#BBF";
                     }
                 }
                 isPositionFree(x, y) {
-                    var cell = this.map.getCell(x, y);
+                    let cell = this.map.getCell(x, y);
                     if (cell !== undefined) {
                         return cell.isFree || cell.isVisited || cell.isCurrent;
                     }
@@ -51,7 +51,7 @@ System.register(["lodash", "./grid/index"], function(exports_1, context_1) {
                     } while (!this.isPositionFree(x, y));
                     return new index_1.Position(x, y);
                 }
-            }
+            };
             exports_1("DynmicObstacleGenerator", DynmicObstacleGenerator);
         }
     }

@@ -12,7 +12,7 @@ System.register(["./CellType", "./Position"], function(exports_1, context_1) {
                 Position_1 = Position_1_1;
             }],
         execute: function() {
-            class Cell {
+            Cell = class Cell {
                 constructor(row, col, cellType = CellType_1.CellType.Free) {
                     this.position = new Position_1.Position(col, row);
                     this.cellType = cellType;
@@ -46,13 +46,15 @@ System.register(["./CellType", "./Position"], function(exports_1, context_1) {
                 }
                 toString() {
                     let result = `[${this.position.x},${this.position.y}]`;
-                    if (this.rhs !== undefined)
+                    if (this.rhs !== undefined) {
                         result += " rhs= " + this.rhs;
-                    if (this.distance !== undefined)
+                    }
+                    if (this.distance !== undefined) {
                         result += " distance= " + this.distance;
+                    }
                     return result;
                 }
-            }
+            };
             exports_1("Cell", Cell);
         }
     }

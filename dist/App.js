@@ -28,8 +28,8 @@ System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./Path
             }],
         execute: function() {
             exports_1("app", app = angular.module("pathsim", []));
-            app.controller('MapController', function ($attrs, $interval) {
-                var map = this;
+            app.controller("MapController", function ($attrs, $interval) {
+                let map = this;
                 map.name = "test";
                 map.cols = $attrs.cols;
                 map.rows = $attrs.rows;
@@ -41,7 +41,6 @@ System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./Path
                 map.stat = {};
                 map.start = undefined;
                 map.goal = undefined;
-                console.log("test");
                 map.initializeMap = (predefinedMap) => {
                     if (predefinedMap === undefined) {
                         map.map = new index_2.Map(map.rows, map.cols);
@@ -88,7 +87,7 @@ System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./Path
                     map.map.resetPath();
                     map.clearRobots();
                     let pathFinder = map.getAlgorithmInstance();
-                    var intervall = $interval(() => {
+                    let intervall = $interval(() => {
                         if (!pathFinder.step()) {
                             $interval.cancel(intervall);
                         }
@@ -134,8 +133,9 @@ System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./Path
                 };
                 map.clearRobots = () => {
                     $interval.cancel(map.robotIntervall);
-                    if (map.robots !== undefined)
+                    if (map.robots !== undefined) {
                         map.robots.robots.forEach((robot) => map.map.getCell(robot.position.x, robot.position.y).cellType = 0);
+                    }
                     map.robots = undefined;
                 };
                 map.calulatePath = () => {
@@ -186,7 +186,7 @@ System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./Path
                     }
                 };
                 map.mouseOverCell = (cell, event) => {
-                    if (event.buttons == 1) {
+                    if (event.buttons === 1) {
                         this.clickOnCell(cell);
                     }
                     map.stat.cell = cell.toString();
@@ -201,10 +201,10 @@ System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./Path
                 map.getAlgorithmInstance = () => {
                     let algorithm;
                     switch (map.algorithm) {
-                        case 'Dijkstra':
+                        case "Dijkstra":
                             algorithm = new index_1.Dijkstra(map.map);
                             break;
-                        case 'LpaStar':
+                        case "LpaStar":
                             if (map.algorithmInstance instanceof index_1.LpaStar) {
                                 algorithm = map.algorithmInstance;
                             }
@@ -229,7 +229,7 @@ System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./Path
                     return algorithm;
                 };
             });
-            angular.bootstrap(document.documentElement, ['pathsim']);
+            angular.bootstrap(document.documentElement, ["pathsim"]);
         }
     }
 });

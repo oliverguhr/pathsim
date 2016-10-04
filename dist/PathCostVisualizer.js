@@ -9,18 +9,20 @@ System.register(["lodash"], function(exports_1, context_1) {
                 _ = _1;
             }],
         execute: function() {
-            class PathCostVisualizer {
+            PathCostVisualizer = class PathCostVisualizer {
                 constructor(map) {
                     this.map = map;
                 }
                 paint() {
-                    var distanceMulti = 1 / _.maxBy(this.map.cells.filter(cell => cell.isVisited && Number.isFinite(cell.distance)), cell => cell.distance).distance;
+                    let visitedCells = this.map.cells.filter(cell => cell.isVisited && Number.isFinite(cell.distance));
+                    let maxDistance = _.maxBy(visitedCells, cell => cell.distance).distance;
+                    let distanceMulti = 1 / maxDistance;
                     this.map.cells.filter(cell => cell.isVisited).forEach(cell => {
                         cell.color = this.numberToColorHsl(1 - (cell.distance * distanceMulti), 0, 1);
                     });
                 }
                 numberToColorHsl(i, min, max) {
-                    var ratio = i;
+                    let ratio = i;
                     if (min > 0 || max < 1) {
                         if (i < min) {
                             ratio = 0;
@@ -29,42 +31,51 @@ System.register(["lodash"], function(exports_1, context_1) {
                             ratio = 1;
                         }
                         else {
-                            var range = max - min;
+                            let range = max - min;
                             ratio = (i - min) / range;
                         }
                     }
-                    var hue = ratio * 1.2 / 3.60;
-                    var rgb = this.hslToRgb(hue, 1, 0.5);
-                    return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+                    let hue = ratio * 1.2 / 3.60;
+                    let rgb = this.hslToRgb(hue, 1, 0.5);
+                    return "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
                 }
                 hue2rgb(p, q, t) {
-                    if (t < 0)
+                    if (t < 0) {
                         t += 1;
-                    if (t > 1)
+                    }
+                    ;
+                    if (t > 1) {
                         t -= 1;
-                    if (t < 1 / 6)
+                    }
+                    ;
+                    if (t < 1 / 6) {
                         return p + (q - p) * 6 * t;
-                    if (t < 1 / 2)
+                    }
+                    if (t < 1 / 2) {
                         return q;
-                    if (t < 2 / 3)
+                    }
+                    if (t < 2 / 3) {
                         return p + (q - p) * (2 / 3 - t) * 6;
+                    }
                     return p;
                 }
                 hslToRgb(h, s, l) {
-                    var r, g, b;
+                    let r;
+                    let g;
+                    let b;
                     if (s === 0) {
                         r = g = b = l;
                     }
                     else {
-                        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                        var p = 2 * l - q;
+                        let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                        let p = 2 * l - q;
                         r = this.hue2rgb(p, q, h + 1 / 3);
                         g = this.hue2rgb(p, q, h);
                         b = this.hue2rgb(p, q, h - 1 / 3);
                     }
                     return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
                 }
-            }
+            };
             exports_1("PathCostVisualizer", PathCostVisualizer);
         }
     }

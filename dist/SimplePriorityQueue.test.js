@@ -1,4 +1,4 @@
-System.register(['./SimplePriorityQueue'], function(exports_1, context_1) {
+System.register(["./SimplePriorityQueue"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var SimplePriorityQueue_1;
@@ -8,17 +8,17 @@ System.register(['./SimplePriorityQueue'], function(exports_1, context_1) {
                 SimplePriorityQueue_1 = SimplePriorityQueue_1_1;
             }],
         execute: function() {
-            describe('SimplePriorityQueue', () => {
+            describe("SimplePriorityQueue", () => {
                 let subject;
                 beforeEach(function () {
                     subject = new SimplePriorityQueue_1.SimplePriorityQueue();
                 });
-                describe('#basic operations', () => {
-                    it('insert item', () => {
-                        var dummy = { name: 'dummy' };
-                        var result = subject.insert(dummy, [1, 1]);
+                describe("#basic operations", () => {
+                    it("insert item", () => {
+                        let dummy = { name: "dummy" };
+                        subject.insert(dummy, [1, 1]);
                         if (!subject.has(dummy)) {
-                            throw new Error('Item should be in queue.');
+                            throw new Error("Item should be in queue.");
                         }
                     });
                 });

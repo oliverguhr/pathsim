@@ -1,20 +1,18 @@
-import {Distance} from "./Distance";
 import {PathAlgorithm} from "./PathAlgorithm";
-import {Cell, Map, CellType} from '../grid/index';
+import {Cell, Map, CellType} from "../grid/index";
 import * as _ from "lodash";
 
-
 export class Dijkstra extends PathAlgorithm {
-    private cells:Cell[];
+    private cells: Cell[];
 
-    constructor(map:Map) {
+    constructor(map: Map) {
         super();
         this.map = map;
         this.cells = [];
         this.initialize();
     }
 
-    initialize() {
+    public initialize() {
         let cells = this.map.cells.filter(cell => !cell.isBlocked);
         for (let cell of cells) {
             cell.previous = undefined;
@@ -25,11 +23,11 @@ export class Dijkstra extends PathAlgorithm {
         this.map.getStartCell().distance = 0;
     }
 
-    run() {
+    public run() {
         while (this.step()) {}
     }
 
-    step() {
+    public step() {
         let isRunning = true;
         let currentCell = _.minBy(this.cells, c => c.distance);
 
@@ -40,12 +38,12 @@ export class Dijkstra extends PathAlgorithm {
 
         _.pull(this.cells, currentCell);
 
-        let neighbors = this.getNeighbors(currentCell, (cell:Cell) => !cell.isBlocked && !cell.isVisited);
+        let neighbors = this.getNeighbors(currentCell, (cell: Cell) => !cell.isBlocked && !cell.isVisited);
 
         for (let neighbor of neighbors) {
-            if (isRunning)
+            if (isRunning) {
                 this.updateDistance(currentCell, neighbor);
-
+            }
             if (neighbor.isGoal) {
                 this.paintShortestPath();
                 isRunning = false;
@@ -55,7 +53,7 @@ export class Dijkstra extends PathAlgorithm {
         return isRunning;
     }
 
-    updateDistance(previousCell:Cell, currentCell:Cell) {
+    private updateDistance(previousCell: Cell, currentCell: Cell) {
         let distance = previousCell.distance + this.distance(previousCell, currentCell);
         if (distance < currentCell.distance) {
             currentCell.distance = distance;

@@ -15,34 +15,23 @@ System.register(["lodash", "./Cell", "./CellType"], function(exports_1, context_
                 CellType_1 = CellType_1_1;
             }],
         execute: function() {
-            class Map {
+            Map = class Map {
                 constructor(rows, cols) {
                     this.rows = rows;
                     this.cols = cols;
                     this.grid = [
-                        []
+                        [],
                     ];
                     this.changeListner = new Array();
                     this.initializeGrid();
                 }
-                initializeGrid() {
-                    for (var row = 0; row < this.rows; row++) {
-                        this.grid.push([]);
-                        for (var col = 0; col < this.cols; col++) {
-                            this.grid[row].push(new Cell_1.Cell(row, col));
-                        }
-                    }
-                }
                 updateCellOnPosition(position, lambda) {
-                    var updatedCell = lambda(this.getCell(position.x, position.y));
+                    let updatedCell = lambda(this.getCell(position.x, position.y));
                     this.updateCell(updatedCell);
                 }
                 updateCell(cell) {
                     this.grid[cell.position.y][cell.position.x] = cell;
                     this.hasChanged(cell);
-                }
-                hasChanged(updatedCell) {
-                    this.changeListner.forEach(changeListner => changeListner(updatedCell));
                 }
                 notifyOnChange(lambda) {
                     this.changeListner.push(lambda);
@@ -76,7 +65,18 @@ System.register(["lodash", "./Cell", "./CellType"], function(exports_1, context_
                         cell.color = undefined;
                     });
                 }
-            }
+                hasChanged(updatedCell) {
+                    this.changeListner.forEach(changeListner => changeListner(updatedCell));
+                }
+                initializeGrid() {
+                    for (let row = 0; row < this.rows; row++) {
+                        this.grid.push([]);
+                        for (let col = 0; col < this.cols; col++) {
+                            this.grid[row].push(new Cell_1.Cell(row, col));
+                        }
+                    }
+                }
+            };
             exports_1("Map", Map);
         }
     }

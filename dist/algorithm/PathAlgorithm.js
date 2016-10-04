@@ -1,4 +1,4 @@
-System.register(["./Distance", '../grid/index', "lodash"], function(exports_1, context_1) {
+System.register(["./Distance", "../grid/index", "lodash"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Distance_1, index_1, _;
@@ -15,9 +15,27 @@ System.register(["./Distance", '../grid/index', "lodash"], function(exports_1, c
                 _ = _1;
             }],
         execute: function() {
-            class PathAlgorithm {
+            PathAlgorithm = class PathAlgorithm {
                 constructor() {
                     this.distance = Distance_1.Distance.euklid;
+                }
+                paintShortestPath() {
+                    let start = this.map.getStartCell();
+                    let node = this.map.getGoalCell();
+                    let nodeDistance = (cell) => cell.distance;
+                    do {
+                        let predecessors = this.getNeighbors(node, (cell) => !cell.isBlocked)
+                            .filter(node => Number.isFinite(node.distance));
+                        if (predecessors.length === 0) {
+                            console.log("path is blocked");
+                            break;
+                        }
+                        node = _.minBy(predecessors, nodeDistance);
+                        if (node.isVisited) {
+                            node.type = index_1.CellType.Current;
+                            node.color = undefined;
+                        }
+                    } while (node !== start);
                 }
                 getNeighbors(cell, condition) {
                     let neighbors = new Array();
@@ -37,24 +55,7 @@ System.register(["./Distance", '../grid/index', "lodash"], function(exports_1, c
                         neighbors.push(cell);
                     }
                 }
-                paintShortestPath() {
-                    let start = this.map.getStartCell();
-                    let node = this.map.getGoalCell();
-                    let nodeDistance = (cell) => cell.distance;
-                    do {
-                        let predecessors = this.getNeighbors(node, (cell) => !cell.isBlocked).filter(node => Number.isFinite(node.distance));
-                        if (predecessors.length === 0) {
-                            console.log("path is blocked");
-                            break;
-                        }
-                        node = _.minBy(predecessors, nodeDistance);
-                        if (node.isVisited) {
-                            node.type = index_1.CellType.Current;
-                            node.color = undefined;
-                        }
-                    } while (node !== start);
-                }
-            }
+            };
             exports_1("PathAlgorithm", PathAlgorithm);
         }
     }

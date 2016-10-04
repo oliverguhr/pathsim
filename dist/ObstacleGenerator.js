@@ -12,19 +12,21 @@ System.register(["lodash", "./grid/index"], function(exports_1, context_1) {
                 index_1 = index_1_1;
             }],
         execute: function() {
-            class ObstacleGenerator {
+            ObstacleGenerator = class ObstacleGenerator {
                 constructor(map) {
                     this.map = map;
                 }
                 addRandomObstacles(count) {
-                    var freeCells = this.map.cells.reduce((prev, curr) => {
-                        if (curr.isBlockable)
+                    let freeCells = this.map.cells.reduce((prev, curr) => {
+                        if (curr.isBlockable) {
                             prev++;
+                        }
                         return prev;
                     }, 0);
-                    if (count > freeCells)
+                    if (count > freeCells) {
                         count = freeCells;
-                    for (var i = 0; i < count; i++) {
+                    }
+                    for (let i = 0; i < count; i++) {
                         let row = _.random(0, this.map.rows - 1);
                         let col = _.random(0, this.map.cols - 1);
                         if (this.map.grid[row][col].isBlockable) {
@@ -35,7 +37,7 @@ System.register(["lodash", "./grid/index"], function(exports_1, context_1) {
                         }
                     }
                 }
-            }
+            };
             exports_1("ObstacleGenerator", ObstacleGenerator);
         }
     }

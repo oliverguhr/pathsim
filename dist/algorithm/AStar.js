@@ -1,4 +1,4 @@
-System.register(['../grid/index', './PathAlgorithm', "js-priority-queue"], function(exports_1, context_1) {
+System.register(["../grid/index", "./PathAlgorithm", "js-priority-queue"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var index_1, PathAlgorithm_1, PriorityQueue;
@@ -15,11 +15,11 @@ System.register(['../grid/index', './PathAlgorithm', "js-priority-queue"], funct
                 PriorityQueue = PriorityQueue_1;
             }],
         execute: function() {
-            class AStar extends PathAlgorithm_1.PathAlgorithm {
+            AStar = class AStar extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map) {
                     super();
                     let queueConfig = {
-                        comparator: (a, b) => a.estimatedDistance - b.estimatedDistance
+                        comparator: (a, b) => a.estimatedDistance - b.estimatedDistance,
                     };
                     this.map = map;
                     this.openCells = new PriorityQueue.ArrayStrategy(queueConfig);
@@ -29,7 +29,7 @@ System.register(['../grid/index', './PathAlgorithm', "js-priority-queue"], funct
                 }
                 initialize() {
                     let cells = this.map.cells.filter(cell => !cell.isBlocked);
-                    for (var i = 0; i < cells.length; i++) {
+                    for (let i = 0; i < cells.length; i++) {
                         cells[i].previous = undefined;
                         cells[i].distance = Number.POSITIVE_INFINITY;
                         cells[i].isOpen = true;
@@ -56,7 +56,7 @@ System.register(['../grid/index', './PathAlgorithm', "js-priority-queue"], funct
                 }
                 expendNode(currentNode) {
                     let neighbors = this.getNeighbors(currentNode, (cell) => !cell.isBlocked);
-                    for (var i = 0; i < neighbors.length; i++) {
+                    for (let i = 0; i < neighbors.length; i++) {
                         if (!neighbors[i].isOpen) {
                             continue;
                         }
@@ -75,7 +75,7 @@ System.register(['../grid/index', './PathAlgorithm', "js-priority-queue"], funct
                         }
                     }
                 }
-            }
+            };
             exports_1("AStar", AStar);
         }
     }

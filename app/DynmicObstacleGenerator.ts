@@ -1,34 +1,33 @@
 import * as _ from "lodash";
-import { Map, Moveable, CellType, Cell,Position } from "./grid/index";
-
+import { Map, Moveable, CellType, Position } from "./grid/index";
 
 export class DynmicObstacleGenerator {
-  robots:Moveable[]
-    constructor(private map:Map) {}
+    private robots: Moveable[];
+    constructor(private map: Map) { }
 
-    add() {
+    public add() {
         let robot = new Moveable(this.map, CellType.Blocked);
         robot.moveTo(this.getRandomPosition());
-        robot.currentCell.color = '#BBF';
+        robot.currentCell.color = "#BBF";
         this.robots.push(robot);
     }
 
-    update() {
+    public update() {
         for (let robot of this.robots) {
-            let y:number;
-            let x:number;
+            let y: number;
+            let x: number;
             do {
                 y = robot.position.y + _.random(-1, 1);
                 x = robot.position.x + _.random(-1, 1);
             } while (!this.isPositionFree(x, y));
             robot.currentCell.color = undefined;
             robot.moveTo(new Position(x, y));
-            robot.currentCell.color = '#BBF';
+            robot.currentCell.color = "#BBF";
         }
     }
 
-    private isPositionFree(x:number, y:number) {
-        var cell = this.map.getCell(x, y);
+    private isPositionFree(x: number, y: number) {
+        let cell = this.map.getCell(x, y);
         if (cell !== undefined) {
             return cell.isFree || cell.isVisited || cell.isCurrent;
         }
@@ -36,8 +35,8 @@ export class DynmicObstacleGenerator {
     }
 
     private getRandomPosition() {
-        let y:number;
-        let x:number;
+        let y: number;
+        let x: number;
         do {
             y = _.random(0, this.map.rows - 1);
             x = _.random(0, this.map.cols - 1);

@@ -2,16 +2,16 @@ import {CellType} from "./CellType";
 import {Position} from "./Position";
 
 export class Cell {
-    position : Position;
-    cellType: CellType;
-    rhs : number;
-    distance:number;
-    estimatedDistance:number;
-    color: string;
-    previous:Cell;
-    isOpen:boolean;
+    public position: Position;
+    public cellType: CellType;
+    public rhs: number;
+    public distance: number;
+    public estimatedDistance: number;
+    public color: string;
+    public previous: Cell;
+    public isOpen: boolean;
 
-    constructor(row:number, col:number, cellType = CellType.Free) {
+    constructor(row: number, col: number, cellType = CellType.Free) {
         this.position = new Position(col, row);
         this.cellType = cellType;
     }
@@ -45,14 +45,15 @@ export class Cell {
         return this.isFree || this.isCurrent || this.isVisited;
     }
 
-    toString() {
+    public toString() {
         let result = `[${this.position.x},${this.position.y}]`;
 
-        if (this.rhs !== undefined)
+        if (this.rhs !== undefined) {
             result += " rhs= " + this.rhs;
-
-        if (this.distance !== undefined)
+        }
+        if (this.distance !== undefined) {
             result += " distance= " + this.distance;
+        }
 
         return result;
     }
