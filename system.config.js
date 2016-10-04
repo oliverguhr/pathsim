@@ -7,9 +7,9 @@
 
 	// Tell Angular how normalize path and package aliases.
 	var  map = {
-		"angular": "node_modules/angular/angular.min.js",
-        "lodash": "node_modules/lodash/lodash.min.js",
-        "js-priority-queue": "node_modules/js-priority-queue/priority-queue.min.js",
+		"angular": "https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js",
+        "lodash": "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.7.0/lodash.min.js",
+        "js-priority-queue": "https://raw.githubusercontent.com/adamhooper/js-priority-queue/v0.1.5/priority-queue.min.js",
         						
 		//"ts": "rc1/node_modules/plugin-typescript/lib/plugin.js",
 		//"tsconfig.json": "rc1/tsconfig.json",
