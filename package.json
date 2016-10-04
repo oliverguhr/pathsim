@@ -11,9 +11,7 @@
     "systemjs": "^0.19.38"
   },
   "devDependencies": {
-    "concurrently": "^2.0.0",
-    "jsdom": "9.6.0",
-    "jsdom-global": "2.1.0",
+    "concurrently": "^2.0.0",    
     "lite-server": "^2.2.0",
     "mocha": "^3.1.0",
     "mocha-typescript": "^1.0.10",
@@ -23,7 +21,9 @@
   "scripts": {
     "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" ",
     "dev-test-watch": "mocha-typescript-watch",
-    "test": "mocha -r jsdom-global/register",
+    "pretest": "rm -rf test && tsc  -p tsconfig.test.json",
+    "test": "mocha test/ --colors",
+    "test:w":"npm run pretest && concurrently \"tsc -w -p tsconfig.test.json\" \"mocha test/ --watch --colors --reporter min\"",
     "lite": "lite-server",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
