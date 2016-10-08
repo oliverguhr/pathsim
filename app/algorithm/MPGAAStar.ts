@@ -97,7 +97,9 @@ export class MPGAAStar extends PathAlgorithm {
     }
 
     private buildPath(s: Cell): void {
-        // todo: add code
+        while (s !== this.start) {
+          //  this.next.dictionary;
+        }
     }
 
     private aStar(init: Cell): Cell {

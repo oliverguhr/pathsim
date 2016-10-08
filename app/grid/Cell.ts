@@ -30,9 +30,11 @@ export class Cell {
     get isBlocked() {
         return this.type === CellType.Blocked;
     }
+    /** State for cells that where calulated by the algorithm */
     get isVisited() {
         return this.type === CellType.Visited;
     }
+    /** State for the current path */
     get isCurrent() {
         return this.type === CellType.Current;
     }

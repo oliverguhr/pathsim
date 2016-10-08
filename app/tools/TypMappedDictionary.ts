@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 export class TypMappedDictionary<Tkey, Tvalue>{
     private data: { [id: number]: Tvalue };
     private defaultValue: Tvalue;
@@ -37,8 +38,16 @@ export class TypMappedDictionary<Tkey, Tvalue>{
     }
 
     /** Get the raw dictionary */
-    public get dictionary() {
-        return this.data;
+    public get dictionary(): [number, Tvalue][] {
+        // todo: Feels too complicated. Is there a better solution for this? 
+        let exportData = new Array<[number, Tvalue]>();
+        Object.keys(this.data).map(key => {
+            let index = Number.parseInt(key);
+            let x: [number, Tvalue];
+            x = [index, this.data[index]];
+            exportData.push(x);
+        });
+        return exportData;
     }
 
 }
