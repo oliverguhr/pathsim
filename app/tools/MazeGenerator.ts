@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { Map, CellType, Cell, Position } from "./grid/index";
+import { Map, CellType, Cell, Position } from "../grid/index";
 
 export class MazeGenerator {
     constructor(private map: Map) { }

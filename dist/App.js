@@ -1,7 +1,7 @@
-System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./PathCostVisualizer", "./ObstacleGenerator", "./DynmicObstacleGenerator", "angular"], function(exports_1, context_1) {
+System.register(["./algorithm/index", "./grid/index", "tools/index", "angular"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var index_1, index_2, MazeGenerator_1, PathCostVisualizer_1, ObstacleGenerator_1, DynmicObstacleGenerator_1, angular;
+    var index_1, index_2, index_3, angular;
     var app;
     return {
         setters:[
@@ -11,17 +11,8 @@ System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./Path
             function (index_2_1) {
                 index_2 = index_2_1;
             },
-            function (MazeGenerator_1_1) {
-                MazeGenerator_1 = MazeGenerator_1_1;
-            },
-            function (PathCostVisualizer_1_1) {
-                PathCostVisualizer_1 = PathCostVisualizer_1_1;
-            },
-            function (ObstacleGenerator_1_1) {
-                ObstacleGenerator_1 = ObstacleGenerator_1_1;
-            },
-            function (DynmicObstacleGenerator_1_1) {
-                DynmicObstacleGenerator_1 = DynmicObstacleGenerator_1_1;
+            function (index_3_1) {
+                index_3 = index_3_1;
             },
             function (angular_1) {
                 angular = angular_1;
@@ -99,14 +90,14 @@ System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./Path
                 };
                 map.visualizePathCosts = () => {
                     if (map.isVisualizePathEnabled === true) {
-                        let visual = new PathCostVisualizer_1.PathCostVisualizer(map.map);
+                        let visual = new index_3.PathCostVisualizer(map.map);
                         visual.paint();
                     }
                 };
                 map.addRandomObstacles = () => {
                     map.map.resetPath();
                     map.algorithmInstance = undefined;
-                    let generator = new ObstacleGenerator_1.ObstacleGenerator(map.map);
+                    let generator = new index_3.ObstacleGenerator(map.map);
                     generator.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
                     map.algorithmInstance = map.getAlgorithmInstance();
                     map.calulatePath();
@@ -114,14 +105,14 @@ System.register(["./algorithm/index", "./grid/index", "./MazeGenerator", "./Path
                 map.addWalls = () => {
                     map.map.resetPath();
                     map.algorithmInstance = undefined;
-                    let generator = new MazeGenerator_1.MazeGenerator(map.map);
+                    let generator = new index_3.MazeGenerator(map.map);
                     generator.createMaze();
                     map.algorithmInstance = map.getAlgorithmInstance();
                     map.calulatePath();
                 };
                 map.addDynamicObstacle = () => {
                     if (map.robots === undefined) {
-                        map.robots = new DynmicObstacleGenerator_1.DynmicObstacleGenerator(map.map);
+                        map.robots = new index_3.DynmicObstacleGenerator(map.map);
                     }
                     map.robots.add();
                     if (map.robotIntervall !== undefined) {

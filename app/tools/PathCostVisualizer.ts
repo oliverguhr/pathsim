@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { Map } from "./grid/index";
+import { Map } from "../grid/index";
 
 export class PathCostVisualizer {
     constructor(private map: Map) {

@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { Map, Moveable, CellType, Position } from "./grid/index";
+import { Map, Moveable, CellType, Position } from "../grid/index";
 
 export class DynmicObstacleGenerator {
     private robots: Moveable[];

@@ -1,9 +1,6 @@
 import {LpaStar, AStar, Dijkstra, Distance} from "./algorithm/index";
 import { Map, Moveable, CellType, Position, Cell } from "./grid/index";
-import {MazeGenerator} from "./MazeGenerator";
-import {PathCostVisualizer} from "./PathCostVisualizer";
-import {ObstacleGenerator} from "./ObstacleGenerator";
-import {DynmicObstacleGenerator} from "./DynmicObstacleGenerator";
+import {DynmicObstacleGenerator, MazeGenerator, PathCostVisualizer, ObstacleGenerator} from "tools/index";
 import * as angular from "angular";
 
 
@@ -134,7 +131,7 @@ app.controller("MapController", function ($attrs, $interval) {
         if (map.robots !== undefined) {
             map.robots.robots.forEach(
                 (robot: Cell) => map.map.getCell(robot.position.x, robot.position.y).cellType = 0
-                );
+            );
         }
         map.robots = undefined;
     };

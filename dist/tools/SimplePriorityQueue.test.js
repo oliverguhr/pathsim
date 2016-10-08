@@ -1,17 +1,17 @@
-System.register(["./SimplePriorityQueue"], function(exports_1, context_1) {
+System.register(["./index"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var SimplePriorityQueue_1;
+    var index_1;
     return {
         setters:[
-            function (SimplePriorityQueue_1_1) {
-                SimplePriorityQueue_1 = SimplePriorityQueue_1_1;
+            function (index_1_1) {
+                index_1 = index_1_1;
             }],
         execute: function() {
             describe("SimplePriorityQueue", () => {
                 let subject;
                 beforeEach(function () {
-                    subject = new SimplePriorityQueue_1.SimplePriorityQueue();
+                    subject = new index_1.SimplePriorityQueue();
                 });
                 describe("basic operations", () => {
                     it("insert item", () => {

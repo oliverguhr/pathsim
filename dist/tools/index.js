@@ -1,4 +1,4 @@
-System.register(["./TypMappedDictionary"], function(exports_1, context_1) {
+System.register(["./TypMappedDictionary", "./SimplePriorityQueue", "./DynmicObstacleGenerator", "./PathCostVisualizer", "./ObstacleGenerator", "./MazeGenerator"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     function exportStar_1(m) {
@@ -12,6 +12,21 @@ System.register(["./TypMappedDictionary"], function(exports_1, context_1) {
         setters:[
             function (TypMappedDictionary_1_1) {
                 exportStar_1(TypMappedDictionary_1_1);
+            },
+            function (SimplePriorityQueue_1_1) {
+                exportStar_1(SimplePriorityQueue_1_1);
+            },
+            function (DynmicObstacleGenerator_1_1) {
+                exportStar_1(DynmicObstacleGenerator_1_1);
+            },
+            function (PathCostVisualizer_1_1) {
+                exportStar_1(PathCostVisualizer_1_1);
+            },
+            function (ObstacleGenerator_1_1) {
+                exportStar_1(ObstacleGenerator_1_1);
+            },
+            function (MazeGenerator_1_1) {
+                exportStar_1(MazeGenerator_1_1);
             }],
         execute: function() {
         }

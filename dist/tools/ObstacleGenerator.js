@@ -1,4 +1,4 @@
-System.register(["lodash", "./grid/index"], function(exports_1, context_1) {
+System.register(["lodash", "../grid/index"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var _, index_1;

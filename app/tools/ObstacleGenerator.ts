@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { Map,  CellType} from "./grid/index";
+import { Map,  CellType} from "../grid/index";
 
 export class ObstacleGenerator {
     constructor(private map: Map) { }

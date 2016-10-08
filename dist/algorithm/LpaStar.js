@@ -1,7 +1,7 @@
-System.register(["../grid/index", "./PathAlgorithm", "../SimplePriorityQueue", "lodash"], function(exports_1, context_1) {
+System.register(["../grid/index", "./PathAlgorithm", "../tools/index", "lodash"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var index_1, PathAlgorithm_1, SimplePriorityQueue_1, _;
+    var index_1, PathAlgorithm_1, index_2, _;
     var LpaStar;
     return {
         setters:[
@@ -11,8 +11,8 @@ System.register(["../grid/index", "./PathAlgorithm", "../SimplePriorityQueue", "
             function (PathAlgorithm_1_1) {
                 PathAlgorithm_1 = PathAlgorithm_1_1;
             },
-            function (SimplePriorityQueue_1_1) {
-                SimplePriorityQueue_1 = SimplePriorityQueue_1_1;
+            function (index_2_1) {
+                index_2 = index_2_1;
             },
             function (_1) {
                 _ = _1;
@@ -24,7 +24,7 @@ System.register(["../grid/index", "./PathAlgorithm", "../SimplePriorityQueue", "
                     this.neighborsFilter = (x) => !x.isBlocked && !x.isVisited;
                     this.isInitialized = false;
                     this.map = map;
-                    this.openCells = new SimplePriorityQueue_1.SimplePriorityQueue();
+                    this.openCells = new index_2.SimplePriorityQueue();
                     this.goal = this.map.getGoalCell();
                     this.start = this.map.getStartCell();
                 }

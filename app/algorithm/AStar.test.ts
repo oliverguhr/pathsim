@@ -1,6 +1,6 @@
 import { AStar } from "./AStar";
 import {Map, Moveable, CellType, Position} from "../grid/index";
-import { ObstacleGenerator } from "./../ObstacleGenerator";
+import { ObstacleGenerator } from "../tools/index";
 
 describe("AStar", () => {
     let map: Map;
