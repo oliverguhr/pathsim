@@ -40,7 +40,7 @@ export class PathAlgorithm {
         } while (node !== start);
     }
 
-    protected getNeighbors(cell: Cell, condition: Function) {
+    protected getNeighbors(cell: Cell, condition: (cell: Cell) => boolean) {
 
         let neighbors = new Array<Cell>();
 

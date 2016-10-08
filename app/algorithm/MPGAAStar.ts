@@ -9,11 +9,11 @@ import * as PriorityQueue from "js-priority-queue";
 import { Distance } from "./Distance";
 import { TypMappedDictionary } from "./../tools/index";
 
-
 export class MPGAAStar extends PathAlgorithm {
     private goal: Cell;
     private start: Cell;
     private openCells: PriorityQueue<Cell>;
+    private closedCells: Array<Cell>;
     /** Iteration counter. Incremented before every A* search. */
     private counter: number;
     private currentCell: Cell;
@@ -27,7 +27,7 @@ export class MPGAAStar extends PathAlgorithm {
     /**
      * Contains the pointer for each state s along the path found by A*        
      */
-    private next: TypMappedDictionary<Cell, number>;
+    private next: TypMappedDictionary<Cell, Cell>;
 
     constructor(map: Map, private visibiltyRange: number) {
         super();
@@ -36,12 +36,13 @@ export class MPGAAStar extends PathAlgorithm {
             comparator: (a: Cell, b: Cell) => a.estimatedDistance - b.estimatedDistance,
         };
         this.map = map;
+        this.closedCells = new Array<Cell>();
         this.openCells = new PriorityQueue.ArrayStrategy<Cell>(queueConfig);
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();
         this.currentCell = this.start;
         this.searches = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell), 0);
-        this.next = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell));
+        this.next = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
     }
 
     /**
@@ -52,17 +53,60 @@ export class MPGAAStar extends PathAlgorithm {
         this.counter = 0;
         this.observe(this.start);
 
-        /*
-        for each state s ∈ S do        
-            search(s) ← 0
-            h(s) ← H(s, s goal )        
-            next(s) ← null
-        */
         this.map.cells.forEach(cell => {
             this.searches.set(cell, 0);
             cell.estimatedDistance = this.distance(cell, this.goal);
-
+            this.next.delete(cell); // todo: check if we really need this line
         });
+
+        while (this.start !== this.goal) {
+            this.counter++;
+            let s = this.aStar(this.start);
+
+            if (s === null) {
+                // todo: check if its handy to throw an error here.
+                throw new Error("goal is not reachable");
+            }
+
+            /* todo: Pseudo code says:
+                for each s' ∈ Closed do
+                    h(s' ) ← g(s) + h(s) − g(s' ) // heuristic update
+                Check if s' ∈ Closed means neighbors of s that are on the closed list
+            */
+            let cells = this.getNeighbors(s, (x: Cell) => this.closedCells.indexOf(x) !== -1);
+            cells.forEach(cell => {
+                // heuristic update
+                cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
+            });
+
+            this.buildPath(s);
+
+            // hint: the code for lines 71 to 77 have been / will be moved in a seperate component 
+            // move a long the calulated path. 
+            // todo: check how this interacts with the map. 
+            // this should be part of the robot that is moving along the path
+            /*
+              do {
+                  let t = this.start;
+                  this.start = this.next.get(this.start);
+                  this.next.delete(t);
+              } while (this.start !== this.goal  // or a change in c has been observed 
+              );
+            */
+        }
+    }
+
+    private buildPath(s: Cell): void {
+        // todo: add code
+    }
+
+    private aStar(init: Cell): Cell {
+        // todo: add code
+        return null;
+    }
+
+    private reestablishConsitency() {
+        // todo: write code
     }
 
     /**
@@ -78,7 +122,8 @@ export class MPGAAStar extends PathAlgorithm {
                 let oldDistance = changedCell.distance;
 
                 if (changedCell.isBlocked) {
-                    // todo / verify: What if changedCell is blocked now?
+                    // todo verify: What if changedCell is blocked now? 
+                    // check if this code really does what we might think it does
                     changedCell.distance = Number.POSITIVE_INFINITY;
                 } else {
                     changedCell.distance = changedCell.previous.distance +
@@ -94,10 +139,6 @@ export class MPGAAStar extends PathAlgorithm {
                 }
             }
         });
-
-    }
-    private reestablishConsitency() {
-        // todo: write code
     }
 
     /*  private initialize() {
