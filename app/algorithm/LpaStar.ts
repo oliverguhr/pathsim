@@ -1,6 +1,6 @@
 import {Cell, Map, CellType} from "../grid/index";
 import {PathAlgorithm} from "./PathAlgorithm";
-import {SimplePriorityQueue} from "../SimplePriorityQueue";
+import {SimplePriorityQueue} from "../tools/index";
 import * as _ from "lodash";
 
 // todo: Blocked Cells distance values to infinity

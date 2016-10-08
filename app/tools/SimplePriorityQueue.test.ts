@@ -1,4 +1,4 @@
-import { SimplePriorityQueue } from "./SimplePriorityQueue";
+import { SimplePriorityQueue } from "./index";
 
 describe("SimplePriorityQueue", () => {
     let subject: SimplePriorityQueue;

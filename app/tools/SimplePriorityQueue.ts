@@ -1,5 +1,9 @@
 import * as _ from "lodash";
 
+/**
+ * Hacky implementation of a PriorityQueue. 
+ * I added this to meet the needs of the LPA* algorithm. 
+ */
 export class SimplePriorityQueue {
     private items: any[];
     constructor() {
