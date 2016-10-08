@@ -1,6 +1,14 @@
 export class Position {
-    constructor(public x: number, public y: number) {
+    /** Column */
+    public x: number;
+    /** Row */
+    public y: number;
+
+    constructor(x: number , y: number ) {
+        this.x = x;
+        this.y = y;
     }
+    
     public toString() {
         return "x = " + this.x + " y = " + this.y;
     }

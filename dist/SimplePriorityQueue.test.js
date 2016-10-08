@@ -13,7 +13,7 @@ System.register(["./SimplePriorityQueue"], function(exports_1, context_1) {
                 beforeEach(function () {
                     subject = new SimplePriorityQueue_1.SimplePriorityQueue();
                 });
-                describe("#basic operations", () => {
+                describe("basic operations", () => {
                     it("insert item", () => {
                         let dummy = { name: "dummy" };
                         subject.insert(dummy, [1, 1]);

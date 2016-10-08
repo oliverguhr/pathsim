@@ -10,7 +10,7 @@ export class Map {
         this.grid = [
             [],
         ];
-        this.changeListner = new Array<Function>();
+        this.changeListner = new Array<(cell: Cell) => void>();
         this.initializeGrid();
     }
 
@@ -27,18 +27,22 @@ export class Map {
         this.hasChanged(cell);
     }
 
-    public notifyOnChange(lambda: Function) {
+    /** add a function that gets notifyed when a cell on the map changes */
+    public notifyOnChange(lambda: (cell: Cell) => void) {
         this.changeListner.push(lambda);
     }
 
+    /** get the start cell */
     public getStartCell() {
         return this.cells.find(cell => cell.isStart);
     }
 
+    /** get the goal cell */
     public getGoalCell() {
         return this.cells.find(cell => cell.isGoal);
     }
 
+    /** get all cells as flat map */
     get cells() {
         return _.flatten(this.grid);
     }
@@ -50,6 +54,15 @@ export class Map {
             return undefined;
         }
     }
+
+    /** 
+     * gets the zero based index of a cell 
+     * can be used with "cells" getter 
+     */
+    public getIndexOfCell(cell: Cell) {
+        return (cell.position.x + (cell.position.y - 1) * this.rows) - 1;
+    }
+
     public resetPath() {
         this.cells.filter(cell => cell.isVisited || cell.isCurrent).forEach(cell => {
             cell.type = CellType.Free;

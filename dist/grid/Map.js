@@ -53,6 +53,9 @@ System.register(["lodash", "./Cell", "./CellType"], function(exports_1, context_
                         return undefined;
                     }
                 }
+                getIndexOfCell(cell) {
+                    return (cell.position.x + (cell.position.y - 1) * this.rows) - 1;
+                }
                 resetPath() {
                     this.cells.filter(cell => cell.isVisited || cell.isCurrent).forEach(cell => {
                         cell.type = CellType_1.CellType.Free;

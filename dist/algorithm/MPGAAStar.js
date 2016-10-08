@@ -1,0 +1,72 @@
+System.register(["./PathAlgorithm", "js-priority-queue", "./Distance"], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
+    var PathAlgorithm_1, PriorityQueue, Distance_1;
+    var MPGAAStar;
+    return {
+        setters:[
+            function (PathAlgorithm_1_1) {
+                PathAlgorithm_1 = PathAlgorithm_1_1;
+            },
+            function (PriorityQueue_1) {
+                PriorityQueue = PriorityQueue_1;
+            },
+            function (Distance_1_1) {
+                Distance_1 = Distance_1_1;
+            }],
+        execute: function() {
+            MPGAAStar = class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
+                constructor(map, visibiltyRange) {
+                    super();
+                    this.visibiltyRange = visibiltyRange;
+                    let queueConfig = {
+                        comparator: (a, b) => a.estimatedDistance - b.estimatedDistance,
+                    };
+                    this.map = map;
+                    this.openCells = new PriorityQueue.ArrayStrategy(queueConfig);
+                    this.goal = this.map.getGoalCell();
+                    this.start = this.map.getStartCell();
+                    this.currentCell = this.start;
+                }
+                run() {
+                    this.counter = 0;
+                    this.observe(this.start);
+                    this.map.cells.forEach(cell => {
+                        this.setSearch(cell, 0);
+                        cell.estimatedDistance = this.distance(cell, this.goal);
+                    });
+                }
+                getSearch(s) {
+                    return this.searches[this.map.getIndexOfCell(s)];
+                }
+                setSearch(s, value) {
+                    this.searches[this.map.getIndexOfCell(s)] = value;
+                }
+                observe(start) {
+                    this.map.notifyOnChange(changedCell => {
+                        let distance = Distance_1.Distance.euklid(changedCell, this.currentCell);
+                        if (distance < this.visibiltyRange) {
+                            let oldDistance = changedCell.distance;
+                            if (changedCell.isBlocked) {
+                                changedCell.distance = Number.POSITIVE_INFINITY;
+                            }
+                            else {
+                                changedCell.distance = changedCell.previous.distance +
+                                    this.distance(changedCell, changedCell.previous);
+                            }
+                            if (changedCell.distance > oldDistance) {
+                            }
+                            if (changedCell.distance < oldDistance) {
+                                this.reestablishConsitency();
+                            }
+                        }
+                    });
+                }
+                reestablishConsitency() {
+                }
+            };
+            exports_1("MPGAAStar", MPGAAStar);
+        }
+    }
+});
+//# sourceMappingURL=MPGAAStar.js.map

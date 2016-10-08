@@ -11,7 +11,7 @@
     "systemjs": "^0.19.38"
   },
   "devDependencies": {
-    "concurrently": "^2.0.0",    
+    "concurrently": "^2.0.0",
     "lite-server": "^2.2.0",
     "mocha": "^3.1.0",
     "mocha-typescript": "^1.0.10",
@@ -23,11 +23,11 @@
     "dev-test-watch": "mocha-typescript-watch",
     "pretest": "rm -rf test && tsc  -p tsconfig.test.json",
     "test": "mocha test/ --colors --recursive",
-    "test:w":"npm run pretest && concurrently \"tsc -w -p tsconfig.test.json\" \"mocha test/ --watch --recursive --colors --reporter spec\"",
+    "test:w": "npm run pretest && concurrently \"tsc -w -p tsconfig.test.json\" \"mocha test/ --watch --recursive --colors --reporter spec\"",
     "lite": "lite-server",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
-    "lint":"tslint --project tsconfig.json",
+    "lint": "tslint --project tsconfig.json",
     "typings": "typings",
     "postinstall": "typings install"
   },

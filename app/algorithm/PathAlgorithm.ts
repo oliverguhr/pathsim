@@ -42,7 +42,7 @@ export class PathAlgorithm {
 
     protected getNeighbors(cell: Cell, condition: Function) {
 
-        let neighbors = new Array();
+        let neighbors = new Array<Cell>();
 
         this.addCellIfpassable(cell.position.x + 0, cell.position.y - 1, neighbors, condition);
         this.addCellIfpassable(cell.position.x + 0, cell.position.y + 1, neighbors, condition);

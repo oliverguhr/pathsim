@@ -6,6 +6,7 @@ export class Cell {
     public cellType: CellType;
     public rhs: number;
     public distance: number;
+    /** Also known as h value */
     public estimatedDistance: number;
     public color: string;
     public previous: Cell;
