@@ -1,7 +1,7 @@
-System.register(["./PathAlgorithm", "js-priority-queue", "./Distance"], function(exports_1, context_1) {
+System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../tools/index"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var PathAlgorithm_1, PriorityQueue, Distance_1;
+    var PathAlgorithm_1, PriorityQueue, Distance_1, index_1;
     var MPGAAStar;
     return {
         setters:[
@@ -13,6 +13,9 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance"], function
             },
             function (Distance_1_1) {
                 Distance_1 = Distance_1_1;
+            },
+            function (index_1_1) {
+                index_1 = index_1_1;
             }],
         execute: function() {
             MPGAAStar = class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
@@ -27,20 +30,16 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance"], function
                     this.goal = this.map.getGoalCell();
                     this.start = this.map.getStartCell();
                     this.currentCell = this.start;
+                    this.searches = new index_1.TypMappedDictionary(cell => this.map.getIndexOfCell(cell), 0);
+                    this.next = new index_1.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
                 }
                 run() {
                     this.counter = 0;
                     this.observe(this.start);
                     this.map.cells.forEach(cell => {
-                        this.setSearch(cell, 0);
+                        this.searches.set(cell, 0);
                         cell.estimatedDistance = this.distance(cell, this.goal);
                     });
-                }
-                getSearch(s) {
-                    return this.searches[this.map.getIndexOfCell(s)];
-                }
-                setSearch(s, value) {
-                    this.searches[this.map.getIndexOfCell(s)] = value;
                 }
                 observe(start) {
                     this.map.notifyOnChange(changedCell => {
@@ -55,6 +54,7 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance"], function
                                     this.distance(changedCell, changedCell.previous);
                             }
                             if (changedCell.distance > oldDistance) {
+                                this.next.delete(changedCell);
                             }
                             if (changedCell.distance < oldDistance) {
                                 this.reestablishConsitency();

@@ -17,7 +17,17 @@ export class MPGAAStar extends PathAlgorithm {
     /** Iteration counter. Incremented before every A* search. */
     private counter: number;
     private currentCell: Cell;
+
+    /**
+     * searches (number) returns the number of the last search in which s (the cell) was generated. 
+     * If it is equal to 0 if s has never been generated.     
+     */
     private searches: TypMappedDictionary<Cell, number>;
+
+    /**
+     * Contains the pointer for each state s along the path found by A*        
+     */
+    private next: TypMappedDictionary<Cell, number>;
 
     constructor(map: Map, private visibiltyRange: number) {
         super();
@@ -30,11 +40,8 @@ export class MPGAAStar extends PathAlgorithm {
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();
         this.currentCell = this.start;
-        /*
-         * searches (number) returns the number of the last search in which s (the cell) was generated. 
-         * If it is equal to 0 if s has never been generated.
-         */
         this.searches = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell), 0);
+        this.next = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell));
     }
 
     /**
@@ -79,8 +86,8 @@ export class MPGAAStar extends PathAlgorithm {
                 }
 
                 if (changedCell.distance > oldDistance) {
-                    // hint: this is not strictly necessary in a GAA* implementation
-                    // todo next(t) ← null                    
+                    // hint: this is not strictly necessary in a GAA* implementation                      
+                    this.next.delete(changedCell);
                 }
                 if (changedCell.distance < oldDistance) {
                     this.reestablishConsitency();
