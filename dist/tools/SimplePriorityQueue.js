@@ -10,7 +10,9 @@ System.register(["lodash"], function(exports_1, context_1) {
             }],
         execute: function() {
             class SimplePriorityQueue {
-                constructor() {
+                constructor(comparator, defaultKey) {
+                    this.comparator = comparator;
+                    this.defaultKey = defaultKey;
                     this.items = new Array();
                 }
                 insert(item, key) {
@@ -29,7 +31,7 @@ System.register(["lodash"], function(exports_1, context_1) {
                         return this.items[0].key;
                     }
                     else {
-                        return [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY];
+                        return this.defaultKey;
                     }
                 }
                 pop() {
@@ -40,25 +42,7 @@ System.register(["lodash"], function(exports_1, context_1) {
                     this.insert(item, key);
                 }
                 sort() {
-                    this.items = this.items.sort(function (a, b) {
-                        if (a.key[0] > b.key[0]) {
-                            return 1;
-                        }
-                        else if (a.key[0] < b.key[0]) {
-                            return -1;
-                        }
-                        else {
-                            if (a.key[1] > b.key[1]) {
-                                return 1;
-                            }
-                            if (a.key[1] < b.key[1]) {
-                                return -1;
-                            }
-                            else {
-                                return 0;
-                            }
-                        }
-                    });
+                    this.items = this.items.sort((a, b) => this.comparator(a.key, b.key));
                 }
             }
             exports_1("SimplePriorityQueue", SimplePriorityQueue);
