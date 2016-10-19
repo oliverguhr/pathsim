@@ -29,7 +29,14 @@ System.register([], function(exports_1, context_1) {
                     delete this.data[this.mapping(key)];
                 }
                 get dictionary() {
-                    return this.data;
+                    let exportData = new Array();
+                    Object.keys(this.data).map(key => {
+                        let index = Number.parseInt(key);
+                        let x;
+                        x = [index, this.data[index]];
+                        exportData.push(x);
+                    });
+                    return exportData;
                 }
             };
             exports_1("TypMappedDictionary", TypMappedDictionary);

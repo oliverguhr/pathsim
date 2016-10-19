@@ -21,6 +21,7 @@ System.register(["./../grid/index", "./index"], function(exports_1, context_1) {
                     it("should return the stored data", () => {
                         let dummy = new index_1.Position(10, 21);
                         subject.set(dummy, 1337);
+                        subject.set(new index_1.Position(10, 22), 1338);
                         if (subject.get(dummy) !== 1337) {
                             throw new Error("Item should be in dictonary.");
                         }
@@ -42,6 +43,19 @@ System.register(["./../grid/index", "./index"], function(exports_1, context_1) {
                         subject.delete(dummy);
                         if (subject.get(dummy) !== 0) {
                             throw new Error("It should return 0.");
+                        }
+                    });
+                });
+                describe("the converted dictionary", () => {
+                    it("should contain the elements", () => {
+                        subject.set(new index_1.Position(0, 1), 10);
+                        subject.set(new index_1.Position(0, 2), 20);
+                        subject.set(new index_1.Position(0, 3), 30);
+                        let test1 = subject.dictionary.find(value => value[0] === 1 && value[1] === 10);
+                        let test2 = subject.dictionary.find(value => value[0] === 2 && value[1] === 20);
+                        let test3 = subject.dictionary.find(value => value[0] === 3 && value[1] === 30);
+                        if (!(test1 && test2 && test3)) {
+                            throw new Error("Array did not contain all the elements");
                         }
                     });
                 });

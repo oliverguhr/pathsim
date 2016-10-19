@@ -26,6 +26,7 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                         comparator: (a, b) => a.estimatedDistance - b.estimatedDistance,
                     };
                     this.map = map;
+                    this.closedCells = new Array();
                     this.openCells = new PriorityQueue.ArrayStrategy(queueConfig);
                     this.goal = this.map.getGoalCell();
                     this.start = this.map.getStartCell();
@@ -39,7 +40,29 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                     this.map.cells.forEach(cell => {
                         this.searches.set(cell, 0);
                         cell.estimatedDistance = this.distance(cell, this.goal);
+                        this.next.delete(cell);
                     });
+                    while (this.start !== this.goal) {
+                        this.counter++;
+                        let s = this.aStar(this.start);
+                        if (s === null) {
+                            throw new Error("goal is not reachable");
+                        }
+                        let cells = this.getNeighbors(s, (x) => this.closedCells.indexOf(x) !== -1);
+                        cells.forEach(cell => {
+                            cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
+                        });
+                        this.buildPath(s);
+                    }
+                }
+                buildPath(s) {
+                    while (s !== this.start) {
+                    }
+                }
+                aStar(init) {
+                    return null;
+                }
+                reestablishConsitency() {
                 }
                 observe(start) {
                     this.map.notifyOnChange(changedCell => {
@@ -61,8 +84,6 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                             }
                         }
                     });
-                }
-                reestablishConsitency() {
                 }
             };
             exports_1("MPGAAStar", MPGAAStar);
