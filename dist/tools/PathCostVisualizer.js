@@ -9,7 +9,7 @@ System.register(["lodash"], function(exports_1, context_1) {
                 _ = _1;
             }],
         execute: function() {
-            PathCostVisualizer = class PathCostVisualizer {
+            class PathCostVisualizer {
                 constructor(map) {
                     this.map = map;
                 }
@@ -75,7 +75,7 @@ System.register(["lodash"], function(exports_1, context_1) {
                     }
                     return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
                 }
-            };
+            }
             exports_1("PathCostVisualizer", PathCostVisualizer);
         }
     }

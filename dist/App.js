@@ -1,4 +1,4 @@
-System.register(["./algorithm/index", "./grid/index", "tools/index", "angular"], function(exports_1, context_1) {
+System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var index_1, index_2, index_3, angular;

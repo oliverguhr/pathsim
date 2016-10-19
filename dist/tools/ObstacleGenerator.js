@@ -12,7 +12,7 @@ System.register(["lodash", "../grid/index"], function(exports_1, context_1) {
                 index_1 = index_1_1;
             }],
         execute: function() {
-            ObstacleGenerator = class ObstacleGenerator {
+            class ObstacleGenerator {
                 constructor(map) {
                     this.map = map;
                 }
@@ -37,7 +37,7 @@ System.register(["lodash", "../grid/index"], function(exports_1, context_1) {
                         }
                     }
                 }
-            };
+            }
             exports_1("ObstacleGenerator", ObstacleGenerator);
         }
     }

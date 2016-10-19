@@ -9,7 +9,7 @@ System.register(["lodash"], function(exports_1, context_1) {
                 _ = _1;
             }],
         execute: function() {
-            SimplePriorityQueue = class SimplePriorityQueue {
+            class SimplePriorityQueue {
                 constructor() {
                     this.items = new Array();
                 }
@@ -60,7 +60,7 @@ System.register(["lodash"], function(exports_1, context_1) {
                         }
                     });
                 }
-            };
+            }
             exports_1("SimplePriorityQueue", SimplePriorityQueue);
         }
     }

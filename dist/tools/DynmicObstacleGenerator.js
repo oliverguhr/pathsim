@@ -12,7 +12,7 @@ System.register(["lodash", "../grid/index"], function(exports_1, context_1) {
                 index_1 = index_1_1;
             }],
         execute: function() {
-            DynmicObstacleGenerator = class DynmicObstacleGenerator {
+            class DynmicObstacleGenerator {
                 constructor(map) {
                     this.map = map;
                 }
@@ -51,7 +51,7 @@ System.register(["lodash", "../grid/index"], function(exports_1, context_1) {
                     } while (!this.isPositionFree(x, y));
                     return new index_1.Position(x, y);
                 }
-            };
+            }
             exports_1("DynmicObstacleGenerator", DynmicObstacleGenerator);
         }
     }

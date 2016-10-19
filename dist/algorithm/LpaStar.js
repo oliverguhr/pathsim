@@ -18,7 +18,7 @@ System.register(["../grid/index", "./PathAlgorithm", "../tools/index", "lodash"]
                 _ = _1;
             }],
         execute: function() {
-            LpaStar = class LpaStar extends PathAlgorithm_1.PathAlgorithm {
+            class LpaStar extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map) {
                     super();
                     this.neighborsFilter = (x) => !x.isBlocked && !x.isVisited;
@@ -136,7 +136,7 @@ System.register(["../grid/index", "./PathAlgorithm", "../tools/index", "lodash"]
                     this.computeShortestPath();
                     this.paintShortestPath();
                 }
-            };
+            }
             exports_1("LpaStar", LpaStar);
         }
     }

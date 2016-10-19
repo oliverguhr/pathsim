@@ -15,7 +15,7 @@ System.register(["./Distance", "../grid/index", "lodash"], function(exports_1, c
                 _ = _1;
             }],
         execute: function() {
-            PathAlgorithm = class PathAlgorithm {
+            class PathAlgorithm {
                 constructor() {
                     this.distance = Distance_1.Distance.euklid;
                 }
@@ -55,7 +55,7 @@ System.register(["./Distance", "../grid/index", "lodash"], function(exports_1, c
                         neighbors.push(cell);
                     }
                 }
-            };
+            }
             exports_1("PathAlgorithm", PathAlgorithm);
         }
     }

@@ -5,7 +5,7 @@ System.register([], function(exports_1, context_1) {
     return {
         setters:[],
         execute: function() {
-            TypMappedDictionary = class TypMappedDictionary {
+            class TypMappedDictionary {
                 constructor(mapping, defaultValue) {
                     this.mapping = mapping;
                     this.data = {};
@@ -38,7 +38,7 @@ System.register([], function(exports_1, context_1) {
                     });
                     return exportData;
                 }
-            };
+            }
             exports_1("TypMappedDictionary", TypMappedDictionary);
         }
     }

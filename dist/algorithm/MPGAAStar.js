@@ -18,7 +18,7 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                 index_1 = index_1_1;
             }],
         execute: function() {
-            MPGAAStar = class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
+            class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map, visibiltyRange) {
                     super();
                     this.visibiltyRange = visibiltyRange;
@@ -85,7 +85,7 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                         }
                     });
                 }
-            };
+            }
             exports_1("MPGAAStar", MPGAAStar);
         }
     }

@@ -1,6 +1,6 @@
 import {LpaStar, AStar, Dijkstra, Distance} from "./algorithm/index";
 import { Map, Moveable, CellType, Position, Cell } from "./grid/index";
-import {DynmicObstacleGenerator, MazeGenerator, PathCostVisualizer, ObstacleGenerator} from "tools/index";
+import {DynmicObstacleGenerator, MazeGenerator, PathCostVisualizer, ObstacleGenerator} from "./tools/index";
 import * as angular from "angular";
 
 
