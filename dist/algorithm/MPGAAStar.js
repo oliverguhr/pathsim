@@ -33,6 +33,7 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                     this.currentCell = this.start;
                     this.searches = new index_1.TypMappedDictionary(cell => this.map.getIndexOfCell(cell), 0);
                     this.next = new index_1.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
+                    this.parent = new index_1.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
                 }
                 run() {
                     this.counter = 0;
@@ -57,6 +58,9 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                 }
                 buildPath(s) {
                     while (s !== this.start) {
+                        let parent = this.parent.get(s);
+                        this.next.set(parent, s);
+                        s = parent;
                     }
                 }
                 aStar(init) {

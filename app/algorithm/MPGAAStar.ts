@@ -3,7 +3,7 @@
  * Paper "Reusing Previously Found A* Paths for Fast Goal-Directed Navigation in Dynamic Terrain" HernandezAB15
 */
 
-import {Cell, Map, CellType, Position} from "../grid/index";
+import { Cell, Map, CellType, Position } from "../grid/index";
 import { PathAlgorithm } from "./PathAlgorithm";
 import * as PriorityQueue from "js-priority-queue";
 import { Distance } from "./Distance";
@@ -28,6 +28,7 @@ export class MPGAAStar extends PathAlgorithm {
      * Contains the pointer for each state s along the path found by A*        
      */
     private next: TypMappedDictionary<Cell, Cell>;
+    private parent: TypMappedDictionary<Cell, Cell>;
 
     constructor(map: Map, private visibiltyRange: number) {
         super();
@@ -43,6 +44,7 @@ export class MPGAAStar extends PathAlgorithm {
         this.currentCell = this.start;
         this.searches = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell), 0);
         this.next = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
+        this.parent = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
     }
 
     /**
@@ -98,7 +100,9 @@ export class MPGAAStar extends PathAlgorithm {
 
     private buildPath(s: Cell): void {
         while (s !== this.start) {
-          //  this.next.dictionary;
+            let parent = this.parent.get(s);
+            this.next.set(parent, s);
+            s = parent;
         }
     }
 
