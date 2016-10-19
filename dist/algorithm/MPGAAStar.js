@@ -1,7 +1,7 @@
-System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../tools/index"], function(exports_1, context_1) {
+System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../tools/index", './../tools/SimplePriorityQueue'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var PathAlgorithm_1, PriorityQueue, Distance_1, index_1;
+    var PathAlgorithm_1, PriorityQueue, Distance_1, index_1, SimplePriorityQueue_1;
     var MPGAAStar;
     return {
         setters:[
@@ -16,6 +16,9 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
             },
             function (index_1_1) {
                 index_1 = index_1_1;
+            },
+            function (SimplePriorityQueue_1_1) {
+                SimplePriorityQueue_1 = SimplePriorityQueue_1_1;
             }],
         execute: function() {
             class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
@@ -66,7 +69,10 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                 aStar(init) {
                     return null;
                 }
+                insertState(s, sSuccessor, queue) {
+                }
                 reestablishConsitency() {
+                    let queue = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
                 }
                 observe(start) {
                     this.map.notifyOnChange(changedCell => {

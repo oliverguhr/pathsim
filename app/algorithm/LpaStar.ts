@@ -1,6 +1,6 @@
-import {Cell, Map, CellType} from "../grid/index";
-import {PathAlgorithm} from "./PathAlgorithm";
-import {SimplePriorityQueue} from "../tools/index";
+import { Cell, Map, CellType } from "../grid/index";
+import { PathAlgorithm } from "./PathAlgorithm";
+import { SimplePriorityQueue } from "../tools/index";
 import * as _ from "lodash";
 
 // todo: Blocked Cells distance values to infinity
@@ -13,7 +13,7 @@ export class LpaStar extends PathAlgorithm {
             0 if a == b
             -1 if a < b
     */
-    private static compareKeys(a: Array<number>, b: Array<number>) {
+    public static compareKeys(a: Array<number>, b: Array<number>) {
         if (a[0] > b[0]) {
             return 1;
         } else if (a[0] < b[0]) {
@@ -32,16 +32,17 @@ export class LpaStar extends PathAlgorithm {
 
 
     private isInitialized: boolean;
-    private openCells: SimplePriorityQueue;
+    private openCells: SimplePriorityQueue<Cell, number[]>;
     private goal: Cell;
     private start: Cell;
 
     constructor(map: Map) {
         super();
         this.isInitialized = false;
-
         this.map = map;
-        this.openCells = new SimplePriorityQueue();
+        this.openCells =
+            new SimplePriorityQueue<Cell, number[]>
+                (LpaStar.compareKeys, [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY]);
 
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();

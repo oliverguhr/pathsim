@@ -8,6 +8,7 @@ import { PathAlgorithm } from "./PathAlgorithm";
 import * as PriorityQueue from "js-priority-queue";
 import { Distance } from "./Distance";
 import { TypMappedDictionary } from "./../tools/index";
+import { SimplePriorityQueue } from './../tools/SimplePriorityQueue';
 
 export class MPGAAStar extends PathAlgorithm {
     private goal: Cell;
@@ -19,13 +20,13 @@ export class MPGAAStar extends PathAlgorithm {
     private currentCell: Cell;
 
     /**
-     * searches (number) returns the number of the last search in which s (the cell) was generated. 
-     * If it is equal to 0 if s has never been generated.     
+     * searches (number) returns the number of the last search in which s (the cell) was generated.
+     * If it is equal to 0 if s has never been generated.
      */
     private searches: TypMappedDictionary<Cell, number>;
 
     /**
-     * Contains the pointer for each state s along the path found by A*        
+     * Contains the pointer for each state s along the path found by A*
      */
     private next: TypMappedDictionary<Cell, Cell>;
     private parent: TypMappedDictionary<Cell, Cell>;
@@ -48,7 +49,7 @@ export class MPGAAStar extends PathAlgorithm {
     }
 
     /**
-     * Entry point. 
+     * Entry point.
      * Equals to "main()" Line 56 within the pseudo code
      */
     public run() {
@@ -83,16 +84,16 @@ export class MPGAAStar extends PathAlgorithm {
 
             this.buildPath(s);
 
-            // hint: the code for lines 71 to 77 have been / will be moved in a seperate component 
-            // move a long the calulated path. 
-            // todo: check how this interacts with the map. 
+            // hint: the code for lines 71 to 77 have been / will be moved in a seperate component
+            // move a long the calulated path.
+            // todo: check how this interacts with the map.
             // this should be part of the robot that is moving along the path
             /*
               do {
                   let t = this.start;
                   this.start = this.next.get(this.start);
                   this.next.delete(t);
-              } while (this.start !== this.goal  // or a change in c has been observed 
+              } while (this.start !== this.goal  // or a change in c has been observed
               );
             */
         }
@@ -111,8 +112,24 @@ export class MPGAAStar extends PathAlgorithm {
         return null;
     }
 
+    private insertState(s: Cell, sSuccessor: Cell, queue: SimplePriorityQueue<Cell, number>) {
+
+    }
+
     private reestablishConsitency() {
         // todo: write code
+        let queue = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
+
+        // for each (s, s 0 ) such that c(s, s 0 ) decreased do
+        //    InsertState (s, s 0 , Q)
+        // remaks: we might get this cells from observe..
+
+        let hack : Cell[];
+
+      /*  for(let cell of hack){
+            this.insertState();
+        }
+      */
     }
 
     /**
@@ -124,24 +141,24 @@ export class MPGAAStar extends PathAlgorithm {
             // arcs in the range of visibility from s
             let distance = Distance.euklid(changedCell, this.currentCell);
             if (distance < this.visibiltyRange) {
-                // update c(t, t' )                    
-                let oldDistance = changedCell.distance;
 
-                if (changedCell.isBlocked) {
-                    // todo verify: What if changedCell is blocked now? 
-                    // check if this code really does what we might think it does
-                    changedCell.distance = Number.POSITIVE_INFINITY;
-                } else {
-                    changedCell.distance = changedCell.previous.distance +
-                        this.distance(changedCell, changedCell.previous);
-                }
+                let neighbors = this.getNeighbors(changedCell, c => !c.isBlocked);
+                // for each (t, t 0 ) in T do
+                for(let neighbor of neighbors)
+                {
+                  // update c(t, t' )
+                  let oldDistance = neighbor.distance;
 
-                if (changedCell.distance > oldDistance) {
-                    // hint: this is not strictly necessary in a GAA* implementation                      
-                    this.next.delete(changedCell);
-                }
-                if (changedCell.distance < oldDistance) {
+                  changedCell.distance = neighbor.previous.distance +
+                  this.distance(changedCell, neighbor.previous);
+
+                  if (neighbor.distance > oldDistance) {
+                    // hint: this is not strictly necessary in a GAA* implementation
+                    this.next.delete(neighbor);
+                  }
+                  if (neighbor.distance < oldDistance) {
                     this.reestablishConsitency();
+                  }
                 }
             }
         });
@@ -149,13 +166,13 @@ export class MPGAAStar extends PathAlgorithm {
 
     /*  private initialize() {
           let cells = this.map.cells.filter(cell => !cell.isBlocked);
-  
+
           for (let i = 0; i < cells.length; i++) {
               cells[i].previous = undefined;
               cells[i].distance = Number.POSITIVE_INFINITY;
               cells[i].isOpen = true;
           }
-  
+
           this.start.distance = 0;
           this.start.estimatedDistance = this.distance(this.start, this.goal);
           this.openCells.queue(this.start);

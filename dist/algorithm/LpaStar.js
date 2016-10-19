@@ -24,7 +24,8 @@ System.register(["../grid/index", "./PathAlgorithm", "../tools/index", "lodash"]
                     this.neighborsFilter = (x) => !x.isBlocked && !x.isVisited;
                     this.isInitialized = false;
                     this.map = map;
-                    this.openCells = new index_2.SimplePriorityQueue();
+                    this.openCells =
+                        new index_2.SimplePriorityQueue(LpaStar.compareKeys, [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY]);
                     this.goal = this.map.getGoalCell();
                     this.start = this.map.getStartCell();
                 }
