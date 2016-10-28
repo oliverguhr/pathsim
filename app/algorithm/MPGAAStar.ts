@@ -84,6 +84,8 @@ export class MPGAAStar extends PathAlgorithm {
 
             this.buildPath(s);
 
+            break; // until we do not have a moving robot we have to stop here
+
             // hint: the code for lines 71 to 77 have been / will be moved in a seperate component
             // move a long the calulated path.
             // todo: check how this interacts with the map.
@@ -101,8 +103,10 @@ export class MPGAAStar extends PathAlgorithm {
 
     private buildPath(s: Cell): void {
         while (s !== this.start) {
-            s.type = CellType.Current;
-            s.color = undefined;
+            if(!(s.isGoal || s.isStart)){
+              s.type = CellType.Current;
+              s.color = undefined;
+            }
             let parent = this.parent.get(s);
             this.next.set(parent, s);
             s = parent;
@@ -131,8 +135,10 @@ export class MPGAAStar extends PathAlgorithm {
 
         this.closedCells.clear();
 
+        console.log("goal at",this.goal.position.toString())
         while(!this.openCells.isEmpty){
           let s = this.openCells.pop();
+          console.log("s",s.position.toString())
           if(s.isGoal){
             return s;
           }
@@ -155,7 +161,7 @@ export class MPGAAStar extends PathAlgorithm {
                 this.openCells.insert(neighbor,neighbor.estimatedDistance);
               }
             }
-            if(!neighbor.isGoal){
+            if(!(neighbor.isGoal || neighbor.isStart)){
               neighbor.cellType = CellType.Visited;
             }else{
               //todo: we could stop here.. break;

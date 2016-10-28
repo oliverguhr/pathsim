@@ -54,12 +54,15 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                             cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
                         });
                         this.buildPath(s);
+                        break;
                     }
                 }
                 buildPath(s) {
                     while (s !== this.start) {
-                        s.type = index_1.CellType.Current;
-                        s.color = undefined;
+                        if (!(s.isGoal || s.isStart)) {
+                            s.type = index_1.CellType.Current;
+                            s.color = undefined;
+                        }
                         let parent = this.parent.get(s);
                         this.next.set(parent, s);
                         s = parent;
@@ -73,8 +76,10 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.updateF(init);
                     this.openCells.insert(init, init.estimatedDistance);
                     this.closedCells.clear();
+                    console.log("goal at", this.goal.position.toString());
                     while (!this.openCells.isEmpty) {
                         let s = this.openCells.pop();
+                        console.log("s", s.position.toString());
                         if (s.isGoal) {
                             return s;
                         }
@@ -94,7 +99,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                                     this.openCells.insert(neighbor, neighbor.estimatedDistance);
                                 }
                             }
-                            if (!neighbor.isGoal) {
+                            if (!(neighbor.isGoal || neighbor.isStart)) {
                                 neighbor.cellType = index_1.CellType.Visited;
                             }
                             else {
