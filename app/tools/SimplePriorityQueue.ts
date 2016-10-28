@@ -1,8 +1,8 @@
 import * as _ from "lodash";
 
 /**
- * Hacky implementation of a PriorityQueue. 
- * I added this to meet the needs of the LPA* algorithm. 
+ * Hacky implementation of a PriorityQueue.
+ * I added this to meet the needs of the LPA* algorithm.
  */
 export class SimplePriorityQueue<Telement, Tkey> {
     private items: Telement[];
@@ -40,6 +40,10 @@ export class SimplePriorityQueue<Telement, Tkey> {
         // quick and dirty solution
         this.remove(item);
         this.insert(item, key);
+    }
+
+    public get isEmpty(){
+      return this.items.length > 0;
     }
 
     private sort() {

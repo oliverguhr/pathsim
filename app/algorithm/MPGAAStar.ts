@@ -113,23 +113,39 @@ export class MPGAAStar extends PathAlgorithm {
     }
 
     private insertState(s: Cell, sSuccessor: Cell, queue: SimplePriorityQueue<Cell, number>) {
-
+        let newEstimatedDistance = this.distance(s, sSuccessor) + sSuccessor.estimatedDistance;
+        if(s.estimatedDistance > newEstimatedDistance){
+            s.estimatedDistance = newEstimatedDistance;
+            if(queue.has(s)){
+              queue.updateKey(s,s.estimatedDistance);
+            }else{
+              queue.insert(s,s.estimatedDistance);
+            }
+        }
     }
 
-    private reestablishConsitency() {
-        // todo: write code
-        let queue = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
+    private reestablishConsitency(cell: Cell) {
+        /*
+            For the sake of simplicty we call this method everytime we found a
+            new cell with decreased edege (read arc) costs. To improve the
+            performace one should mark all these cells and process them in one
+            run.
+        */
 
-        // for each (s, s 0 ) such that c(s, s 0 ) decreased do
-        //    InsertState (s, s 0 , Q)
-        // remaks: we might get this cells from observe..
+        let queue = new SimplePriorityQueue<Cell, number>((a, b) => b - a, 0);
 
-        let hack : Cell[];
+        // for each (s, s') such that c(s, s') decreased do
+        let neighbors = this.getNeighbors(cell,
+            (x: Cell) => (cell.distance + this.distance(x, cell)) < x.distance);
+        // InsertState (s, s' , Q)
+        neighbors.forEach(x => this.insertState(cell, x, queue));
 
-      /*  for(let cell of hack){
-            this.insertState();
+        while (!queue.isEmpty) {
+          // Extract state s' with lowest h-value in Q
+          let lowCell = queue.pop();
+          let lowNeighbors = this.getNeighbors(lowCell,  (x: Cell) => !x.isBlocked);
+          lowNeighbors.forEach(x => this.insertState(lowCell, x, queue));
         }
-      */
     }
 
     /**
@@ -157,7 +173,7 @@ export class MPGAAStar extends PathAlgorithm {
                     this.next.delete(neighbor);
                   }
                   if (neighbor.distance < oldDistance) {
-                    this.reestablishConsitency();
+                    this.reestablishConsitency(neighbor);
                   }
                 }
             }
