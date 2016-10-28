@@ -5,8 +5,9 @@ export class Cell {
     public position: Position;
     public cellType: CellType;
     public rhs: number;
+    /** also known as g value or g(x) */
     public distance: number;
-    /** Also known as h value */
+    /** also known as f value or f(x) */
     public estimatedDistance: number;
     public color: string;
     public previous: Cell;

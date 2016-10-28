@@ -109,7 +109,20 @@ export class MPGAAStar extends PathAlgorithm {
 
     private aStar(init: Cell): Cell {
         // todo: add code
+        // cell.distance = g(x)
+        // cell.estimatedDistance = f(x)
+        // h(x) = this.distance(x,this.goal)
+        // f Pfad vom Start zum Ziel f(x)=g(x)+h(x)
+        // g(x) die bisherigen Kosten vom Startknoten
+        // h(x) die geschätzten Kosten von x bis zum Zielknoten
         return null;
+    }
+
+    private initializeState(s: Cell){
+        if(this.searches.get(s) !== this.counter){
+            s.distance = Number.POSITIVE_INFINITY;
+        }
+        this.searches.set(s,this.counter);
     }
 
     private insertState(s: Cell, sSuccessor: Cell, queue: SimplePriorityQueue<Cell, number>) {
