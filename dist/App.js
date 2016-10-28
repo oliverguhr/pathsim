@@ -25,7 +25,7 @@ System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"
                 map.cols = $attrs.cols;
                 map.rows = $attrs.rows;
                 map.robots = undefined;
-                map.algorithm = "AStar";
+                map.algorithm = "MPGAAStar";
                 map.algorithmInstance = undefined;
                 map.distance = "euklid";
                 map.isVisualizePathEnabled = true;
@@ -203,8 +203,17 @@ System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"
                                 algorithm = new index_1.LpaStar(map.map);
                             }
                             break;
-                        default:
+                        case "AStar":
                             algorithm = new index_1.AStar(map.map);
+                            break;
+                        default:
+                            if (map.algorithmInstance instanceof index_1.MPGAAStar) {
+                                algorithm = map.algorithmInstance;
+                            }
+                            else {
+                                algorithm = new index_1.MPGAAStar(map.map, 100);
+                            }
+                            break;
                     }
                     switch (map.distance) {
                         case "manhattan":

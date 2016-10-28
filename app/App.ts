@@ -1,8 +1,7 @@
-import {LpaStar, AStar, Dijkstra, Distance} from "./algorithm/index";
+import {LpaStar, AStar, Dijkstra, Distance, MPGAAStar} from "./algorithm/index";
 import { Map, Moveable, CellType, Position, Cell } from "./grid/index";
 import {DynmicObstacleGenerator, MazeGenerator, PathCostVisualizer, ObstacleGenerator} from "./tools/index";
 import * as angular from "angular";
-
 
 /* Change map from regular js
 angular.element($0).scope().$apply((scope) => {scope.map.map[0][0].isBlocked = scope.map.map[0][0].isBlocked!})
@@ -17,7 +16,7 @@ app.controller("MapController", function ($attrs, $interval) {
     map.cols = $attrs.cols;
     map.rows = $attrs.rows;
     map.robots = undefined;
-    map.algorithm = "AStar";
+    map.algorithm = "MPGAAStar";
     map.algorithmInstance = undefined;
     map.distance = "euklid";
     map.isVisualizePathEnabled = true;
@@ -214,10 +213,17 @@ app.controller("MapController", function ($attrs, $interval) {
                 } else {
                     algorithm = new LpaStar(map.map);
                 }
-
+                break;
+            case "AStar":
+                algorithm = new AStar(map.map);
                 break;
             default:
-                algorithm = new AStar(map.map);
+                if (map.algorithmInstance instanceof MPGAAStar) {
+                    algorithm = map.algorithmInstance;
+                } else {
+                    algorithm = new MPGAAStar(map.map, 100);
+                }
+                break;
         }
 
         switch (map.distance) {

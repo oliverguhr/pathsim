@@ -4,8 +4,8 @@
     <link rel="stylesheet" type="text/css" href="styles/svg.css" />
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
 
- 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.38/system.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.38/system.js"></script>
    	<script type="text/javascript" src="./system.config.js"></script>
 
 
@@ -46,6 +46,7 @@
                                 <option value="Dijkstra">Dijkstra</option>
                                 <option value="AStar">A*</option>
                                 <option value="LpaStar">Lifelong Planning A*</option>
+                                <option value="MPGAAStar">MPGAAStar</option>
                             </select>
                             <span>Distance:</span>
                             <select name="distance" id="distance" ng-model="map.distance" ng-change="map.changeAlgorithm();">

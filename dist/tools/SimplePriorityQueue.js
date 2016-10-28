@@ -26,6 +26,9 @@ System.register(["lodash"], function(exports_1, context_1) {
                 has(item) {
                     return _.findIndex(this.items, x => x === item) !== -1;
                 }
+                clear() {
+                    this.items = new Array();
+                }
                 topKey() {
                     if (this.items[0] !== undefined) {
                         return this.items[0].key;
@@ -40,6 +43,9 @@ System.register(["lodash"], function(exports_1, context_1) {
                 updateKey(item, key) {
                     this.remove(item);
                     this.insert(item, key);
+                }
+                get isEmpty() {
+                    return this.items.length <= 0;
                 }
                 sort() {
                     this.items = this.items.sort((a, b) => this.comparator(a.key, b.key));

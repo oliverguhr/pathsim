@@ -1,15 +1,12 @@
-System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../tools/index", './../tools/SimplePriorityQueue'], function(exports_1, context_1) {
+System.register(["./PathAlgorithm", "./Distance", "./../tools/index", './../tools/SimplePriorityQueue'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var PathAlgorithm_1, PriorityQueue, Distance_1, index_1, SimplePriorityQueue_1;
+    var PathAlgorithm_1, Distance_1, index_1, SimplePriorityQueue_1;
     var MPGAAStar;
     return {
         setters:[
             function (PathAlgorithm_1_1) {
                 PathAlgorithm_1 = PathAlgorithm_1_1;
-            },
-            function (PriorityQueue_1) {
-                PriorityQueue = PriorityQueue_1;
             },
             function (Distance_1_1) {
                 Distance_1 = Distance_1_1;
@@ -25,12 +22,9 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                 constructor(map, visibiltyRange) {
                     super();
                     this.visibiltyRange = visibiltyRange;
-                    let queueConfig = {
-                        comparator: (a, b) => a.estimatedDistance - b.estimatedDistance,
-                    };
                     this.map = map;
-                    this.closedCells = new Array();
-                    this.openCells = new PriorityQueue.ArrayStrategy(queueConfig);
+                    this.closedCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
+                    this.openCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
                     this.goal = this.map.getGoalCell();
                     this.start = this.map.getStartCell();
                     this.currentCell = this.start;
@@ -52,7 +46,7 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                         if (s === null) {
                             throw new Error("goal is not reachable");
                         }
-                        let cells = this.getNeighbors(s, (x) => this.closedCells.indexOf(x) !== -1);
+                        let cells = this.getNeighbors(s, (x) => this.closedCells.has(x));
                         cells.forEach(cell => {
                             cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
                         });
@@ -67,30 +61,87 @@ System.register(["./PathAlgorithm", "js-priority-queue", "./Distance", "./../too
                     }
                 }
                 aStar(init) {
+                    this.initializeState(init);
+                    this.parent.set(init, undefined);
+                    init.distance = 0;
+                    this.openCells.clear();
+                    this.updateF(init);
+                    this.openCells.insert(init, init.estimatedDistance);
+                    this.closedCells.clear();
+                    while (!this.openCells.isEmpty) {
+                        let s = this.openCells.pop();
+                        if (s === this.goal) {
+                            return s;
+                        }
+                        this.closedCells.insert(init, init.estimatedDistance);
+                        let neighbors = this.getNeighbors(s, cell => !cell.isBlocked);
+                        for (let neighbor of neighbors) {
+                            this.initializeState(neighbor);
+                            let neighborsDistance = s.distance + this.distance(s, neighbor);
+                            if (neighbor.distance > neighborsDistance) {
+                                neighbor.distance = neighborsDistance;
+                                this.parent.set(neighbor, s);
+                                this.updateF(neighbor);
+                                if (this.openCells.has(neighbor)) {
+                                    this.openCells.updateKey(neighbor, neighbor.estimatedDistance);
+                                }
+                                else {
+                                    this.openCells.insert(neighbor, neighbor.estimatedDistance);
+                                }
+                            }
+                        }
+                    }
                     return null;
                 }
-                insertState(s, sSuccessor, queue) {
+                h(cell) {
+                    return this.distance(cell, this.goal);
                 }
-                reestablishConsitency() {
-                    let queue = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
+                updateF(cell) {
+                    cell.estimatedDistance = cell.distance + this.h(cell);
+                }
+                initializeState(s) {
+                    if (this.searches.get(s) !== this.counter) {
+                        s.distance = Number.POSITIVE_INFINITY;
+                    }
+                    this.searches.set(s, this.counter);
+                }
+                insertState(s, sSuccessor, queue) {
+                    let newEstimatedDistance = this.distance(s, sSuccessor) + sSuccessor.estimatedDistance;
+                    if (s.estimatedDistance > newEstimatedDistance) {
+                        s.estimatedDistance = newEstimatedDistance;
+                        if (queue.has(s)) {
+                            queue.updateKey(s, s.estimatedDistance);
+                        }
+                        else {
+                            queue.insert(s, s.estimatedDistance);
+                        }
+                    }
+                }
+                reestablishConsitency(cell) {
+                    let queue = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => b - a, 0);
+                    let neighbors = this.getNeighbors(cell, (x) => (cell.distance + this.distance(x, cell)) < x.distance);
+                    neighbors.forEach(x => this.insertState(cell, x, queue));
+                    while (!queue.isEmpty) {
+                        let lowCell = queue.pop();
+                        let lowNeighbors = this.getNeighbors(lowCell, (x) => !x.isBlocked);
+                        lowNeighbors.forEach(x => this.insertState(lowCell, x, queue));
+                    }
                 }
                 observe(start) {
                     this.map.notifyOnChange(changedCell => {
                         let distance = Distance_1.Distance.euklid(changedCell, this.currentCell);
                         if (distance < this.visibiltyRange) {
-                            let oldDistance = changedCell.distance;
-                            if (changedCell.isBlocked) {
-                                changedCell.distance = Number.POSITIVE_INFINITY;
-                            }
-                            else {
-                                changedCell.distance = changedCell.previous.distance +
-                                    this.distance(changedCell, changedCell.previous);
-                            }
-                            if (changedCell.distance > oldDistance) {
-                                this.next.delete(changedCell);
-                            }
-                            if (changedCell.distance < oldDistance) {
-                                this.reestablishConsitency();
+                            let neighbors = this.getNeighbors(changedCell, c => !c.isBlocked);
+                            for (let neighbor of neighbors) {
+                                let oldDistance = neighbor.distance;
+                                changedCell.distance = neighbor.previous.distance +
+                                    this.distance(changedCell, neighbor.previous);
+                                if (neighbor.distance > oldDistance) {
+                                    this.next.delete(neighbor);
+                                }
+                                if (neighbor.distance < oldDistance) {
+                                    this.reestablishConsitency(neighbor);
+                                }
                             }
                         }
                     });

@@ -1,4 +1,4 @@
-System.register(["./AStar", "./Dijkstra", "./Distance", "./LpaStar"], function(exports_1, context_1) {
+System.register(["./AStar", "./Dijkstra", "./Distance", "./LpaStar", "./MPGAAStar"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     function exportStar_1(m) {
@@ -21,6 +21,9 @@ System.register(["./AStar", "./Dijkstra", "./Distance", "./LpaStar"], function(e
             },
             function (LpaStar_1_1) {
                 exportStar_1(LpaStar_1_1);
+            },
+            function (MPGAAStar_1_1) {
+                exportStar_1(MPGAAStar_1_1);
             }],
         execute: function() {
         }
