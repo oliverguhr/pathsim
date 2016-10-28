@@ -101,6 +101,8 @@ export class MPGAAStar extends PathAlgorithm {
 
     private buildPath(s: Cell): void {
         while (s !== this.start) {
+            s.type = CellType.Current;
+            s.color = undefined;
             let parent = this.parent.get(s);
             this.next.set(parent, s);
             s = parent;

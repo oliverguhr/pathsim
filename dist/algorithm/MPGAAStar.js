@@ -58,6 +58,8 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 }
                 buildPath(s) {
                     while (s !== this.start) {
+                        s.type = index_1.CellType.Current;
+                        s.color = undefined;
                         let parent = this.parent.get(s);
                         this.next.set(parent, s);
                         s = parent;
