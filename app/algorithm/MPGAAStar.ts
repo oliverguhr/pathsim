@@ -13,8 +13,8 @@ import { SimplePriorityQueue } from './../tools/SimplePriorityQueue';
 export class MPGAAStar extends PathAlgorithm {
     private goal: Cell;
     private start: Cell;
-    private openCells: PriorityQueue<Cell>;
-    private closedCells: Array<Cell>;
+    private openCells: SimplePriorityQueue<Cell, number>;
+    private closedCells: SimplePriorityQueue<Cell, number>;
     /** Iteration counter. Incremented before every A* search. */
     private counter: number;
     private currentCell: Cell;
@@ -34,12 +34,12 @@ export class MPGAAStar extends PathAlgorithm {
     constructor(map: Map, private visibiltyRange: number) {
         super();
 
-        let queueConfig = {
+      /*  let queueConfig = {
             comparator: (a: Cell, b: Cell) => a.estimatedDistance - b.estimatedDistance,
-        };
+        };*/
         this.map = map;
-        this.closedCells = new Array<Cell>();
-        this.openCells = new PriorityQueue.ArrayStrategy<Cell>(queueConfig);
+        this.closedCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
+        this.openCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();
         this.currentCell = this.start;
@@ -76,7 +76,7 @@ export class MPGAAStar extends PathAlgorithm {
                     h(s' ) ← g(s) + h(s) − g(s' ) // heuristic update
                 Check if s' ∈ Closed means neighbors of s that are on the closed list
             */
-            let cells = this.getNeighbors(s, (x: Cell) => this.closedCells.indexOf(x) !== -1);
+            let cells = this.getNeighbors(s, (x: Cell) => this.closedCells.has(x));
             cells.forEach(cell => {
                 // heuristic update
                 cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
@@ -115,7 +115,58 @@ export class MPGAAStar extends PathAlgorithm {
         // f Pfad vom Start zum Ziel f(x)=g(x)+h(x)
         // g(x) die bisherigen Kosten vom Startknoten
         // h(x) die geschätzten Kosten von x bis zum Zielknoten
+
+        this.initializeState(init);
+        this.parent.set(init,undefined);
+
+        init.distance = 0;
+
+        this.openCells.clear();
+
+        this.updateF(init);
+
+        this.openCells.insert(init, init.estimatedDistance);
+
+        this.closedCells.clear();
+
+        while(!this.openCells.isEmpty){
+          let s = this.openCells.pop();
+
+          if(s === this.goal){
+            return s;
+          }
+
+          this.closedCells.insert(init, init.estimatedDistance);
+
+          let neighbors = this.getNeighbors(s, cell => !cell.isBlocked);
+
+          for(let neighbor of neighbors){
+            this.initializeState(neighbor);
+            let neighborsDistance =  s.distance + this.distance(s,neighbor);
+            if(neighbor.distance > neighborsDistance){
+              neighbor.distance = neighborsDistance;
+              this.parent.set(neighbor, s);
+              this.updateF(neighbor);
+              if(this.openCells.has(neighbor)){
+                this.openCells.updateKey(neighbor,neighbor.estimatedDistance);
+              }
+              else{
+                this.openCells.insert(neighbor,neighbor.estimatedDistance);
+              }
+            }
+          }
+        }
         return null;
+    }
+
+    /** returns the heuristic distance value from the cell to the goal. */
+    private h(cell: Cell){
+      return this.distance(cell,this.goal);
+    }
+
+    /** Updates the estimated distance value for a given cell*/
+    private updateF(cell:Cell){
+      cell.estimatedDistance = cell.distance + this.h(cell);
     }
 
     private initializeState(s: Cell){

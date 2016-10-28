@@ -23,6 +23,10 @@ export class SimplePriorityQueue<Telement, Tkey> {
         return _.findIndex(this.items, x => x === item) !== -1;
     }
 
+    public clear(){
+      this.items = new Array();
+    }
+
     public topKey() {
         // todo: review this. Can we return [0,0] if list is empty?
         if (this.items[0] !== undefined) {
@@ -43,7 +47,7 @@ export class SimplePriorityQueue<Telement, Tkey> {
     }
 
     public get isEmpty(){
-      return this.items.length > 0;
+      return this.items.length <= 0;
     }
 
     private sort() {
