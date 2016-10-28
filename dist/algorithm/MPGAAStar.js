@@ -1,18 +1,21 @@
-System.register(["./PathAlgorithm", "./Distance", "./../tools/index", './../tools/SimplePriorityQueue'], function(exports_1, context_1) {
+System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/index", './../tools/SimplePriorityQueue'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var PathAlgorithm_1, Distance_1, index_1, SimplePriorityQueue_1;
+    var index_1, PathAlgorithm_1, Distance_1, index_2, SimplePriorityQueue_1;
     var MPGAAStar;
     return {
         setters:[
+            function (index_1_1) {
+                index_1 = index_1_1;
+            },
             function (PathAlgorithm_1_1) {
                 PathAlgorithm_1 = PathAlgorithm_1_1;
             },
             function (Distance_1_1) {
                 Distance_1 = Distance_1_1;
             },
-            function (index_1_1) {
-                index_1 = index_1_1;
+            function (index_2_1) {
+                index_2 = index_2_1;
             },
             function (SimplePriorityQueue_1_1) {
                 SimplePriorityQueue_1 = SimplePriorityQueue_1_1;
@@ -28,9 +31,9 @@ System.register(["./PathAlgorithm", "./Distance", "./../tools/index", './../tool
                     this.goal = this.map.getGoalCell();
                     this.start = this.map.getStartCell();
                     this.currentCell = this.start;
-                    this.searches = new index_1.TypMappedDictionary(cell => this.map.getIndexOfCell(cell), 0);
-                    this.next = new index_1.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
-                    this.parent = new index_1.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
+                    this.searches = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell), 0);
+                    this.next = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
+                    this.parent = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
                 }
                 run() {
                     this.counter = 0;
@@ -70,10 +73,10 @@ System.register(["./PathAlgorithm", "./Distance", "./../tools/index", './../tool
                     this.closedCells.clear();
                     while (!this.openCells.isEmpty) {
                         let s = this.openCells.pop();
-                        if (s === this.goal) {
+                        if (s.isGoal) {
                             return s;
                         }
-                        this.closedCells.insert(init, init.estimatedDistance);
+                        this.closedCells.insert(s, s.estimatedDistance);
                         let neighbors = this.getNeighbors(s, cell => !cell.isBlocked);
                         for (let neighbor of neighbors) {
                             this.initializeState(neighbor);
@@ -88,6 +91,12 @@ System.register(["./PathAlgorithm", "./Distance", "./../tools/index", './../tool
                                 else {
                                     this.openCells.insert(neighbor, neighbor.estimatedDistance);
                                 }
+                            }
+                            if (!neighbor.isGoal) {
+                                neighbor.cellType = index_1.CellType.Visited;
+                            }
+                            else {
+                                console.info("goal found");
                             }
                         }
                     }
