@@ -5,7 +5,7 @@ System.register([], function(exports_1, context_1) {
     return {
         setters:[],
         execute: function() {
-            class Position {
+            Position = class Position {
                 constructor(x, y) {
                     this.x = x;
                     this.y = y;
@@ -13,7 +13,7 @@ System.register([], function(exports_1, context_1) {
                 toString() {
                     return "x = " + this.x + " y = " + this.y;
                 }
-            }
+            };
             exports_1("Position", Position);
         }
     }

@@ -9,7 +9,7 @@ System.register(["./CellType"], function(exports_1, context_1) {
                 CellType_1 = CellType_1_1;
             }],
         execute: function() {
-            class Moveable {
+            Moveable = class Moveable {
                 constructor(map, cellType) {
                     this.map = map;
                     this.cellType = cellType;
@@ -28,7 +28,7 @@ System.register(["./CellType"], function(exports_1, context_1) {
                         return cell;
                     });
                 }
-            }
+            };
             exports_1("Moveable", Moveable);
         }
     }

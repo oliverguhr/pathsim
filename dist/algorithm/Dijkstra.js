@@ -15,7 +15,7 @@ System.register(["./PathAlgorithm", "../grid/index", "lodash"], function(exports
                 _ = _1;
             }],
         execute: function() {
-            class Dijkstra extends PathAlgorithm_1.PathAlgorithm {
+            Dijkstra = class Dijkstra extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map) {
                     super();
                     this.map = map;
@@ -65,7 +65,7 @@ System.register(["./PathAlgorithm", "../grid/index", "lodash"], function(exports
                         currentCell.type = index_1.CellType.Visited;
                     }
                 }
-            }
+            };
             exports_1("Dijkstra", Dijkstra);
         }
     }

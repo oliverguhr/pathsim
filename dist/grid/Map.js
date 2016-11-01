@@ -15,7 +15,7 @@ System.register(["lodash", "./Cell", "./CellType"], function(exports_1, context_
                 CellType_1 = CellType_1_1;
             }],
         execute: function() {
-            class Map {
+            Map = class Map {
                 constructor(rows, cols) {
                     this.rows = rows;
                     this.cols = cols;
@@ -79,7 +79,7 @@ System.register(["lodash", "./Cell", "./CellType"], function(exports_1, context_
                         }
                     }
                 }
-            }
+            };
             exports_1("Map", Map);
         }
     }
