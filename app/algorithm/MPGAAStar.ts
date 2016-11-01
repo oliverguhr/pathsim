@@ -31,28 +31,16 @@ export class MPGAAStar extends PathAlgorithm {
     private next: TypMappedDictionary<Cell, Cell>;
     private parent: TypMappedDictionary<Cell, Cell>;
 
-    constructor(map: Map, private visibiltyRange: number) {
+    constructor(public map: Map, private visibiltyRange: number) {
         super();
-
-      /*  let queueConfig = {
-            comparator: (a: Cell, b: Cell) => a.estimatedDistance - b.estimatedDistance,
-        };*/
-        this.map = map;
-        this.closedCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
-        this.openCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
-        this.goal = this.map.getGoalCell();
-        this.start = this.map.getStartCell();
-        this.currentCell = this.start;
-        this.searches = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell), 0);
-        this.next = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
-        this.parent = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
+        this.initialize();
     }
 
     /**
      * Entry point.
      * Equals to "main()" Line 56 within the pseudo code
      */
-    public run() {
+    public run() {              
         this.counter = 0;
         this.observe(this.start);
 
@@ -135,10 +123,8 @@ export class MPGAAStar extends PathAlgorithm {
 
         this.closedCells.clear();
 
-        console.log("goal at",this.goal.position.toString())
         while(!this.openCells.isEmpty){
-          let s = this.openCells.pop();
-          console.log("s",s.position.toString())
+          let s = this.openCells.pop();          
           if(s.isGoal){
             return s;
           }
@@ -149,7 +135,7 @@ export class MPGAAStar extends PathAlgorithm {
 
           for(let neighbor of neighbors){
             this.initializeState(neighbor);
-            let neighborsDistance =  s.distance + this.distance(s,neighbor);
+            let neighborsDistance =  s.distance + this.distance(neighbor,s);
             if(neighbor.distance > neighborsDistance){
               neighbor.distance = neighborsDistance;
               this.parent.set(neighbor, s);
@@ -163,11 +149,7 @@ export class MPGAAStar extends PathAlgorithm {
             }
             if(!(neighbor.isGoal || neighbor.isStart)){
               neighbor.cellType = CellType.Visited;
-            }else{
-              //todo: we could stop here.. break;
-              console.info("goal found");
             }
-
           }
         }
         return null;
@@ -186,6 +168,10 @@ export class MPGAAStar extends PathAlgorithm {
     private initializeState(s: Cell){
         if(this.searches.get(s) !== this.counter){
             s.distance = Number.POSITIVE_INFINITY;
+        }
+        else if (s.isGoal){
+
+            console.error(s,this.searches.get(s), this.counter);
         }
         this.searches.set(s,this.counter);
     }
@@ -230,8 +216,8 @@ export class MPGAAStar extends PathAlgorithm {
      * Observes map changes
      * Line 33 in pseudo code
      */
-    private observe(start: Cell) {
-        this.map.notifyOnChange(changedCell => {
+    private observe(start: Cell) {        
+       /* this.map.notifyOnChange(changedCell => {
             // arcs in the range of visibility from s
             let distance = Distance.euklid(changedCell, this.currentCell);
             if (distance < this.visibiltyRange) {
@@ -255,21 +241,18 @@ export class MPGAAStar extends PathAlgorithm {
                   }
                 }
             }
-        });
+        });*/
     }
 
-    /*  private initialize() {
-          let cells = this.map.cells.filter(cell => !cell.isBlocked);
-
-          for (let i = 0; i < cells.length; i++) {
-              cells[i].previous = undefined;
-              cells[i].distance = Number.POSITIVE_INFINITY;
-              cells[i].isOpen = true;
-          }
-
-          this.start.distance = 0;
-          this.start.estimatedDistance = this.distance(this.start, this.goal);
-          this.openCells.queue(this.start);
-      }*/
+      private initialize() {                 
+        this.closedCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
+        this.openCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
+        this.goal = this.map.getGoalCell();
+        this.start = this.map.getStartCell();
+        this.currentCell = this.start;
+        this.searches = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell), 0);
+        this.next = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
+        this.parent = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
+      }
 
 }

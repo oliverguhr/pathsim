@@ -59,8 +59,8 @@ export class Map {
      * gets the zero based index of a cell 
      * can be used with "cells" getter 
      */
-    public getIndexOfCell(cell: Cell) {
-        return (cell.position.x + (cell.position.y - 1) * this.rows) - 1;
+    public getIndexOfCell(cell: Cell) {              
+       return ((cell.position.y) * this.cols) + cell.position.x;
     }
 
     public resetPath() {

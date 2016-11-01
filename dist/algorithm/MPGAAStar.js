@@ -1,7 +1,7 @@
-System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/index", './../tools/SimplePriorityQueue'], function(exports_1, context_1) {
+System.register(["../grid/index", "./PathAlgorithm", "./../tools/index", './../tools/SimplePriorityQueue'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var index_1, PathAlgorithm_1, Distance_1, index_2, SimplePriorityQueue_1;
+    var index_1, PathAlgorithm_1, index_2, SimplePriorityQueue_1;
     var MPGAAStar;
     return {
         setters:[
@@ -10,9 +10,6 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
             },
             function (PathAlgorithm_1_1) {
                 PathAlgorithm_1 = PathAlgorithm_1_1;
-            },
-            function (Distance_1_1) {
-                Distance_1 = Distance_1_1;
             },
             function (index_2_1) {
                 index_2 = index_2_1;
@@ -24,16 +21,9 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
             MPGAAStar = class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map, visibiltyRange) {
                     super();
-                    this.visibiltyRange = visibiltyRange;
                     this.map = map;
-                    this.closedCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
-                    this.openCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
-                    this.goal = this.map.getGoalCell();
-                    this.start = this.map.getStartCell();
-                    this.currentCell = this.start;
-                    this.searches = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell), 0);
-                    this.next = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
-                    this.parent = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
+                    this.visibiltyRange = visibiltyRange;
+                    this.initialize();
                 }
                 run() {
                     this.counter = 0;
@@ -76,10 +66,8 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.updateF(init);
                     this.openCells.insert(init, init.estimatedDistance);
                     this.closedCells.clear();
-                    console.log("goal at", this.goal.position.toString());
                     while (!this.openCells.isEmpty) {
                         let s = this.openCells.pop();
-                        console.log("s", s.position.toString());
                         if (s.isGoal) {
                             return s;
                         }
@@ -87,7 +75,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                         let neighbors = this.getNeighbors(s, cell => !cell.isBlocked);
                         for (let neighbor of neighbors) {
                             this.initializeState(neighbor);
-                            let neighborsDistance = s.distance + this.distance(s, neighbor);
+                            let neighborsDistance = s.distance + this.distance(neighbor, s);
                             if (neighbor.distance > neighborsDistance) {
                                 neighbor.distance = neighborsDistance;
                                 this.parent.set(neighbor, s);
@@ -102,9 +90,6 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                             if (!(neighbor.isGoal || neighbor.isStart)) {
                                 neighbor.cellType = index_1.CellType.Visited;
                             }
-                            else {
-                                console.info("goal found");
-                            }
                         }
                     }
                     return null;
@@ -118,6 +103,9 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 initializeState(s) {
                     if (this.searches.get(s) !== this.counter) {
                         s.distance = Number.POSITIVE_INFINITY;
+                    }
+                    else if (s.isGoal) {
+                        console.error(s, this.searches.get(s), this.counter);
                     }
                     this.searches.set(s, this.counter);
                 }
@@ -144,23 +132,16 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     }
                 }
                 observe(start) {
-                    this.map.notifyOnChange(changedCell => {
-                        let distance = Distance_1.Distance.euklid(changedCell, this.currentCell);
-                        if (distance < this.visibiltyRange) {
-                            let neighbors = this.getNeighbors(changedCell, c => !c.isBlocked);
-                            for (let neighbor of neighbors) {
-                                let oldDistance = neighbor.distance;
-                                changedCell.distance = neighbor.previous.distance +
-                                    this.distance(changedCell, neighbor.previous);
-                                if (neighbor.distance > oldDistance) {
-                                    this.next.delete(neighbor);
-                                }
-                                if (neighbor.distance < oldDistance) {
-                                    this.reestablishConsitency(neighbor);
-                                }
-                            }
-                        }
-                    });
+                }
+                initialize() {
+                    this.closedCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
+                    this.openCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
+                    this.goal = this.map.getGoalCell();
+                    this.start = this.map.getStartCell();
+                    this.currentCell = this.start;
+                    this.searches = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell), 0);
+                    this.next = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
+                    this.parent = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
                 }
             };
             exports_1("MPGAAStar", MPGAAStar);

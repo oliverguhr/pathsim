@@ -54,7 +54,7 @@ System.register(["lodash", "./Cell", "./CellType"], function(exports_1, context_
                     }
                 }
                 getIndexOfCell(cell) {
-                    return (cell.position.x + (cell.position.y - 1) * this.rows) - 1;
+                    return ((cell.position.y) * this.cols) + cell.position.x;
                 }
                 resetPath() {
                     this.cells.filter(cell => cell.isVisited || cell.isCurrent).forEach(cell => {
