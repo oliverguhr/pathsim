@@ -1,7 +1,7 @@
-System.register(["../grid/index", "./PathAlgorithm", "./../tools/index", './../tools/SimplePriorityQueue'], function(exports_1, context_1) {
+System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/index", './../tools/SimplePriorityQueue'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var index_1, PathAlgorithm_1, index_2, SimplePriorityQueue_1;
+    var index_1, PathAlgorithm_1, Distance_1, index_2, SimplePriorityQueue_1;
     var MPGAAStar;
     return {
         setters:[
@@ -10,6 +10,9 @@ System.register(["../grid/index", "./PathAlgorithm", "./../tools/index", './../t
             },
             function (PathAlgorithm_1_1) {
                 PathAlgorithm_1 = PathAlgorithm_1_1;
+            },
+            function (Distance_1_1) {
+                Distance_1 = Distance_1_1;
             },
             function (index_2_1) {
                 index_2 = index_2_1;
@@ -23,7 +26,14 @@ System.register(["../grid/index", "./PathAlgorithm", "./../tools/index", './../t
                     super();
                     this.map = map;
                     this.visibiltyRange = visibiltyRange;
-                    this.initialize();
+                    this.closedCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
+                    this.openCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
+                    this.goal = this.map.getGoalCell();
+                    this.start = this.map.getStartCell();
+                    this.currentCell = this.start;
+                    this.searches = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell), 0);
+                    this.next = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
+                    this.parent = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
                 }
                 run() {
                     this.counter = 0;
@@ -105,7 +115,6 @@ System.register(["../grid/index", "./PathAlgorithm", "./../tools/index", './../t
                         s.distance = Number.POSITIVE_INFINITY;
                     }
                     else if (s.isGoal) {
-                        console.error(s, this.searches.get(s), this.counter);
                     }
                     this.searches.set(s, this.counter);
                 }
@@ -132,16 +141,17 @@ System.register(["../grid/index", "./PathAlgorithm", "./../tools/index", './../t
                     }
                 }
                 observe(start) {
-                }
-                initialize() {
-                    this.closedCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
-                    this.openCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
-                    this.goal = this.map.getGoalCell();
-                    this.start = this.map.getStartCell();
-                    this.currentCell = this.start;
-                    this.searches = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell), 0);
-                    this.next = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
-                    this.parent = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
+                    this.map.notifyOnChange(changedCell => {
+                        let distance = Distance_1.Distance.euklid(changedCell, this.currentCell);
+                        if (distance < this.visibiltyRange) {
+                            if (changedCell.isBlocked) {
+                                this.next.delete(changedCell);
+                            }
+                            else {
+                                this.reestablishConsitency(changedCell);
+                            }
+                        }
+                    });
                 }
             };
             exports_1("MPGAAStar", MPGAAStar);
