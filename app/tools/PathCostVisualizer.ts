@@ -10,7 +10,7 @@ export class PathCostVisualizer {
         let maxDistance = _.maxBy(visitedCells, cell => cell.distance).distance;
         let distanceMulti = 1 / maxDistance;
 
-        this.map.cells.filter(cell => cell.isVisited).forEach(cell => {
+        visitedCells.forEach(cell => {
             cell.color = this.numberToColorHsl(1 - (cell.distance * distanceMulti), 0, 1);
         });
     }
