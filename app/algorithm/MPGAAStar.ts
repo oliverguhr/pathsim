@@ -33,7 +33,15 @@ export class MPGAAStar extends PathAlgorithm {
 
     constructor(public map: Map, private visibiltyRange: number) {
         super();
-        this.initialize();
+        
+        this.closedCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
+        this.openCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
+        this.goal = this.map.getGoalCell();
+        this.start = this.map.getStartCell();
+        this.currentCell = this.start;
+        this.searches = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell), 0);
+        this.next = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
+        this.parent = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
     }
 
     /**
@@ -217,7 +225,7 @@ export class MPGAAStar extends PathAlgorithm {
      * Line 33 in pseudo code
      */
     private observe(start: Cell) {        
-       /* this.map.notifyOnChange(changedCell => {
+        this.map.notifyOnChange(changedCell => {
             // arcs in the range of visibility from s
             let distance = Distance.euklid(changedCell, this.currentCell);
             if (distance < this.visibiltyRange) {
@@ -241,18 +249,6 @@ export class MPGAAStar extends PathAlgorithm {
                   }
                 }
             }
-        });*/
-    }
-
-      private initialize() {                 
-        this.closedCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
-        this.openCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
-        this.goal = this.map.getGoalCell();
-        this.start = this.map.getStartCell();
-        this.currentCell = this.start;
-        this.searches = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell), 0);
-        this.next = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
-        this.parent = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
-      }
-
+        });
+    }   
 }
