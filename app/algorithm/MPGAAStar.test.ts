@@ -6,10 +6,10 @@ function createMap(size: number) {
     let map = new Map(size, size);
 
     let start = new Moveable(map, CellType.Start);
-    start.moveTo(new Position(0, 0));
+    start.moveTo(new Position(2, 2));
 
     let goal = new Moveable(map, CellType.Goal);
-    goal.moveTo(new Position(size - 1, size - 1));
+    goal.moveTo(new Position(size - 3, size - 3));
 
     return map;
 };
