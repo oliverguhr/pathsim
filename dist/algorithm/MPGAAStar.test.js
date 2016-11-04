@@ -29,6 +29,24 @@ System.register(["./MPGAAStar", "../grid/index"], function(exports_1, context_1)
                     });
                 });
             });
+            describe("MPGAAStar Random Map Tests", () => {
+                let map;
+                beforeEach(function () {
+                    let cells = 100;
+                    map = new index_1.Map(cells, cells);
+                    let start = new index_1.Moveable(map, index_1.CellType.Start);
+                    start.moveTo(new index_1.Position(Math.round(cells / 4), Math.round(cells / 2)));
+                    let goal = new index_1.Moveable(map, index_1.CellType.Goal);
+                    goal.moveTo(new index_1.Position(Math.round((cells / 4) * 3), Math.round(cells / 2)));
+                    return map;
+                });
+                describe("pathfinding", () => {
+                    it("should be successful on a empty map", () => {
+                        let algorithm = new MPGAAStar_1.MPGAAStar(map, 300);
+                        algorithm.run();
+                    });
+                });
+            });
         }
     }
 });

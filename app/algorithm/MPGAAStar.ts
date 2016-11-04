@@ -171,7 +171,7 @@ export class MPGAAStar extends PathAlgorithm {
         }
         else if (s.isGoal){
 
-            console.error(s,this.searches.get(s), this.counter);
+         //   console.error(s,this.searches.get(s), this.counter);
         }
         this.searches.set(s,this.counter);
     }

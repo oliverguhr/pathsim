@@ -32,5 +32,8 @@ Run all tests:
 Watch tests:
 - npm run test:w
 
+Watch tests on Windows:
+- npm run test:ww
+
 ## Licence
 MIT
