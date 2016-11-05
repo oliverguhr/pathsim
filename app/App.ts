@@ -248,12 +248,8 @@ app.controller("MapController", function ($attrs, $interval) {
             case "AStar":
                 algorithm = new AStar(map.map);
                 break;
-            default:
-                //if (map.algorithmInstance instanceof MPGAAStar) {
-                //    algorithm = map.algorithmInstance;
-                //} else {
-                    algorithm = new MPGAAStar(map.map, 5);
-                //}
+            default:                
+                    algorithm = new MPGAAStar(map.map, 5);                
                 break;
         }
 
