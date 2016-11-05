@@ -78,3 +78,9 @@ label {
     width: auto;
     vertical-align: top;
 }
+
+.inputWithLabel{
+    width: calc(100% - 130px) !important;
+    float: left;
+    margin-right: 8px;
+}

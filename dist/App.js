@@ -91,6 +91,7 @@ System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"
                         map.calulateStatistic();
                     }, 10);
                 };
+                map.robotStepIntervall = 500;
                 map.robotIsMoving = false;
                 map.startRobot = () => {
                     map.robotIsMoving = true;
@@ -111,7 +112,7 @@ System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"
                             map.visualizePathCosts();
                         }
                         map.calulateStatistic();
-                    }, 500);
+                    }, map.robotStepIntervall);
                 };
                 map.visualizePathCosts = () => {
                     if (map.isVisualizePathEnabled === true) {

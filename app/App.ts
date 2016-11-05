@@ -89,6 +89,7 @@ app.controller("MapController", function ($attrs, $interval) {
         }, 10);
     };
 
+    map.robotStepIntervall = 500;
     map.robotIsMoving = false;
     map.startRobot = () => {
         map.robotIsMoving = true;
@@ -113,7 +114,7 @@ app.controller("MapController", function ($attrs, $interval) {
             }
             map.calulateStatistic();
 
-        }, 500);
+        }, map.robotStepIntervall);
     }
 
     map.visualizePathCosts = () => {
