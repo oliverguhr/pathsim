@@ -29,7 +29,7 @@
                     <fieldset>
                         <legend>Map Options</legend>
                         <input type="button" ng-click="map.cleanMap()" value="Reset map" />
-                        <input type="button" ng-click="map.addDynamicObstacle()" value="Add robot" />
+                        <input type="button" ng-click="map.addDynamicObstacle()" value="Add moving block" />
                         <input type="button" ng-click="map.addRandomObstacles()" value="Add random blocks" />
                         <input type="button" ng-click="map.addWalls()" value="Add Walls" />
 
@@ -56,7 +56,9 @@
                             </select>
                         </label>
 
-                        <input type="button" ng-click="map.runStepByStep()" value="Run step by step" ng-hide="map.algorithm == 'LpaStar'" />
+                        <input type="button" ng-click="map.runStepByStep()" value="Run step by step" ng-hide="map.algorithm == 'LpaStar' || map.algorithm == 'MPGAAStar'" />
+
+                        <input type="button" ng-click="map.startRobot()" value="Start Robot" ng-show="map.algorithm == 'MPGAAStar'" />
 
                     </fieldset>
 

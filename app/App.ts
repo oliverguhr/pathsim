@@ -43,6 +43,10 @@ app.controller("MapController", function ($attrs, $interval) {
         map.heightPx = map.map.rows * map.cellSize;
 
         map.map.notifyOnChange((cell: Cell) => {
+            if(map.robotIsMoving){
+                return;
+            }            
+
             try {
                 map.algorithmInstance = map.getAlgorithmInstance();
             } catch (e) {
@@ -84,6 +88,33 @@ app.controller("MapController", function ($attrs, $interval) {
             map.calulateStatistic();
         }, 10);
     };
+
+    map.robotIsMoving = false;
+    map.startRobot = () => {
+        map.robotIsMoving = true;
+        map.map.resetPath();
+        let pathFinder = map.getAlgorithmInstance();
+
+        map.map.notifyOnChange((cell:Cell) => {pathFinder.observe(cell)});
+
+        let start = map.map.getStartCell();
+        let goal = map.map.getGoalCell();
+
+        let intervall = $interval(() => {
+            //cleanup old paths.. they just mess up the ui
+            map.map.cells.filter((x:Cell) => x.isCurrent).forEach((x:Cell) => x.type = CellType.Free);
+            let nextCell =pathFinder.calulatePath(start,goal);
+            start = nextCell;
+            if (nextCell.isGoal) {
+                $interval.cancel(intervall);
+                map.robotIsMoving = false;
+            } else {                                 
+                map.visualizePathCosts();
+            }
+            map.calulateStatistic();
+
+        }, 500);
+    }
 
     map.visualizePathCosts = () => {
         if (map.isVisualizePathEnabled === true) {
@@ -218,11 +249,11 @@ app.controller("MapController", function ($attrs, $interval) {
                 algorithm = new AStar(map.map);
                 break;
             default:
-                if (map.algorithmInstance instanceof MPGAAStar) {
-                    algorithm = map.algorithmInstance;
-                } else {
-                    algorithm = new MPGAAStar(map.map, 100);
-                }
+                //if (map.algorithmInstance instanceof MPGAAStar) {
+                //    algorithm = map.algorithmInstance;
+                //} else {
+                    algorithm = new MPGAAStar(map.map, 5);
+                //}
                 break;
         }
 

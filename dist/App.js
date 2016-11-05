@@ -47,6 +47,9 @@ System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"
                     map.widthPx = map.map.cols * map.cellSize;
                     map.heightPx = map.map.rows * map.cellSize;
                     map.map.notifyOnChange((cell) => {
+                        if (map.robotIsMoving) {
+                            return;
+                        }
                         try {
                             map.algorithmInstance = map.getAlgorithmInstance();
                         }
@@ -87,6 +90,28 @@ System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"
                         }
                         map.calulateStatistic();
                     }, 10);
+                };
+                map.robotIsMoving = false;
+                map.startRobot = () => {
+                    map.robotIsMoving = true;
+                    map.map.resetPath();
+                    let pathFinder = map.getAlgorithmInstance();
+                    map.map.notifyOnChange((cell) => { pathFinder.observe(cell); });
+                    let start = map.map.getStartCell();
+                    let goal = map.map.getGoalCell();
+                    let intervall = $interval(() => {
+                        map.map.cells.filter((x) => x.isCurrent).forEach((x) => x.type = index_2.CellType.Free);
+                        let nextCell = pathFinder.calulatePath(start, goal);
+                        start = nextCell;
+                        if (nextCell.isGoal) {
+                            $interval.cancel(intervall);
+                            map.robotIsMoving = false;
+                        }
+                        else {
+                            map.visualizePathCosts();
+                        }
+                        map.calulateStatistic();
+                    }, 500);
                 };
                 map.visualizePathCosts = () => {
                     if (map.isVisualizePathEnabled === true) {
@@ -207,12 +232,7 @@ System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"
                             algorithm = new index_1.AStar(map.map);
                             break;
                         default:
-                            if (map.algorithmInstance instanceof index_1.MPGAAStar) {
-                                algorithm = map.algorithmInstance;
-                            }
-                            else {
-                                algorithm = new index_1.MPGAAStar(map.map, 100);
-                            }
+                            algorithm = new index_1.MPGAAStar(map.map, 5);
                             break;
                     }
                     switch (map.distance) {

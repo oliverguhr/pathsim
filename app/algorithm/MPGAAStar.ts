@@ -3,7 +3,7 @@
  * Paper "Reusing Previously Found A* Paths for Fast Goal-Directed Navigation in Dynamic Terrain" HernandezAB15
 */
 
-import { Cell, Map, CellType, Position } from "../grid/index";
+import { Cell, Map, CellType, Position, Moveable } from "../grid/index";
 import { PathAlgorithm } from "./PathAlgorithm";
 import * as PriorityQueue from "js-priority-queue";
 import { Distance } from "./Distance";
@@ -32,6 +32,7 @@ export class MPGAAStar extends PathAlgorithm {
      */
     private next: TypMappedDictionary<Cell, Cell>;
     private parent: TypMappedDictionary<Cell, Cell>;
+    private robot: Moveable;
 
     constructor(public map: Map, private visibiltyRange: number) {
         super();
@@ -44,60 +45,66 @@ export class MPGAAStar extends PathAlgorithm {
         this.searches = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell), 0);
         this.next = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
         this.parent = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
-    }
 
+        this.robot = new Moveable(map, CellType.Current);
+    }
+ 
     /**
      * Entry point.
      * Equals to "main()" Line 56 within the pseudo code
+     * 
+     * Returns the next cell on the path.
      */
-    public run() {
+    public calulatePath(start: Cell, goal: Cell) {
+        this.init();
+
+        this.start = start;
+        this.goal = goal;
+
+        this.counter++;
+        let s = this.aStar(this.start);
+
+        if (s === null) {
+            // todo: check if its handy to throw an error here.
+            throw new Error("goal is not reachable");
+        }
+
+        /* todo: Pseudo code says:
+            for each s' ∈ Closed do
+                h(s' ) ← g(s) + h(s) − g(s' ) // heuristic update
+            Check if s' ∈ Closed means neighbors of s that are on the closed list
+        */
+        let cells = this.getNeighbors(s, (x: Cell) => this.closedCells.has(x));
+
+        cells.forEach(cell => {
+            // heuristic update
+            cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
+        });
+
+        this.buildPath(s);
+        return this.next.get(this.start);
+    }
+
+
+    private initialized = false;
+    private init() {
+        if (this.initialized)
+            return;
+
+        this.initialized = true;
         this.counter = 0;
-        this.observe(this.start);
+        //this.observe(this.start);
 
         this.map.cells.forEach(cell => {
             this.searches.set(cell, 0);
             cell.estimatedDistance = this.distance(cell, this.goal);
             this.next.delete(cell); // todo: check if we really need this line
         });
-
-        while (this.start !== this.goal) {
-            this.counter++;
-            let s = this.aStar(this.start);
-
-            if (s === null) {
-                // todo: check if its handy to throw an error here.
-                throw new Error("goal is not reachable");
-            }
-
-            /* todo: Pseudo code says:
-                for each s' ∈ Closed do
-                    h(s' ) ← g(s) + h(s) − g(s' ) // heuristic update
-                Check if s' ∈ Closed means neighbors of s that are on the closed list
-            */
-            let cells = this.getNeighbors(s, (x: Cell) => this.closedCells.has(x));
-
-            cells.forEach(cell => {
-                // heuristic update
-                cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
-            });
-
-            this.buildPath(s);
-
-            break; // until we do not have a moving robot we have to stop here
-
-            // hint: the code for lines 71 to 77 have been / will be moved in a seperate component
-            // move a long the calulated path.
-            // todo: check how this interacts with the map.
-            // this should be part of the robot that is moving along the path
-            /*
-              do {
-                  let t = this.start;
-                  this.start = this.next.get(this.start);
-                  this.next.delete(t);
-              } while (this.start !== this.goal  // or a change in c has been observed
-              );
-            */
-        }
+    }
+    
+    public run() {
+        /** This equals to a basic A* search */
+        this.calulatePath(this.map.getStartCell(),this.map.getGoalCell());        
     }
 
     private buildPath(s: Cell): void {
@@ -227,8 +234,7 @@ export class MPGAAStar extends PathAlgorithm {
      * Observes map changes
      * Line 33 in pseudo code
      */
-    private observe(start: Cell) {
-        this.map.notifyOnChange(changedCell => {
+    private observe(changedCell: Cell) {        
             /*  Todo: Review
                 Pseudo Code Line 34 to 38
 
@@ -248,7 +254,8 @@ export class MPGAAStar extends PathAlgorithm {
                     */
                     this.reestablishConsitency(changedCell);
                 }
-            }
-        });
+            }else{
+                console.info("cell change ignored, cell out of sight",changedCell);
+            }        
     }
 }

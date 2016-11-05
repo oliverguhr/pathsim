@@ -26,6 +26,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     super();
                     this.map = map;
                     this.visibiltyRange = visibiltyRange;
+                    this.initialized = false;
                     this.closedCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
                     this.openCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
                     this.goal = this.map.getGoalCell();
@@ -34,28 +35,37 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.searches = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell), 0);
                     this.next = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
                     this.parent = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
+                    this.robot = new index_1.Moveable(map, index_1.CellType.Current);
                 }
-                run() {
+                calulatePath(start, goal) {
+                    this.init();
+                    this.start = start;
+                    this.goal = goal;
+                    this.counter++;
+                    let s = this.aStar(this.start);
+                    if (s === null) {
+                        throw new Error("goal is not reachable");
+                    }
+                    let cells = this.getNeighbors(s, (x) => this.closedCells.has(x));
+                    cells.forEach(cell => {
+                        cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
+                    });
+                    this.buildPath(s);
+                    return this.next.get(this.start);
+                }
+                init() {
+                    if (this.initialized)
+                        return;
+                    this.initialized = true;
                     this.counter = 0;
-                    this.observe(this.start);
                     this.map.cells.forEach(cell => {
                         this.searches.set(cell, 0);
                         cell.estimatedDistance = this.distance(cell, this.goal);
                         this.next.delete(cell);
                     });
-                    while (this.start !== this.goal) {
-                        this.counter++;
-                        let s = this.aStar(this.start);
-                        if (s === null) {
-                            throw new Error("goal is not reachable");
-                        }
-                        let cells = this.getNeighbors(s, (x) => this.closedCells.has(x));
-                        cells.forEach(cell => {
-                            cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
-                        });
-                        this.buildPath(s);
-                        break;
-                    }
+                }
+                run() {
+                    this.calulatePath(this.map.getStartCell(), this.map.getGoalCell());
                 }
                 buildPath(s) {
                     while (s !== this.start) {
@@ -140,18 +150,19 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                         lowNeighbors.forEach(x => this.insertState(lowCell, x, queue));
                     }
                 }
-                observe(start) {
-                    this.map.notifyOnChange(changedCell => {
-                        let distance = Distance_1.Distance.euklid(changedCell, this.currentCell);
-                        if (distance < this.visibiltyRange) {
-                            if (changedCell.isBlocked) {
-                                this.next.delete(changedCell);
-                            }
-                            else {
-                                this.reestablishConsitency(changedCell);
-                            }
+                observe(changedCell) {
+                    let distance = Distance_1.Distance.euklid(changedCell, this.currentCell);
+                    if (distance < this.visibiltyRange) {
+                        if (changedCell.isBlocked) {
+                            this.next.delete(changedCell);
                         }
-                    });
+                        else {
+                            this.reestablishConsitency(changedCell);
+                        }
+                    }
+                    else {
+                        console.info("cell change ignored, cell out of sight", changedCell);
+                    }
                 }
             };
             exports_1("MPGAAStar", MPGAAStar);

@@ -17,7 +17,7 @@ System.register(["lodash"], function(exports_1, context_1) {
                     let visitedCells = this.map.cells.filter(cell => cell.isVisited && Number.isFinite(cell.distance));
                     let maxDistance = _.maxBy(visitedCells, cell => cell.distance).distance;
                     let distanceMulti = 1 / maxDistance;
-                    this.map.cells.filter(cell => cell.isVisited).forEach(cell => {
+                    visitedCells.forEach(cell => {
                         cell.color = this.numberToColorHsl(1 - (cell.distance * distanceMulti), 0, 1);
                     });
                 }
