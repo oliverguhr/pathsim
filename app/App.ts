@@ -103,7 +103,7 @@ app.controller("MapController", function ($attrs, $interval) {
 
         let intervall = $interval(() => {
             //cleanup old paths.. they just mess up the ui
-            map.map.cells.filter((x:Cell) => x.isCurrent).forEach((x:Cell) => x.type = CellType.Free);
+        //    map.map.cells.filter((x:Cell) => x.isCurrent).forEach((x:Cell) => x.type = CellType.Free);
             let nextCell =pathFinder.calulatePath(start,goal);
             start = nextCell;
             if (nextCell.isGoal) {

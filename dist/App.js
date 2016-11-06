@@ -101,7 +101,6 @@ System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"
                     let start = map.map.getStartCell();
                     let goal = map.map.getGoalCell();
                     let intervall = $interval(() => {
-                        map.map.cells.filter((x) => x.isCurrent).forEach((x) => x.type = index_2.CellType.Free);
                         let nextCell = pathFinder.calulatePath(start, goal);
                         start = nextCell;
                         if (nextCell.isGoal) {

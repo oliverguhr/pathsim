@@ -58,8 +58,8 @@
 
                         <input type="button" ng-click="map.runStepByStep()" value="Run step by step" ng-hide="map.algorithm == 'LpaStar' || map.algorithm == 'MPGAAStar'" />
                         
-                        <input type="number" class="inputWithLabel"  value="" ng-model="map.robotStepIntervall" ng-show="map.algorithm == 'MPGAAStar'"  /> <label>ms step intervall</label>
-                        <input type="button" ng-click="map.startRobot()" value="Start Robot" ng-show="map.algorithm == 'MPGAAStar'" />
+                        <input type="number" class="inputWithLabel"  value="" ng-model="map.robotStepIntervall" ng-show="map.algorithm == 'MPGAAStar'" ng-disabled="map.robotIsMoving"  /> <label>ms step intervall</label>
+                        <input type="button" ng-click="map.startRobot()" value="Start Robot" ng-show="map.algorithm == 'MPGAAStar'" ng-disabled="map.robotIsMoving" />
 
                     </fieldset>
 
