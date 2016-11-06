@@ -143,7 +143,7 @@ export class MPGAAStar extends PathAlgorithm {
 
         while (!this.openCells.isEmpty) {
             let s = this.openCells.pop();
-            if (s.isGoal) {
+            if (this.GoalCondition(s)){
                 return s;
             }
 
@@ -181,6 +181,16 @@ export class MPGAAStar extends PathAlgorithm {
     /** Updates the estimated distance value for a given cell*/
     private updateF(cell: Cell) {
         cell.estimatedDistance = cell.distance + this.h(cell);
+    }
+
+    private GoalCondition(s:Cell){
+        let next = this.next.get(s);        
+        while (next !== undefined && this.h(s) === this.h(next) + this.distance(s,next))
+        {
+            this.next.set(s,next);
+            next = this.next.get(s);
+        } 
+        return s.isGoal;
     }
 
     private initializeState(s: Cell) {
