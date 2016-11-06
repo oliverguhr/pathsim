@@ -2,7 +2,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var index_1, PathAlgorithm_1, Distance_1, index_2, SimplePriorityQueue_1;
-    var MPGAAStar;
+    var GAAStar;
     return {
         setters:[
             function (index_1_1) {
@@ -21,7 +21,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 SimplePriorityQueue_1 = SimplePriorityQueue_1_1;
             }],
         execute: function() {
-            MPGAAStar = class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
+            GAAStar = class GAAStar extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map, visibiltyRange) {
                     super();
                     this.map = map;
@@ -35,7 +35,6 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.searches = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell), 0);
                     this.next = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
                     this.parent = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
-                    this.support = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
                     this.robot = new index_1.Moveable(map, index_1.CellType.Current);
                 }
                 calulatePath(start, goal) {
@@ -89,7 +88,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.closedCells.clear();
                     while (!this.openCells.isEmpty) {
                         let s = this.openCells.pop();
-                        if (this.GoalCondition(s)) {
+                        if (s.isGoal) {
                             return s;
                         }
                         this.closedCells.insert(s, s.estimatedDistance);
@@ -121,12 +120,6 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 updateF(cell) {
                     cell.estimatedDistance = cell.distance + this.h(cell);
                 }
-                GoalCondition(s) {
-                    while (this.next.get(s) !== undefined && this.h(s) === this.h(this.next.get(s)) + this.distance(s, this.next.get(s))) {
-                        s = this.next.get(s);
-                    }
-                    return s.isGoal;
-                }
                 initializeState(s) {
                     if (this.searches.get(s) !== this.counter) {
                         s.distance = Number.POSITIVE_INFINITY;
@@ -139,8 +132,6 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     let newEstimatedDistance = this.distance(s, sSuccessor) + sSuccessor.estimatedDistance;
                     if (s.estimatedDistance > newEstimatedDistance) {
                         s.estimatedDistance = newEstimatedDistance;
-                        this.next.delete(s);
-                        this.support.set(s, sSuccessor);
                         if (queue.has(s)) {
                             queue.updateKey(s, s.estimatedDistance);
                         }
@@ -155,9 +146,6 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     neighbors.forEach(x => this.insertState(cell, x, queue));
                     while (!queue.isEmpty) {
                         let lowCell = queue.pop();
-                        if (this.next.get(this.support.get(lowCell)) !== undefined) {
-                            this.next.set(lowCell, this.support.get(lowCell));
-                        }
                         let lowNeighbors = this.getNeighbors(lowCell, (x) => !x.isBlocked);
                         lowNeighbors.forEach(x => this.insertState(lowCell, x, queue));
                     }
@@ -177,8 +165,8 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     }
                 }
             };
-            exports_1("MPGAAStar", MPGAAStar);
+            exports_1("GAAStar", GAAStar);
         }
     }
 });
-//# sourceMappingURL=MPGAAStar.js.map
+//# sourceMappingURL=GAAStar.js.map
