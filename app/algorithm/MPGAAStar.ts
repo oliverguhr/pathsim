@@ -30,8 +30,10 @@ export class MPGAAStar extends PathAlgorithm {
     /**
      * Contains the pointer for each state s along the path found by A*
      */
-    private next: TypMappedDictionary<Cell, Cell>;
+    private next: TypMappedDictionary<Cell, Cell>;    
     private parent: TypMappedDictionary<Cell, Cell>;
+    /** keep track of those states which support the h-values of other states */
+    private support: TypMappedDictionary<Cell, Cell>;
     private robot: Moveable;
 
     constructor(public map: Map, private visibiltyRange: number) {
@@ -45,6 +47,7 @@ export class MPGAAStar extends PathAlgorithm {
         this.searches = new TypMappedDictionary<Cell, number>(cell => this.map.getIndexOfCell(cell), 0);
         this.next = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
         this.parent = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
+        this.support = new TypMappedDictionary<Cell, Cell>(cell => this.map.getIndexOfCell(cell));
 
         this.robot = new Moveable(map, CellType.Current);
     }
@@ -235,6 +238,11 @@ export class MPGAAStar extends PathAlgorithm {
         while (!queue.isEmpty) {
             // Extract state s' with lowest h-value in Q
             let lowCell = queue.pop();
+
+            if (this.next.get(this.support.get(lowCell)) !== undefined){
+                this.next.set(lowCell,this.support.get(lowCell));
+            }
+
             let lowNeighbors = this.getNeighbors(lowCell, (x: Cell) => !x.isBlocked);
             lowNeighbors.forEach(x => this.insertState(lowCell, x, queue));
         }
