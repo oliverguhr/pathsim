@@ -46,7 +46,8 @@
                                 <option value="Dijkstra">Dijkstra</option>
                                 <option value="AStar">A*</option>
                                 <option value="LpaStar">Lifelong Planning A*</option>
-                                <option value="MPGAAStar">MPGAAStar</option>
+                                <option value="GAAStar">GAA*</option>
+                                <option value="MPGAAStar">MPGAA*</option>
                             </select>
                             <span>Distance:</span>
                             <select name="distance" id="distance" ng-model="map.distance" ng-change="map.changeAlgorithm();">
@@ -56,10 +57,10 @@
                             </select>
                         </label>
 
-                        <input type="button" ng-click="map.runStepByStep()" value="Run step by step" ng-hide="map.algorithm == 'LpaStar' || map.algorithm == 'MPGAAStar'" />
+                        <input type="button" ng-click="map.runStepByStep()" value="Run step by step" ng-hide="map.algorithm == 'LpaStar' || map.algorithm == 'MPGAAStar'|| map.algorithm == 'GAAStar'" />
                         
-                        <input type="number" class="inputWithLabel"  value="" ng-model="map.robotStepIntervall" ng-show="map.algorithm == 'MPGAAStar'" ng-disabled="map.robotIsMoving"  /> <label>ms step intervall</label>
-                        <input type="button" ng-click="map.startRobot()" value="Start Robot" ng-show="map.algorithm == 'MPGAAStar'" ng-disabled="map.robotIsMoving" />
+                        <input type="number" class="inputWithLabel"  value="" ng-model="map.robotStepIntervall" ng-show="map.algorithm == 'MPGAAStar' || map.algorithm == 'GAAStar'" ng-disabled="map.robotIsMoving"  /> <label>ms step intervall</label>
+                        <input type="button" ng-click="map.startRobot()" value="Start Robot" ng-show="map.algorithm == 'MPGAAStar' || map.algorithm == 'GAAStar'" ng-disabled="map.robotIsMoving" />
 
                     </fieldset>
 

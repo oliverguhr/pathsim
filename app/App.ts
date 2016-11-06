@@ -1,6 +1,7 @@
-import {LpaStar, AStar, Dijkstra, Distance, MPGAAStar} from "./algorithm/index";
+import { GAAStar } from './algorithm/GAAStar';
+import { LpaStar, AStar, Dijkstra, Distance, MPGAAStar } from "./algorithm/index";
 import { Map, Moveable, CellType, Position, Cell } from "./grid/index";
-import {DynmicObstacleGenerator, MazeGenerator, PathCostVisualizer, ObstacleGenerator} from "./tools/index";
+import { DynmicObstacleGenerator, MazeGenerator, PathCostVisualizer, ObstacleGenerator } from "./tools/index";
 import * as angular from "angular";
 
 /* Change map from regular js
@@ -43,9 +44,9 @@ app.controller("MapController", function ($attrs, $interval) {
         map.heightPx = map.map.rows * map.cellSize;
 
         map.map.notifyOnChange((cell: Cell) => {
-            if(map.robotIsMoving){
+            if (map.robotIsMoving) {
                 return;
-            }            
+            }
 
             try {
                 map.algorithmInstance = map.getAlgorithmInstance();
@@ -96,20 +97,20 @@ app.controller("MapController", function ($attrs, $interval) {
         map.map.resetPath();
         let pathFinder = map.getAlgorithmInstance();
 
-        map.map.notifyOnChange((cell:Cell) => {pathFinder.observe(cell)});
+        map.map.notifyOnChange((cell: Cell) => { pathFinder.observe(cell) });
 
         let start = map.map.getStartCell();
         let goal = map.map.getGoalCell();
 
         let intervall = $interval(() => {
             //cleanup old paths.. they just mess up the ui
-        //    map.map.cells.filter((x:Cell) => x.isCurrent).forEach((x:Cell) => x.type = CellType.Free);
-            let nextCell =pathFinder.calulatePath(start,goal);
+            //    map.map.cells.filter((x:Cell) => x.isCurrent).forEach((x:Cell) => x.type = CellType.Free);
+            let nextCell = pathFinder.calulatePath(start, goal);
             start = nextCell;
             if (nextCell.isGoal) {
                 $interval.cancel(intervall);
                 map.robotIsMoving = false;
-            } else {                                 
+            } else {
                 map.visualizePathCosts();
             }
             map.calulateStatistic();
@@ -249,8 +250,11 @@ app.controller("MapController", function ($attrs, $interval) {
             case "AStar":
                 algorithm = new AStar(map.map);
                 break;
-            default:                
-                    algorithm = new MPGAAStar(map.map, 5);                
+            case "GAAStar":
+                algorithm = new GAAStar(map.map, 5);
+                break;
+            default:
+                algorithm = new MPGAAStar(map.map, 5);
                 break;
         }
 

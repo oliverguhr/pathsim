@@ -1,10 +1,13 @@
-System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"], function(exports_1, context_1) {
+System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./tools/index", "angular"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var index_1, index_2, index_3, angular;
+    var GAAStar_1, index_1, index_2, index_3, angular;
     var app;
     return {
         setters:[
+            function (GAAStar_1_1) {
+                GAAStar_1 = GAAStar_1_1;
+            },
             function (index_1_1) {
                 index_1 = index_1_1;
             },
@@ -230,6 +233,9 @@ System.register(["./algorithm/index", "./grid/index", "./tools/index", "angular"
                             break;
                         case "AStar":
                             algorithm = new index_1.AStar(map.map);
+                            break;
+                        case "GAAStar":
+                            algorithm = new GAAStar_1.GAAStar(map.map, 5);
                             break;
                         default:
                             algorithm = new index_1.MPGAAStar(map.map, 5);
