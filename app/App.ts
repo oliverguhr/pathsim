@@ -103,8 +103,9 @@ app.controller("MapController", function ($attrs, $interval) {
         let goal = map.map.getGoalCell();
 
         let intervall = $interval(() => {
-            //cleanup old paths.. they just mess up the ui
-            //    map.map.cells.filter((x:Cell) => x.isCurrent).forEach((x:Cell) => x.type = CellType.Free);
+            //cleanup old visited cells, to show which cells are calculated by the algorithm 
+            map.map.cells.filter((x:Cell) => x.isVisited).forEach((x:Cell) =>{ x.type = CellType.Free; x.color = undefined});
+            
             let nextCell = pathFinder.calulatePath(start, goal);
             start = nextCell;
             if (nextCell.isGoal) {

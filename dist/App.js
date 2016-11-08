@@ -104,6 +104,7 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                     let start = map.map.getStartCell();
                     let goal = map.map.getGoalCell();
                     let intervall = $interval(() => {
+                        map.map.cells.filter((x) => x.isVisited).forEach((x) => { x.type = index_2.CellType.Free; x.color = undefined; });
                         let nextCell = pathFinder.calulatePath(start, goal);
                         start = nextCell;
                         if (nextCell.isGoal) {

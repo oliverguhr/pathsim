@@ -7,6 +7,8 @@ export class PathCostVisualizer {
 
     public paint() {
         let visitedCells = this.map.cells.filter(cell => cell.isVisited && Number.isFinite(cell.distance));
+        if(visitedCells.length == 0)
+            return;
         let maxDistance = _.maxBy(visitedCells, cell => cell.distance).distance;
         let distanceMulti = 1 / maxDistance;
 

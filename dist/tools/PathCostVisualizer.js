@@ -15,6 +15,8 @@ System.register(["lodash"], function(exports_1, context_1) {
                 }
                 paint() {
                     let visitedCells = this.map.cells.filter(cell => cell.isVisited && Number.isFinite(cell.distance));
+                    if (visitedCells.length == 0)
+                        return;
                     let maxDistance = _.maxBy(visitedCells, cell => cell.distance).distance;
                     let distanceMulti = 1 / maxDistance;
                     visitedCells.forEach(cell => {
