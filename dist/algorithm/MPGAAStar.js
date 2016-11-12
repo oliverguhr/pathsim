@@ -59,7 +59,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.counter = 0;
                     this.map.cells.forEach(cell => {
                         this.searches.set(cell, 0);
-                        cell.heuristicDistance = this.H(cell);
+                        cell.heuristicDistance = this.distance(cell, this.goal);
                         this.next.delete(cell);
                     });
                 }
@@ -113,9 +113,6 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     }
                     return null;
                 }
-                H(cell) {
-                    return this.distance(cell, this.goal);
-                }
                 updateF(cell) {
                     cell.estimatedDistance = cell.distance + cell.heuristicDistance;
                 }
@@ -146,12 +143,15 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                         else {
                             queue.insert(s, s.heuristicDistance);
                         }
+                        if (!(s.isGoal || s.isStart)) {
+                            s.cellType = index_1.CellType.Visited;
+                        }
                     }
                 }
                 reestablishConsistency(cell) {
                     let queue = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => b - a, 0);
                     let neighbors = this.getNeighbors(cell, neighbor => !neighbor.isBlocked);
-                    neighbors.forEach(x => this.insertState(cell, x, queue));
+                    neighbors.forEach(x => this.insertState(x, cell, queue));
                     while (!queue.isEmpty) {
                         let lowCell = queue.pop();
                         if (this.next.get(this.support.get(lowCell)) !== undefined) {

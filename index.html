@@ -85,6 +85,9 @@
                             </tr>  
                              <tr ng-show="map.hoveredCell.estimatedDistance">
                               <td>est. Distance f(x)</td><td>{{map.hoveredCell.estimatedDistance | number:3}}<td>
+                            </tr>  
+                             <tr ng-show="map.hoveredCell.heuristicDistance">
+                              <td>heuristic Distance h(x)</td><td>{{map.hoveredCell.heuristicDistance | number:3}}<td>
                             </tr>                           
                           </tbody>
                         </table>

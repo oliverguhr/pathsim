@@ -217,7 +217,7 @@ app.controller("MapController", function ($attrs, $interval) {
                 case CellType.Current:
                 case CellType.Visited:
                 case CellType.Free:
-                    cell.color = undefined;
+                    cell.color = undefined;                   
                     cell.type = CellType.Blocked;
                     break;
                 case CellType.Start:

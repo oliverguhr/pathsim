@@ -96,7 +96,7 @@ export class MPGAAStar extends PathAlgorithm {
 
         this.map.cells.forEach(cell => {
             this.searches.set(cell, 0);
-            cell.heuristicDistance = this.H(cell);
+            cell.heuristicDistance = this.distance(cell, this.goal)
             this.next.delete(cell); // todo: check if we really need this line
         });
     }
@@ -173,11 +173,6 @@ export class MPGAAStar extends PathAlgorithm {
         return null;
     }
 
-    /** returns the heuristic distance value from the cell to the goal. */
-    private H(cell: Cell) {
-        return this.distance(cell, this.goal);
-    }
-
     /** Updates the estimated distance value for a given cell*/
     private updateF(cell: Cell) {
         cell.estimatedDistance = cell.distance + cell.heuristicDistance;
@@ -219,6 +214,10 @@ export class MPGAAStar extends PathAlgorithm {
             } else {
                 queue.insert(s, s.heuristicDistance);
             }
+            // debug code. check why wavefront does not grow bigger... 
+               if (!(s.isGoal || s.isStart)) {
+                    s.cellType = CellType.Visited;
+                }
         }
     }
 
@@ -235,7 +234,8 @@ export class MPGAAStar extends PathAlgorithm {
         // for each (s, s') such that c(s, s') decreased do
         let neighbors = this.getNeighbors(cell,neighbor => !neighbor.isBlocked);
         // InsertState (s, s' , Q)
-        neighbors.forEach(x => this.insertState(cell, x, queue));
+        //todo: paper says insertState(cell,x, queue) which does no work. Check why.
+        neighbors.forEach(x => this.insertState(x,cell, queue));
 
         while (!queue.isEmpty) {
             // Extract state s' with lowest h-value in Q
@@ -260,7 +260,8 @@ export class MPGAAStar extends PathAlgorithm {
 
             We remove all cells with increased edge costs from the current path.
             In our case, we remove blocked cells from the path.
-        */
+        */        
+
         let distance = Distance.euclid(changedCell, this.currentCell);
         if (distance < this.visibilityRange) { // arcs in the range of visibility from s
             if (changedCell.isBlocked) {
