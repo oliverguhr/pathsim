@@ -103,16 +103,24 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                     map.map.notifyOnChange((cell) => { pathFinder.observe(cell); });
                     let start = map.map.getStartCell();
                     let goal = map.map.getGoalCell();
+                    let lastPosition;
                     let intervall = $interval(() => {
                         map.map.cells.filter((x) => x.isVisited).forEach((x) => { x.type = index_2.CellType.Free; x.color = undefined; });
                         let nextCell = pathFinder.calulatePath(start, goal);
                         start = nextCell;
-                        if (nextCell.isGoal) {
+                        if (start.isGoal) {
                             $interval.cancel(intervall);
                             map.robotIsMoving = false;
                         }
                         else {
                             map.visualizePathCosts();
+                            if (lastPosition !== undefined) {
+                                lastPosition.cellType = index_2.CellType.Free;
+                                lastPosition.color = undefined;
+                            }
+                            nextCell.cellType = index_2.CellType.Visited;
+                            nextCell.color = "#ee00f2";
+                            lastPosition = nextCell;
                         }
                         map.calulateStatistic();
                     }, map.robotStepIntervall);
@@ -236,10 +244,10 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                             algorithm = new index_1.AStar(map.map);
                             break;
                         case "GAAStar":
-                            algorithm = new GAAStar_1.GAAStar(map.map, 5);
+                            algorithm = new GAAStar_1.GAAStar(map.map, 500);
                             break;
                         default:
-                            algorithm = new index_1.MPGAAStar(map.map, 5);
+                            algorithm = new index_1.MPGAAStar(map.map, 500);
                             break;
                     }
                     switch (map.distance) {

@@ -21,7 +21,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 SimplePriorityQueue_1 = SimplePriorityQueue_1_1;
             }],
         execute: function() {
-            MPGAAStar = class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
+            class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map, visibiltyRange) {
                     super();
                     this.map = map;
@@ -122,9 +122,20 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     cell.estimatedDistance = cell.distance + this.h(cell);
                 }
                 GoalCondition(s) {
+                    let steps = 0;
+                    if (this.next.get(s) !== undefined) {
+                        let hs = this.h(s);
+                        let hnext = this.h(this.next.get(s));
+                        let cnext = this.distance(s, this.next.get(s));
+                        let diff = hs - (hnext + cnext);
+                        console.log(`${diff} = ${hs} - (${hnext} + ${cnext})`, s, this.next.get(s));
+                    }
                     while (this.next.get(s) !== undefined && this.h(s) === this.h(this.next.get(s)) + this.distance(s, this.next.get(s))) {
                         s = this.next.get(s);
+                        steps++;
                     }
+                    if (steps > 1 && s.isGoal)
+                        console.log("Resused " + steps + " cells long path");
                     return s.isGoal;
                 }
                 initializeState(s) {
@@ -136,16 +147,16 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.searches.set(s, this.counter);
                 }
                 insertState(s, sSuccessor, queue) {
-                    let newEstimatedDistance = this.distance(s, sSuccessor) + sSuccessor.estimatedDistance;
-                    if (s.estimatedDistance > newEstimatedDistance) {
+                    let newEstimatedDistance = this.distance(s, sSuccessor) + this.h(sSuccessor);
+                    if (this.h(s) > newEstimatedDistance) {
                         s.estimatedDistance = newEstimatedDistance;
                         this.next.delete(s);
                         this.support.set(s, sSuccessor);
                         if (queue.has(s)) {
-                            queue.updateKey(s, s.estimatedDistance);
+                            queue.updateKey(s, this.h(s));
                         }
                         else {
-                            queue.insert(s, s.estimatedDistance);
+                            queue.insert(s, this.h(s));
                         }
                     }
                 }
@@ -176,7 +187,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                         console.info("cell change ignored, cell out of sight", changedCell);
                     }
                 }
-            };
+            }
             exports_1("MPGAAStar", MPGAAStar);
         }
     }

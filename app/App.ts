@@ -97,22 +97,33 @@ app.controller("MapController", function ($attrs, $interval) {
         map.map.resetPath();
         let pathFinder = map.getAlgorithmInstance();
 
-        map.map.notifyOnChange((cell: Cell) => { pathFinder.observe(cell) });
+        map.map.notifyOnChange((cell: Cell) => { pathFinder.observe(cell) }); //todo: eventlisner will be registerd multiple times. Fix this.
 
-        let start = map.map.getStartCell();
+        let start = map.map.getStartCell() as Cell;
         let goal = map.map.getGoalCell();
+        let lastPosition:Cell;
 
         let intervall = $interval(() => {
             //cleanup old visited cells, to show which cells are calculated by the algorithm 
             map.map.cells.filter((x:Cell) => x.isVisited).forEach((x:Cell) =>{ x.type = CellType.Free; x.color = undefined});
             
-            let nextCell = pathFinder.calulatePath(start, goal);
+            let nextCell = pathFinder.calulatePath(start, goal) as Cell;            
             start = nextCell;
-            if (nextCell.isGoal) {
+            if (start.isGoal) {
                 $interval.cancel(intervall);
                 map.robotIsMoving = false;
             } else {
                 map.visualizePathCosts();
+                if(lastPosition !== undefined)
+                {
+                    lastPosition.cellType = CellType.Free;
+                    lastPosition.color = undefined;
+                }
+
+                nextCell.cellType = CellType.Visited;
+                nextCell.color = "#ee00f2";
+                lastPosition=nextCell;
+                
             }
             map.calulateStatistic();
 
@@ -252,10 +263,10 @@ app.controller("MapController", function ($attrs, $interval) {
                 algorithm = new AStar(map.map);
                 break;
             case "GAAStar":
-                algorithm = new GAAStar(map.map, 5);
+                algorithm = new GAAStar(map.map, 500);
                 break;
             default:
-                algorithm = new MPGAAStar(map.map, 5);
+                algorithm = new MPGAAStar(map.map, 500);
                 break;
         }
 

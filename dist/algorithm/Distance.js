@@ -5,7 +5,7 @@ System.register([], function(exports_1, context_1) {
     return {
         setters:[],
         execute: function() {
-            Distance = class Distance {
+            class Distance {
                 static manhattan(previousCell, currentCell) {
                     return Math.abs(previousCell.position.x - currentCell.position.x)
                         + Math.abs(previousCell.position.y - currentCell.position.y);
@@ -25,7 +25,7 @@ System.register([], function(exports_1, context_1) {
                         return 14 * xDistance + 10 * (yDistance - xDistance);
                     }
                 }
-            };
+            }
             exports_1("Distance", Distance);
         }
     }

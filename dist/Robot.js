@@ -12,7 +12,7 @@ System.register(["lodash", "./grid/index"], function(exports_1, context_1) {
                 index_1 = index_1_1;
             }],
         execute: function() {
-            Robot = class Robot {
+            class Robot {
                 constructor(map) {
                     this.map = map;
                     this.robot = new index_1.Moveable(map, index_1.CellType.Current);
@@ -27,7 +27,7 @@ System.register(["lodash", "./grid/index"], function(exports_1, context_1) {
                     this.robot.moveTo(nextCell.position);
                     this.currentDistance = nextCell.distance;
                 }
-            };
+            }
             exports_1("Robot", Robot);
         }
     }

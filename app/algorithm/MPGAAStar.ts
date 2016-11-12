@@ -40,7 +40,7 @@ export class MPGAAStar extends PathAlgorithm {
         super();
 
         this.closedCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
-        this.openCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
+        this.openCells = new SimplePriorityQueue<Cell, number>((a, b) =>  a - b, 0);
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();
         this.currentCell = this.start;
@@ -80,7 +80,8 @@ export class MPGAAStar extends PathAlgorithm {
         let cells = this.getNeighbors(s, (x: Cell) => this.closedCells.has(x));
 
         cells.forEach(cell => {
-            // heuristic update
+            // heuristic update 
+            //todo: h != estimatedDistance
             cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
         });
 
@@ -186,11 +187,38 @@ export class MPGAAStar extends PathAlgorithm {
         cell.estimatedDistance = cell.distance + this.h(cell);
     }
 
-    private GoalCondition(s:Cell){                
+    private GoalCondition(s:Cell){
+        let steps = 0;
+
+        if(this.next.get(s) !== undefined)
+        {
+            let hs = this.h(s);
+            let hnext = this.h(this.next.get(s));
+            let cnext = this.distance(s,this.next.get(s));
+
+            let diff = hs - (hnext + cnext);
+
+            console.log(`${diff} = ${hs} - (${hnext} + ${cnext})`,s,this.next.get(s));            
+        }                 
+
         while (this.next.get(s) !== undefined && this.h(s) === this.h(this.next.get(s)) + this.distance(s,this.next.get(s)))
-        {            
+        {                        
             s = this.next.get(s);
+            steps++ ;            
         } 
+
+      /*  while (this.next.get(s) !== undefined)
+        {                        
+             let diff = this.h(s) - (this.h(this.next.get(s)) + this.distance(s,this.next.get(s)));
+             if(Math.round(diff) !== 0)
+                break;             
+
+            s = this.next.get(s);
+            steps++ ;            
+        }*/
+
+        if(steps > 1 && s.isGoal)
+            console.log("Resused " + steps + " cells long path");
         return s.isGoal;
     }
 
@@ -198,25 +226,24 @@ export class MPGAAStar extends PathAlgorithm {
         if (this.searches.get(s) !== this.counter) {
             s.distance = Number.POSITIVE_INFINITY;
         }
-        else if (s.isGoal) {
-
+        else if (s.isGoal) {            
             //   console.error(s,this.searches.get(s), this.counter);
         }
         this.searches.set(s, this.counter);
     }
 
     private insertState(s: Cell, sSuccessor: Cell, queue: SimplePriorityQueue<Cell, number>) {
-        let newEstimatedDistance = this.distance(s, sSuccessor) + sSuccessor.estimatedDistance;
-        if (s.estimatedDistance > newEstimatedDistance) {
+        let newEstimatedDistance = this.distance(s, sSuccessor) + this.h(sSuccessor); // todo: This should be sSuccessor.distance???
+        if (this.h(s) > newEstimatedDistance) {
             s.estimatedDistance = newEstimatedDistance;
 
             this.next.delete(s);
             this.support.set(s,sSuccessor);
 
             if (queue.has(s)) {
-                queue.updateKey(s, s.estimatedDistance);
+                queue.updateKey(s, this.h(s));
             } else {
-                queue.insert(s, s.estimatedDistance);
+                queue.insert(s, this.h(s));
             }
         }
     }
