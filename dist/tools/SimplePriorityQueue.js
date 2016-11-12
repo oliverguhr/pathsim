@@ -9,7 +9,7 @@ System.register(["lodash"], function(exports_1, context_1) {
                 _ = _1;
             }],
         execute: function() {
-            class SimplePriorityQueue {
+            SimplePriorityQueue = class SimplePriorityQueue {
                 constructor(comparator, defaultKey) {
                     this.comparator = comparator;
                     this.defaultKey = defaultKey;
@@ -50,7 +50,7 @@ System.register(["lodash"], function(exports_1, context_1) {
                 sort() {
                     this.items = this.items.sort((a, b) => this.comparator(a.key, b.key));
                 }
-            }
+            };
             exports_1("SimplePriorityQueue", SimplePriorityQueue);
         }
     }

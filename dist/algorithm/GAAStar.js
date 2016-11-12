@@ -21,7 +21,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 SimplePriorityQueue_1 = SimplePriorityQueue_1_1;
             }],
         execute: function() {
-            class GAAStar extends PathAlgorithm_1.PathAlgorithm {
+            GAAStar = class GAAStar extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map, visibiltyRange) {
                     super();
                     this.map = map;
@@ -164,7 +164,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                         console.info("cell change ignored, cell out of sight", changedCell);
                     }
                 }
-            }
+            };
             exports_1("GAAStar", GAAStar);
         }
     }

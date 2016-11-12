@@ -21,7 +21,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 SimplePriorityQueue_1 = SimplePriorityQueue_1_1;
             }],
         execute: function() {
-            class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
+            MPGAAStar = class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map, visibiltyRange) {
                     super();
                     this.map = map;
@@ -49,7 +49,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     }
                     let cells = this.getNeighbors(s, (x) => this.closedCells.has(x));
                     cells.forEach(cell => {
-                        cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
+                        cell.heuristicDistance = s.distance + s.heuristicDistance - cell.distance;
                     });
                     this.buildPath(s);
                     return this.next.get(this.start);
@@ -61,7 +61,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.counter = 0;
                     this.map.cells.forEach(cell => {
                         this.searches.set(cell, 0);
-                        cell.estimatedDistance = this.distance(cell, this.goal);
+                        cell.heuristicDistance = this.H(cell);
                         this.next.delete(cell);
                     });
                 }
@@ -102,10 +102,10 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                                 this.parent.set(neighbor, s);
                                 this.updateF(neighbor);
                                 if (this.openCells.has(neighbor)) {
-                                    this.openCells.updateKey(neighbor, neighbor.estimatedDistance);
+                                    this.openCells.updateKey(neighbor, neighbor.distance + neighbor.heuristicDistance);
                                 }
                                 else {
-                                    this.openCells.insert(neighbor, neighbor.estimatedDistance);
+                                    this.openCells.insert(neighbor, neighbor.distance + neighbor.heuristicDistance);
                                 }
                             }
                             if (!(neighbor.isGoal || neighbor.isStart)) {
@@ -115,22 +115,22 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     }
                     return null;
                 }
-                h(cell) {
+                H(cell) {
                     return this.distance(cell, this.goal);
                 }
                 updateF(cell) {
-                    cell.estimatedDistance = cell.distance + this.h(cell);
+                    cell.estimatedDistance = cell.distance + cell.heuristicDistance;
                 }
                 GoalCondition(s) {
                     let steps = 0;
                     if (this.next.get(s) !== undefined) {
-                        let hs = this.h(s);
-                        let hnext = this.h(this.next.get(s));
+                        let hs = s.heuristicDistance;
+                        let hnext = this.next.get(s).heuristicDistance;
                         let cnext = this.distance(s, this.next.get(s));
                         let diff = hs - (hnext + cnext);
                         console.log(`${diff} = ${hs} - (${hnext} + ${cnext})`, s, this.next.get(s));
                     }
-                    while (this.next.get(s) !== undefined && this.h(s) === this.h(this.next.get(s)) + this.distance(s, this.next.get(s))) {
+                    while (this.next.get(s) !== undefined && s.heuristicDistance === this.next.get(s).heuristicDistance + this.distance(s, this.next.get(s))) {
                         s = this.next.get(s);
                         steps++;
                     }
@@ -147,16 +147,16 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.searches.set(s, this.counter);
                 }
                 insertState(s, sSuccessor, queue) {
-                    let newEstimatedDistance = this.distance(s, sSuccessor) + this.h(sSuccessor);
-                    if (this.h(s) > newEstimatedDistance) {
-                        s.estimatedDistance = newEstimatedDistance;
+                    let newDistance = this.distance(s, sSuccessor) + sSuccessor.heuristicDistance;
+                    if (s.heuristicDistance > newDistance) {
+                        s.heuristicDistance = newDistance;
                         this.next.delete(s);
                         this.support.set(s, sSuccessor);
                         if (queue.has(s)) {
-                            queue.updateKey(s, this.h(s));
+                            queue.updateKey(s, s.heuristicDistance);
                         }
                         else {
-                            queue.insert(s, this.h(s));
+                            queue.insert(s, s.heuristicDistance);
                         }
                     }
                 }
@@ -187,7 +187,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                         console.info("cell change ignored, cell out of sight", changedCell);
                     }
                 }
-            }
+            };
             exports_1("MPGAAStar", MPGAAStar);
         }
     }

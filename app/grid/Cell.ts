@@ -5,10 +5,15 @@ export class Cell {
     public position: Position;
     public cellType: CellType;
     public rhs: number;
-    /** also known as g value or g(x) */
+    /** Also known as g value or g(x)
+     * This is stores the distance between the start and this cell.
+     */
     public distance: number;
-    /** also known as f value or f(x) */
+    /** also known as f value or f(x) = g(x) + h(x) */
     public estimatedDistance: number;
+    /** MPGAAStar uses this field to store an modify precomputed h values */
+    public heuristicDistance:number;
+
     public color: string;
     public previous: Cell;
     public isOpen: boolean;

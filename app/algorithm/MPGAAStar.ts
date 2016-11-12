@@ -75,14 +75,13 @@ export class MPGAAStar extends PathAlgorithm {
         /* todo: Pseudo code says:
             for each s' ∈ Closed do
                 h(s' ) ← g(s) + h(s) − g(s' ) // heuristic update
-            Check if s' ∈ Closed means neighbors of s that are on the closed list
+            todo: Check if s' ∈ Closed means neighbors of s that are on the closed list
         */
         let cells = this.getNeighbors(s, (x: Cell) => this.closedCells.has(x));
 
         cells.forEach(cell => {
-            // heuristic update 
-            //todo: h != estimatedDistance
-            cell.estimatedDistance = s.distance + s.estimatedDistance - cell.distance;
+            // heuristic update             
+            cell.heuristicDistance = s.distance + s.heuristicDistance - cell.distance;
         });
 
         this.buildPath(s);
@@ -101,7 +100,7 @@ export class MPGAAStar extends PathAlgorithm {
 
         this.map.cells.forEach(cell => {
             this.searches.set(cell, 0);
-            cell.estimatedDistance = this.distance(cell, this.goal);
+            cell.heuristicDistance = this.H(cell);
             this.next.delete(cell); // todo: check if we really need this line
         });
     }
@@ -163,10 +162,12 @@ export class MPGAAStar extends PathAlgorithm {
                     this.parent.set(neighbor, s);
                     this.updateF(neighbor);
                     if (this.openCells.has(neighbor)) {
-                        this.openCells.updateKey(neighbor, neighbor.estimatedDistance);
+                        // neighbor.distance + neighbor.heuristicDistance == neighbor.estimatedDistance
+                        this.openCells.updateKey(neighbor, neighbor.distance + neighbor.heuristicDistance); 
                     }
                     else {
-                        this.openCells.insert(neighbor, neighbor.estimatedDistance);
+                        // neighbor.distance + neighbor.heuristicDistance == neighbor.estimatedDistance
+                        this.openCells.insert(neighbor, neighbor.distance + neighbor.heuristicDistance);
                     }
                 }
                 if (!(neighbor.isGoal || neighbor.isStart)) {
@@ -178,13 +179,13 @@ export class MPGAAStar extends PathAlgorithm {
     }
 
     /** returns the heuristic distance value from the cell to the goal. */
-    private h(cell: Cell) {
+    private H(cell: Cell) {
         return this.distance(cell, this.goal);
     }
 
     /** Updates the estimated distance value for a given cell*/
     private updateF(cell: Cell) {
-        cell.estimatedDistance = cell.distance + this.h(cell);
+        cell.estimatedDistance = cell.distance + cell.heuristicDistance;
     }
 
     private GoalCondition(s:Cell){
@@ -192,16 +193,15 @@ export class MPGAAStar extends PathAlgorithm {
 
         if(this.next.get(s) !== undefined)
         {
-            let hs = this.h(s);
-            let hnext = this.h(this.next.get(s));
+            let hs = s.heuristicDistance;
+            let hnext = this.next.get(s).heuristicDistance;
             let cnext = this.distance(s,this.next.get(s));
 
             let diff = hs - (hnext + cnext);
-
             console.log(`${diff} = ${hs} - (${hnext} + ${cnext})`,s,this.next.get(s));            
         }                 
 
-        while (this.next.get(s) !== undefined && this.h(s) === this.h(this.next.get(s)) + this.distance(s,this.next.get(s)))
+        while (this.next.get(s) !== undefined && s.heuristicDistance === this.next.get(s).heuristicDistance + this.distance(s,this.next.get(s)))
         {                        
             s = this.next.get(s);
             steps++ ;            
@@ -233,17 +233,17 @@ export class MPGAAStar extends PathAlgorithm {
     }
 
     private insertState(s: Cell, sSuccessor: Cell, queue: SimplePriorityQueue<Cell, number>) {
-        let newEstimatedDistance = this.distance(s, sSuccessor) + this.h(sSuccessor); // todo: This should be sSuccessor.distance???
-        if (this.h(s) > newEstimatedDistance) {
-            s.estimatedDistance = newEstimatedDistance;
+        let newDistance = this.distance(s, sSuccessor) + sSuccessor.heuristicDistance; // todo: This should be sSuccessor.distance???
+        if (s.heuristicDistance > newDistance) {
+            s.heuristicDistance = newDistance;
 
             this.next.delete(s);
             this.support.set(s,sSuccessor);
 
             if (queue.has(s)) {
-                queue.updateKey(s, this.h(s));
+                queue.updateKey(s, s.heuristicDistance);
             } else {
-                queue.insert(s, this.h(s));
+                queue.insert(s, s.heuristicDistance);
             }
         }
     }

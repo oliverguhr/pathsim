@@ -15,7 +15,7 @@ System.register(["../grid/index", "./PathAlgorithm", "js-priority-queue"], funct
                 PriorityQueue = PriorityQueue_1;
             }],
         execute: function() {
-            class AStar extends PathAlgorithm_1.PathAlgorithm {
+            AStar = class AStar extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map) {
                     super();
                     let queueConfig = {
@@ -75,7 +75,7 @@ System.register(["../grid/index", "./PathAlgorithm", "js-priority-queue"], funct
                         }
                     }
                 }
-            }
+            };
             exports_1("AStar", AStar);
         }
     }
