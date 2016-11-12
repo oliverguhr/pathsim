@@ -36,7 +36,7 @@ export class MPGAAStar extends PathAlgorithm {
     private support: TypMappedDictionary<Cell, Cell>;
     private robot: Moveable;
 
-    constructor(public map: Map, private visibiltyRange: number) {
+    constructor(public map: Map, private visibilityRange: number) {
         super();
         
         this.openCells = new SimplePriorityQueue<Cell, number>((a, b) =>  a - b, 0);
@@ -185,36 +185,16 @@ export class MPGAAStar extends PathAlgorithm {
     }
 
     private GoalCondition(s:Cell){
-        let steps = 0;
-
-        if(this.next.get(s) !== undefined)
-        {
-            let hs = s.heuristicDistance;
-            let hnext = this.next.get(s).heuristicDistance;
-            let cnext = this.distance(s,this.next.get(s));
-
-            let diff = hs - (hnext + cnext);
-            console.log(`${diff} = ${hs} - (${hnext} + ${cnext})`,s,this.next.get(s));            
-        }                 
-
-        while (this.next.get(s) !== undefined && s.heuristicDistance === this.next.get(s).heuristicDistance + this.distance(s,this.next.get(s)))
+        /* 
+            When using the Euclidean distance, we sometimes do not get the correct values 
+            due to the limitations of floating point precision. 
+            To solve this issue we assume that a error less then 1e-14 is acceptable.
+        */       
+        while (this.next.get(s) !== undefined && 
+        1e-14 > Math.abs(s.heuristicDistance - (this.next.get(s).heuristicDistance + this.distance(s,this.next.get(s)))))
         {                        
-            s = this.next.get(s);
-            steps++ ;            
+            s = this.next.get(s);            
         } 
-
-      /*  while (this.next.get(s) !== undefined)
-        {                        
-             let diff = this.h(s) - (this.h(this.next.get(s)) + this.distance(s,this.next.get(s)));
-             if(Math.round(diff) !== 0)
-                break;             
-
-            s = this.next.get(s);
-            steps++ ;            
-        }*/
-
-        if(steps > 1 && s.isGoal)
-            console.log("Resused " + steps + " cells long path");
         return s.isGoal;
     }
 
@@ -285,7 +265,7 @@ export class MPGAAStar extends PathAlgorithm {
                 In our case, we remove blocked cells from the path.
             */
             let distance = Distance.euklid(changedCell, this.currentCell);
-            if (distance < this.visibiltyRange) { // arcs in the range of visibility from s
+            if (distance < this.visibilityRange) { // arcs in the range of visibility from s
                 if (changedCell.isBlocked) {
                     this.next.delete(changedCell);
                 } else {

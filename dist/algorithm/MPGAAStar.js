@@ -22,10 +22,10 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
             }],
         execute: function() {
             MPGAAStar = class MPGAAStar extends PathAlgorithm_1.PathAlgorithm {
-                constructor(map, visibiltyRange) {
+                constructor(map, visibilityRange) {
                     super();
                     this.map = map;
-                    this.visibiltyRange = visibiltyRange;
+                    this.visibilityRange = visibilityRange;
                     this.initialized = false;
                     this.openCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
                     this.goal = this.map.getGoalCell();
@@ -120,20 +120,10 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     cell.estimatedDistance = cell.distance + cell.heuristicDistance;
                 }
                 GoalCondition(s) {
-                    let steps = 0;
-                    if (this.next.get(s) !== undefined) {
-                        let hs = s.heuristicDistance;
-                        let hnext = this.next.get(s).heuristicDistance;
-                        let cnext = this.distance(s, this.next.get(s));
-                        let diff = hs - (hnext + cnext);
-                        console.log(`${diff} = ${hs} - (${hnext} + ${cnext})`, s, this.next.get(s));
-                    }
-                    while (this.next.get(s) !== undefined && s.heuristicDistance === this.next.get(s).heuristicDistance + this.distance(s, this.next.get(s))) {
+                    while (this.next.get(s) !== undefined &&
+                        1e-14 > Math.abs(s.heuristicDistance - (this.next.get(s).heuristicDistance + this.distance(s, this.next.get(s))))) {
                         s = this.next.get(s);
-                        steps++;
                     }
-                    if (steps > 1 && s.isGoal)
-                        console.log("Resused " + steps + " cells long path");
                     return s.isGoal;
                 }
                 initializeState(s) {
@@ -173,7 +163,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 }
                 observe(changedCell) {
                     let distance = Distance_1.Distance.euklid(changedCell, this.currentCell);
-                    if (distance < this.visibiltyRange) {
+                    if (distance < this.visibilityRange) {
                         if (changedCell.isBlocked) {
                             this.next.delete(changedCell);
                         }
