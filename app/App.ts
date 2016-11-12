@@ -60,10 +60,10 @@ app.controller("MapController", function ($attrs, $interval) {
                 map.algorithmInstance.mapUpdate([cell]);
                 console.timeEnd(map.algorithm);
                 map.visualizePathCosts();
-                map.calulateStatistic();
+                map.calculateStatistic();
             }
             if (map.algorithmInstance.isInitialized === undefined || map.algorithmInstance.isInitialized === false) {
-                map.calulatePath();
+                map.calculatePath();
             }
         });
     };
@@ -86,7 +86,7 @@ app.controller("MapController", function ($attrs, $interval) {
             } else {
                 map.visualizePathCosts();
             }
-            map.calulateStatistic();
+            map.calculateStatistic();
         }, 10);
     };
 
@@ -107,7 +107,7 @@ app.controller("MapController", function ($attrs, $interval) {
             //cleanup old visited cells, to show which cells are calculated by the algorithm 
             map.map.cells.filter((x:Cell) => x.isVisited).forEach((x:Cell) =>{ x.type = CellType.Free; x.color = undefined});
             
-            let nextCell = pathFinder.calulatePath(start, goal) as Cell;            
+            let nextCell = pathFinder.calculatePath(start, goal) as Cell;            
             start = nextCell;
             if (start.isGoal) {
                 $interval.cancel(intervall);
@@ -125,7 +125,7 @@ app.controller("MapController", function ($attrs, $interval) {
                 lastPosition=nextCell;
                 
             }
-            map.calulateStatistic();
+            map.calculateStatistic();
 
         }, map.robotStepIntervall);
     }
@@ -143,7 +143,7 @@ app.controller("MapController", function ($attrs, $interval) {
         let generator = new ObstacleGenerator(map.map);
         generator.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
         map.algorithmInstance = map.getAlgorithmInstance();
-        map.calulatePath();
+        map.calculatePath();
     };
 
     map.addWalls = () => {
@@ -152,7 +152,7 @@ app.controller("MapController", function ($attrs, $interval) {
         let generator = new MazeGenerator(map.map);
         generator.createMaze();
         map.algorithmInstance = map.getAlgorithmInstance();
-        map.calulatePath();
+        map.calculatePath();
     };
 
     map.addDynamicObstacle = () => {
@@ -180,7 +180,7 @@ app.controller("MapController", function ($attrs, $interval) {
         map.robots = undefined;
     };
 
-    map.calulatePath = () => {
+    map.calculatePath = () => {
         let pathFinder = map.getAlgorithmInstance();
         if (pathFinder.isInitialized === undefined || pathFinder.isInitialized === false) {
             console.time(map.algorithm);
@@ -190,10 +190,10 @@ app.controller("MapController", function ($attrs, $interval) {
             console.timeEnd(map.algorithm);
         }
         map.visualizePathCosts();
-        map.calulateStatistic();
+        map.calculateStatistic();
     };
 
-    map.calulateStatistic = () => {
+    map.calculateStatistic = () => {
         map.stat.pathLength = map.map.cells.filter((x: Cell) => x.isCurrent).length;
         map.stat.visitedCells = map.stat.pathLength + map.map.cells.filter((x: Cell) => x.isVisited).length;
     };
@@ -243,7 +243,7 @@ app.controller("MapController", function ($attrs, $interval) {
         map.algorithmInstance = undefined;
         map.algorithmInstance = map.getAlgorithmInstance();
         map.map.resetPath();
-        map.calulatePath();
+        map.calculatePath();
     };
 
     map.getAlgorithmInstance = () => {

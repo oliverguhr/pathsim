@@ -55,7 +55,7 @@ export class GAAStar extends PathAlgorithm {
      * 
      * Returns the next cell on the path.
      */
-    public calulatePath(start: Cell, goal: Cell) {
+    public calculatePath(start: Cell, goal: Cell) {
         this.init();
 
         this.start = start;
@@ -104,7 +104,7 @@ export class GAAStar extends PathAlgorithm {
     
     public run() {
         /** This equals to a basic A* search */
-        this.calulatePath(this.map.getStartCell(),this.map.getGoalCell());        
+        this.calculatePath(this.map.getStartCell(),this.map.getGoalCell());        
     }
 
     private buildPath(s: Cell): void {

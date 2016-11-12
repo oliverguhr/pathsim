@@ -36,7 +36,7 @@ export class Cell {
     get isBlocked() {
         return this.type === CellType.Blocked;
     }
-    /** State for cells that where calulated by the algorithm */
+    /** State for cells that where calculated by the algorithm */
     get isVisited() {
         return this.type === CellType.Visited;
     }

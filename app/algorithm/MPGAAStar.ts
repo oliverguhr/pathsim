@@ -14,11 +14,11 @@ export class MPGAAStar extends PathAlgorithm {
     private goal: Cell;
     private start: Cell;
     private openCells: SimplePriorityQueue<Cell, number>;
-    private closedCells:Cell[];
+    private closedCells: Cell[];
     /** Iteration counter. Incremented before every A* search. */
     private counter: number;
 
-    /** Current postion of the robot */
+    /** Current position of the robot */
     private currentCell: Cell;
 
     /**
@@ -30,7 +30,7 @@ export class MPGAAStar extends PathAlgorithm {
     /**
      * Contains the pointer for each state s along the path found by A*
      */
-    private next: TypMappedDictionary<Cell, Cell>;    
+    private next: TypMappedDictionary<Cell, Cell>;
     private parent: TypMappedDictionary<Cell, Cell>;
     /** keep track of those states which support the h-values of other states */
     private support: TypMappedDictionary<Cell, Cell>;
@@ -38,8 +38,8 @@ export class MPGAAStar extends PathAlgorithm {
 
     constructor(public map: Map, private visibilityRange: number) {
         super();
-        
-        this.openCells = new SimplePriorityQueue<Cell, number>((a, b) =>  a - b, 0);
+
+        this.openCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();
         this.currentCell = this.start;
@@ -50,14 +50,14 @@ export class MPGAAStar extends PathAlgorithm {
 
         this.robot = new Moveable(map, CellType.Current);
     }
- 
+
     /**
      * Entry point.
      * Equals to "main()" Line 56 within the pseudo code
      * 
      * Returns the next cell on the path.
      */
-    public calulatePath(start: Cell, goal: Cell) {
+    public calculatePath(start: Cell, goal: Cell) {
         this.init();
 
         this.start = start;
@@ -66,7 +66,7 @@ export class MPGAAStar extends PathAlgorithm {
         this.counter++;
         let s = this.aStar(this.start);
 
-        if (s === null) {            
+        if (s === null) {
             throw new Error("goal is not reachable");
         }
 
@@ -74,7 +74,7 @@ export class MPGAAStar extends PathAlgorithm {
             for each s' ∈ Closed do
                 h(s' ) ← g(s) + h(s) − g(s' ) // heuristic update
             todo: Check if s' ∈ Closed means neighbors of s that are on the closed list
-        */        
+        */
         this.closedCells.forEach(cell => {
             // heuristic update             
             cell.heuristicDistance = s.distance + s.heuristicDistance - cell.distance;
@@ -100,10 +100,10 @@ export class MPGAAStar extends PathAlgorithm {
             this.next.delete(cell); // todo: check if we really need this line
         });
     }
-    
+
     public run() {
         /** This equals to a basic A* search */
-        this.calulatePath(this.map.getStartCell(),this.map.getGoalCell());        
+        this.calculatePath(this.map.getStartCell(), this.map.getGoalCell());
     }
 
     private buildPath(s: Cell): void {
@@ -142,7 +142,7 @@ export class MPGAAStar extends PathAlgorithm {
 
         while (!this.openCells.isEmpty) {
             let s = this.openCells.pop();
-            if (this.GoalCondition(s)){
+            if (this.GoalCondition(s)) {
                 return s;
             }
 
@@ -159,7 +159,7 @@ export class MPGAAStar extends PathAlgorithm {
                     this.updateF(neighbor);
                     if (this.openCells.has(neighbor)) {
                         // neighbor.distance + neighbor.heuristicDistance == neighbor.estimatedDistance
-                        this.openCells.updateKey(neighbor, neighbor.distance + neighbor.heuristicDistance); 
+                        this.openCells.updateKey(neighbor, neighbor.distance + neighbor.heuristicDistance);
                     }
                     else {
                         // neighbor.distance + neighbor.heuristicDistance == neighbor.estimatedDistance
@@ -184,17 +184,16 @@ export class MPGAAStar extends PathAlgorithm {
         cell.estimatedDistance = cell.distance + cell.heuristicDistance;
     }
 
-    private GoalCondition(s:Cell){
+    private GoalCondition(s: Cell) {
         /* 
             When using the Euclidean distance, we sometimes do not get the correct values 
             due to the limitations of floating point precision. 
             To solve this issue we assume that a error less then 1e-14 is acceptable.
-        */       
-        while (this.next.get(s) !== undefined && 
-        1e-14 > Math.abs(s.heuristicDistance - (this.next.get(s).heuristicDistance + this.distance(s,this.next.get(s)))))
-        {                        
-            s = this.next.get(s);            
-        } 
+        */
+        while (this.next.get(s) !== undefined &&
+            1e-14 > Math.abs(s.heuristicDistance - (this.next.get(s).heuristicDistance + this.distance(s, this.next.get(s))))) {
+            s = this.next.get(s);
+        }
         return s.isGoal;
     }
 
@@ -202,7 +201,7 @@ export class MPGAAStar extends PathAlgorithm {
         if (this.searches.get(s) !== this.counter) {
             s.distance = Number.POSITIVE_INFINITY;
         }
-        else if (s.isGoal) {            
+        else if (s.isGoal) {
             //   console.error(s,this.searches.get(s), this.counter);
         }
         this.searches.set(s, this.counter);
@@ -214,7 +213,7 @@ export class MPGAAStar extends PathAlgorithm {
             s.heuristicDistance = newDistance;
 
             this.next.delete(s);
-            this.support.set(s,sSuccessor);
+            this.support.set(s, sSuccessor);
 
             if (queue.has(s)) {
                 queue.updateKey(s, s.heuristicDistance);
@@ -244,8 +243,8 @@ export class MPGAAStar extends PathAlgorithm {
             // Extract state s' with lowest h-value in Q
             let lowCell = queue.pop();
 
-            if (this.next.get(this.support.get(lowCell)) !== undefined){
-                this.next.set(lowCell,this.support.get(lowCell));
+            if (this.next.get(this.support.get(lowCell)) !== undefined) {
+                this.next.set(lowCell, this.support.get(lowCell));
             }
 
             let lowNeighbors = this.getNeighbors(lowCell, (x: Cell) => !x.isBlocked);
@@ -257,28 +256,28 @@ export class MPGAAStar extends PathAlgorithm {
      * Observes map changes
      * Line 33 in pseudo code
      */
-    private observe(changedCell: Cell) {        
-            /*  Todo: Review
-                Pseudo Code Line 34 to 38
+    private observe(changedCell: Cell) {
+        /*  Todo: Review
+            Pseudo Code Line 34 to 38
 
-                We remove all cells with increased edge costs from the current path.
-                In our case, we remove blocked cells from the path.
-            */
-            let distance = Distance.euklid(changedCell, this.currentCell);
-            if (distance < this.visibilityRange) { // arcs in the range of visibility from s
-                if (changedCell.isBlocked) {
-                    this.next.delete(changedCell);
-                } else {
-                    /*
-                        Todo: Fix this. 
-                        ReestablishConsitency should only be called, if the cell was blocked befor. 
-                        Sice the map does not provide the old value yet, we can't tell if the state has changed.
-                        However, until this is fixed we invoke it everytime. This should not hurt, but reduce the performance. 
-                    */
-                    this.reestablishConsitency(changedCell);
-                }
-            }else{
-                console.info("cell change ignored, cell out of sight",changedCell);
-            }        
+            We remove all cells with increased edge costs from the current path.
+            In our case, we remove blocked cells from the path.
+        */
+        let distance = Distance.euklid(changedCell, this.currentCell);
+        if (distance < this.visibilityRange) { // arcs in the range of visibility from s
+            if (changedCell.isBlocked) {
+                this.next.delete(changedCell);
+            } else {
+                /*
+                    Todo: Fix this. 
+                    ReestablishConsitency should only be called, if the cell was blocked befor. 
+                    Sice the map does not provide the old value yet, we can't tell if the state has changed.
+                    However, until this is fixed we invoke it everytime. This should not hurt, but reduce the performance. 
+                */
+                this.reestablishConsitency(changedCell);
+            }
+        } else {
+            console.info("cell change ignored, cell out of sight", changedCell);
+        }
     }
 }

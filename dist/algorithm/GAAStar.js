@@ -37,7 +37,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.parent = new index_2.TypMappedDictionary(cell => this.map.getIndexOfCell(cell));
                     this.robot = new index_1.Moveable(map, index_1.CellType.Current);
                 }
-                calulatePath(start, goal) {
+                calculatePath(start, goal) {
                     this.init();
                     this.start = start;
                     this.goal = goal;
@@ -65,7 +65,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     });
                 }
                 run() {
-                    this.calulatePath(this.map.getStartCell(), this.map.getGoalCell());
+                    this.calculatePath(this.map.getStartCell(), this.map.getGoalCell());
                 }
                 buildPath(s) {
                     while (s !== this.start) {

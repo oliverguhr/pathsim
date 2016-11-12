@@ -66,10 +66,10 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                             map.algorithmInstance.mapUpdate([cell]);
                             console.timeEnd(map.algorithm);
                             map.visualizePathCosts();
-                            map.calulateStatistic();
+                            map.calculateStatistic();
                         }
                         if (map.algorithmInstance.isInitialized === undefined || map.algorithmInstance.isInitialized === false) {
-                            map.calulatePath();
+                            map.calculatePath();
                         }
                     });
                 };
@@ -91,7 +91,7 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                         else {
                             map.visualizePathCosts();
                         }
-                        map.calulateStatistic();
+                        map.calculateStatistic();
                     }, 10);
                 };
                 map.robotStepIntervall = 500;
@@ -106,7 +106,7 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                     let lastPosition;
                     let intervall = $interval(() => {
                         map.map.cells.filter((x) => x.isVisited).forEach((x) => { x.type = index_2.CellType.Free; x.color = undefined; });
-                        let nextCell = pathFinder.calulatePath(start, goal);
+                        let nextCell = pathFinder.calculatePath(start, goal);
                         start = nextCell;
                         if (start.isGoal) {
                             $interval.cancel(intervall);
@@ -122,7 +122,7 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                             nextCell.color = "#ee00f2";
                             lastPosition = nextCell;
                         }
-                        map.calulateStatistic();
+                        map.calculateStatistic();
                     }, map.robotStepIntervall);
                 };
                 map.visualizePathCosts = () => {
@@ -137,7 +137,7 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                     let generator = new index_3.ObstacleGenerator(map.map);
                     generator.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
                     map.algorithmInstance = map.getAlgorithmInstance();
-                    map.calulatePath();
+                    map.calculatePath();
                 };
                 map.addWalls = () => {
                     map.map.resetPath();
@@ -145,7 +145,7 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                     let generator = new index_3.MazeGenerator(map.map);
                     generator.createMaze();
                     map.algorithmInstance = map.getAlgorithmInstance();
-                    map.calulatePath();
+                    map.calculatePath();
                 };
                 map.addDynamicObstacle = () => {
                     if (map.robots === undefined) {
@@ -166,7 +166,7 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                     }
                     map.robots = undefined;
                 };
-                map.calulatePath = () => {
+                map.calculatePath = () => {
                     let pathFinder = map.getAlgorithmInstance();
                     if (pathFinder.isInitialized === undefined || pathFinder.isInitialized === false) {
                         console.time(map.algorithm);
@@ -174,9 +174,9 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                         console.timeEnd(map.algorithm);
                     }
                     map.visualizePathCosts();
-                    map.calulateStatistic();
+                    map.calculateStatistic();
                 };
-                map.calulateStatistic = () => {
+                map.calculateStatistic = () => {
                     map.stat.pathLength = map.map.cells.filter((x) => x.isCurrent).length;
                     map.stat.visitedCells = map.stat.pathLength + map.map.cells.filter((x) => x.isVisited).length;
                 };
@@ -224,7 +224,7 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                     map.algorithmInstance = undefined;
                     map.algorithmInstance = map.getAlgorithmInstance();
                     map.map.resetPath();
-                    map.calulatePath();
+                    map.calculatePath();
                 };
                 map.getAlgorithmInstance = () => {
                     let algorithm;
