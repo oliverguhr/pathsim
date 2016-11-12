@@ -14,7 +14,7 @@ export class MPGAAStar extends PathAlgorithm {
     private goal: Cell;
     private start: Cell;
     private openCells: SimplePriorityQueue<Cell, number>;
-    private closedCells: SimplePriorityQueue<Cell, number>;
+    private closedCells:Cell[];
     /** Iteration counter. Incremented before every A* search. */
     private counter: number;
 
@@ -38,8 +38,7 @@ export class MPGAAStar extends PathAlgorithm {
 
     constructor(public map: Map, private visibiltyRange: number) {
         super();
-
-        this.closedCells = new SimplePriorityQueue<Cell, number>((a, b) => a - b, 0);
+        
         this.openCells = new SimplePriorityQueue<Cell, number>((a, b) =>  a - b, 0);
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();
@@ -67,8 +66,7 @@ export class MPGAAStar extends PathAlgorithm {
         this.counter++;
         let s = this.aStar(this.start);
 
-        if (s === null) {
-            // todo: check if its handy to throw an error here.
+        if (s === null) {            
             throw new Error("goal is not reachable");
         }
 
@@ -76,10 +74,8 @@ export class MPGAAStar extends PathAlgorithm {
             for each s' ∈ Closed do
                 h(s' ) ← g(s) + h(s) − g(s' ) // heuristic update
             todo: Check if s' ∈ Closed means neighbors of s that are on the closed list
-        */
-        let cells = this.getNeighbors(s, (x: Cell) => this.closedCells.has(x));
-
-        cells.forEach(cell => {
+        */        
+        this.closedCells.forEach(cell => {
             // heuristic update             
             cell.heuristicDistance = s.distance + s.heuristicDistance - cell.distance;
         });
@@ -142,7 +138,7 @@ export class MPGAAStar extends PathAlgorithm {
 
         this.openCells.insert(init, init.estimatedDistance);
 
-        this.closedCells.clear();
+        this.closedCells = new Array<Cell>();
 
         while (!this.openCells.isEmpty) {
             let s = this.openCells.pop();
@@ -150,7 +146,7 @@ export class MPGAAStar extends PathAlgorithm {
                 return s;
             }
 
-            this.closedCells.insert(s, s.estimatedDistance);
+            this.closedCells.push(s);
 
             let neighbors = this.getNeighbors(s, cell => !cell.isBlocked);
 
@@ -233,7 +229,7 @@ export class MPGAAStar extends PathAlgorithm {
     }
 
     private insertState(s: Cell, sSuccessor: Cell, queue: SimplePriorityQueue<Cell, number>) {
-        let newDistance = this.distance(s, sSuccessor) + sSuccessor.heuristicDistance; // todo: This should be sSuccessor.distance???
+        let newDistance = this.distance(s, sSuccessor) + sSuccessor.heuristicDistance;
         if (s.heuristicDistance > newDistance) {
             s.heuristicDistance = newDistance;
 

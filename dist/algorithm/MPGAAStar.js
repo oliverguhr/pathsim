@@ -27,7 +27,6 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.map = map;
                     this.visibiltyRange = visibiltyRange;
                     this.initialized = false;
-                    this.closedCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
                     this.openCells = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
                     this.goal = this.map.getGoalCell();
                     this.start = this.map.getStartCell();
@@ -47,8 +46,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     if (s === null) {
                         throw new Error("goal is not reachable");
                     }
-                    let cells = this.getNeighbors(s, (x) => this.closedCells.has(x));
-                    cells.forEach(cell => {
+                    this.closedCells.forEach(cell => {
                         cell.heuristicDistance = s.distance + s.heuristicDistance - cell.distance;
                     });
                     this.buildPath(s);
@@ -86,13 +84,13 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     this.openCells.clear();
                     this.updateF(init);
                     this.openCells.insert(init, init.estimatedDistance);
-                    this.closedCells.clear();
+                    this.closedCells = new Array();
                     while (!this.openCells.isEmpty) {
                         let s = this.openCells.pop();
                         if (this.GoalCondition(s)) {
                             return s;
                         }
-                        this.closedCells.insert(s, s.estimatedDistance);
+                        this.closedCells.push(s);
                         let neighbors = this.getNeighbors(s, cell => !cell.isBlocked);
                         for (let neighbor of neighbors) {
                             this.initializeState(neighbor);
