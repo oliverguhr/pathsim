@@ -136,7 +136,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 }
                 insertState(s, sSuccessor, queue) {
                     let newDistance = this.distance(s, sSuccessor) + sSuccessor.heuristicDistance;
-                    if (s.heuristicDistance >= newDistance) {
+                    if (s.heuristicDistance > newDistance) {
                         s.heuristicDistance = newDistance;
                         this.next.delete(s);
                         this.support.set(s, sSuccessor);
@@ -150,7 +150,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 }
                 reestablishConsistency(cell) {
                     let queue = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => b - a, 0);
-                    let neighbors = this.getNeighbors(cell, (x) => (cell.distance + this.distance(x, cell)) < x.distance);
+                    let neighbors = this.getNeighbors(cell, neighbor => !neighbor.isBlocked);
                     neighbors.forEach(x => this.insertState(cell, x, queue));
                     while (!queue.isEmpty) {
                         let lowCell = queue.pop();

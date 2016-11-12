@@ -208,7 +208,7 @@ export class MPGAAStar extends PathAlgorithm {
 
     private insertState(s: Cell, sSuccessor: Cell, queue: SimplePriorityQueue<Cell, number>) {
         let newDistance = this.distance(s, sSuccessor) + sSuccessor.heuristicDistance;
-        if (s.heuristicDistance >= newDistance) {
+        if (s.heuristicDistance > newDistance) {
             s.heuristicDistance = newDistance;
 
             this.next.delete(s);
@@ -233,8 +233,7 @@ export class MPGAAStar extends PathAlgorithm {
         let queue = new SimplePriorityQueue<Cell, number>((a, b) => b - a, 0);
 
         // for each (s, s') such that c(s, s') decreased do
-        let neighbors = this.getNeighbors(cell,
-            (x: Cell) => (cell.distance + this.distance(x, cell)) < x.distance);
+        let neighbors = this.getNeighbors(cell,neighbor => !neighbor.isBlocked);
         // InsertState (s, s' , Q)
         neighbors.forEach(x => this.insertState(cell, x, queue));
 
