@@ -84,9 +84,9 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                     map.map.resetPath();
                     map.clearRobots();
                     let pathFinder = map.getAlgorithmInstance();
-                    let intervall = $interval(() => {
+                    let interval = $interval(() => {
                         if (!pathFinder.step()) {
-                            $interval.cancel(intervall);
+                            $interval.cancel(interval);
                         }
                         else {
                             map.visualizePathCosts();
@@ -94,22 +94,24 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                         map.calculateStatistic();
                     }, 10);
                 };
-                map.robotStepIntervall = 500;
+                map.robotStepInterval = 500;
                 map.robotIsMoving = false;
                 map.startRobot = () => {
                     map.robotIsMoving = true;
                     map.map.resetPath();
                     let pathFinder = map.getAlgorithmInstance();
-                    map.map.notifyOnChange((cell) => { pathFinder.observe(cell); });
+                    let onMapUpdate = (cell) => { pathFinder.observe(cell); };
+                    map.map.notifyOnChange(onMapUpdate);
                     let start = map.map.getStartCell();
                     let goal = map.map.getGoalCell();
                     let lastPosition;
-                    let intervall = $interval(() => {
+                    let interval = $interval(() => {
                         map.map.cells.filter((x) => x.isVisited).forEach((x) => { x.type = index_2.CellType.Free; x.color = undefined; });
                         let nextCell = pathFinder.calculatePath(start, goal);
                         start = nextCell;
                         if (start.isGoal) {
-                            $interval.cancel(intervall);
+                            $interval.cancel(interval);
+                            map.map.removeChangeListener(onMapUpdate);
                             map.robotIsMoving = false;
                         }
                         else {
@@ -123,7 +125,7 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                             lastPosition = nextCell;
                         }
                         map.calculateStatistic();
-                    }, map.robotStepIntervall);
+                    }, map.robotStepInterval);
                 };
                 map.visualizePathCosts = () => {
                     if (map.isVisualizePathEnabled === true) {

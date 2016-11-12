@@ -80,9 +80,9 @@ app.controller("MapController", function ($attrs, $interval) {
         map.clearRobots();
         let pathFinder = map.getAlgorithmInstance();
 
-        let intervall = $interval(() => {
+        let interval = $interval(() => {
             if (!pathFinder.step()) {
-                $interval.cancel(intervall);
+                $interval.cancel(interval);
             } else {
                 map.visualizePathCosts();
             }
@@ -90,27 +90,29 @@ app.controller("MapController", function ($attrs, $interval) {
         }, 10);
     };
 
-    map.robotStepIntervall = 500;
+    map.robotStepInterval = 500;
     map.robotIsMoving = false;
     map.startRobot = () => {
         map.robotIsMoving = true;
         map.map.resetPath();
         let pathFinder = map.getAlgorithmInstance();
 
-        map.map.notifyOnChange((cell: Cell) => { pathFinder.observe(cell) }); //todo: eventlisner will be registerd multiple times. Fix this.
+        let onMapUpdate = (cell: Cell) => { pathFinder.observe(cell) };
+        map.map.notifyOnChange(onMapUpdate);
 
         let start = map.map.getStartCell() as Cell;
         let goal = map.map.getGoalCell();
         let lastPosition:Cell;
 
-        let intervall = $interval(() => {
+        let interval = $interval(() => {
             //cleanup old visited cells, to show which cells are calculated by the algorithm 
             map.map.cells.filter((x:Cell) => x.isVisited).forEach((x:Cell) =>{ x.type = CellType.Free; x.color = undefined});
             
             let nextCell = pathFinder.calculatePath(start, goal) as Cell;            
             start = nextCell;
             if (start.isGoal) {
-                $interval.cancel(intervall);
+                $interval.cancel(interval);
+                map.map.removeChangeListener(onMapUpdate);
                 map.robotIsMoving = false;
             } else {
                 map.visualizePathCosts();
@@ -127,7 +129,7 @@ app.controller("MapController", function ($attrs, $interval) {
             }
             map.calculateStatistic();
 
-        }, map.robotStepIntervall);
+        }, map.robotStepInterval);
     }
 
     map.visualizePathCosts = () => {

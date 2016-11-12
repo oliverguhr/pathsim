@@ -208,7 +208,7 @@ export class MPGAAStar extends PathAlgorithm {
 
     private insertState(s: Cell, sSuccessor: Cell, queue: SimplePriorityQueue<Cell, number>) {
         let newDistance = this.distance(s, sSuccessor) + sSuccessor.heuristicDistance;
-        if (s.heuristicDistance > newDistance) {
+        if (s.heuristicDistance >= newDistance) {
             s.heuristicDistance = newDistance;
 
             this.next.delete(s);

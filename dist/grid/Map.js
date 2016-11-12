@@ -22,7 +22,7 @@ System.register(["lodash", "./Cell", "./CellType"], function(exports_1, context_
                     this.grid = [
                         [],
                     ];
-                    this.changeListner = new Array();
+                    this.changeListener = new Array();
                     this.initializeGrid();
                 }
                 updateCellOnPosition(position, lambda) {
@@ -34,7 +34,12 @@ System.register(["lodash", "./Cell", "./CellType"], function(exports_1, context_
                     this.hasChanged(cell);
                 }
                 notifyOnChange(lambda) {
-                    this.changeListner.push(lambda);
+                    this.changeListener.push(lambda);
+                }
+                removeChangeListener(lambda) {
+                    console.log("old changeListener.length", this.changeListener.length);
+                    _.remove(this.changeListener, x => x === lambda);
+                    console.log("new changeListener.length", this.changeListener.length);
                 }
                 getStartCell() {
                     return this.cells.find(cell => cell.isStart);
@@ -69,7 +74,7 @@ System.register(["lodash", "./Cell", "./CellType"], function(exports_1, context_
                     });
                 }
                 hasChanged(updatedCell) {
-                    this.changeListner.forEach(changeListner => changeListner(updatedCell));
+                    this.changeListener.forEach(changeListner => changeListner(updatedCell));
                 }
                 initializeGrid() {
                     for (let row = 0; row < this.rows; row++) {

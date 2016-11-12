@@ -5,12 +5,12 @@ import {Position} from "./Position";
 
 export class Map {
     public grid: Array<Array<Cell>>;
-    private changeListner: Function[];
+    private changeListener: Function[];
     constructor(public rows: number, public cols: number) {
         this.grid = [
             [],
         ];
-        this.changeListner = new Array<(cell: Cell) => void>();
+        this.changeListener = new Array<(cell: Cell) => void>();
         this.initializeGrid();
     }
 
@@ -29,7 +29,13 @@ export class Map {
 
     /** add a function that gets notifyed when a cell on the map changes */
     public notifyOnChange(lambda: (cell: Cell) => void) {
-        this.changeListner.push(lambda);
+        this.changeListener.push(lambda);
+    }
+
+    public removeChangeListener(lambda: (cell: Cell) => void){
+        console.log("old changeListener.length",this.changeListener.length);
+        _.remove(this.changeListener, x => x === lambda);
+        console.log("new changeListener.length",this.changeListener.length);
     }
 
     /** get the start cell */
@@ -78,7 +84,7 @@ export class Map {
     }
 
     private hasChanged(updatedCell: Cell) {
-        this.changeListner.forEach(changeListner => changeListner(updatedCell));
+        this.changeListener.forEach(changeListner => changeListner(updatedCell));
     }
 
     private initializeGrid() {

@@ -136,7 +136,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                 }
                 insertState(s, sSuccessor, queue) {
                     let newDistance = this.distance(s, sSuccessor) + sSuccessor.heuristicDistance;
-                    if (s.heuristicDistance > newDistance) {
+                    if (s.heuristicDistance >= newDistance) {
                         s.heuristicDistance = newDistance;
                         this.next.delete(s);
                         this.support.set(s, sSuccessor);
