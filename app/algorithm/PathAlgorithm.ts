@@ -44,20 +44,20 @@ export class PathAlgorithm {
 
         let neighbors = new Array<Cell>();
 
-        this.addCellIfpassable(cell.position.x + 0, cell.position.y - 1, neighbors, condition);
-        this.addCellIfpassable(cell.position.x + 0, cell.position.y + 1, neighbors, condition);
-        this.addCellIfpassable(cell.position.x + 1, cell.position.y + 0, neighbors, condition);
-        this.addCellIfpassable(cell.position.x - 1, cell.position.y + 0, neighbors, condition);
+        this.addCellIfPassable(cell.position.x + 0, cell.position.y - 1, neighbors, condition);
+        this.addCellIfPassable(cell.position.x + 0, cell.position.y + 1, neighbors, condition);
+        this.addCellIfPassable(cell.position.x + 1, cell.position.y + 0, neighbors, condition);
+        this.addCellIfPassable(cell.position.x - 1, cell.position.y + 0, neighbors, condition);
 
-        this.addCellIfpassable(cell.position.x + 1, cell.position.y + 1, neighbors, condition);
-        this.addCellIfpassable(cell.position.x - 1, cell.position.y + 1, neighbors, condition);
-        this.addCellIfpassable(cell.position.x + 1, cell.position.y - 1, neighbors, condition);
-        this.addCellIfpassable(cell.position.x - 1, cell.position.y - 1, neighbors, condition);
+        this.addCellIfPassable(cell.position.x + 1, cell.position.y + 1, neighbors, condition);
+        this.addCellIfPassable(cell.position.x - 1, cell.position.y + 1, neighbors, condition);
+        this.addCellIfPassable(cell.position.x + 1, cell.position.y - 1, neighbors, condition);
+        this.addCellIfPassable(cell.position.x - 1, cell.position.y - 1, neighbors, condition);
 
         return neighbors;
     }
 
-    private addCellIfpassable(x: number, y: number, neighbors: Cell[], condition: Function) {
+    private addCellIfPassable(x: number, y: number, neighbors: Cell[], condition: Function) {
         let cell = this.map.getCell(x, y);
         if (cell !== undefined && condition(cell)) {
             neighbors.push(cell);
