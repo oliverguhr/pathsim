@@ -151,7 +151,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     }
                 }
                 observe(changedCell) {
-                    let distance = Distance_1.Distance.euklid(changedCell, this.currentCell);
+                    let distance = Distance_1.Distance.euclid(changedCell, this.currentCell);
                     if (distance < this.visibiltyRange) {
                         if (changedCell.isBlocked) {
                             this.next.delete(changedCell);

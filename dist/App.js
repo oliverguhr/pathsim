@@ -258,7 +258,7 @@ System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./
                             algorithm.distance = index_1.Distance.diagonalShortcut;
                             break;
                         default:
-                            algorithm.distance = index_1.Distance.euklid;
+                            algorithm.distance = index_1.Distance.euclid;
                     }
                     map.algorithmInstance = algorithm;
                     return algorithm;

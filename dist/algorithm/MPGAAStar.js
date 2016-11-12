@@ -148,7 +148,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                         }
                     }
                 }
-                reestablishConsitency(cell) {
+                reestablishConsistency(cell) {
                     let queue = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => b - a, 0);
                     let neighbors = this.getNeighbors(cell, (x) => (cell.distance + this.distance(x, cell)) < x.distance);
                     neighbors.forEach(x => this.insertState(cell, x, queue));
@@ -162,13 +162,13 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     }
                 }
                 observe(changedCell) {
-                    let distance = Distance_1.Distance.euklid(changedCell, this.currentCell);
+                    let distance = Distance_1.Distance.euclid(changedCell, this.currentCell);
                     if (distance < this.visibilityRange) {
                         if (changedCell.isBlocked) {
                             this.next.delete(changedCell);
                         }
                         else {
-                            this.reestablishConsitency(changedCell);
+                            this.reestablishConsistency(changedCell);
                         }
                     }
                     else {

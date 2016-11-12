@@ -241,7 +241,7 @@ export class GAAStar extends PathAlgorithm {
                 We remove all cells with increased edge costs from the current path.
                 In our case, we remove blocked cells from the path.
             */
-            let distance = Distance.euklid(changedCell, this.currentCell);
+            let distance = Distance.euclid(changedCell, this.currentCell);
             if (distance < this.visibiltyRange) { // arcs in the range of visibility from s
                 if (changedCell.isBlocked) {
                     this.next.delete(changedCell);

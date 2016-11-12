@@ -278,7 +278,7 @@ app.controller("MapController", function ($attrs, $interval) {
                 algorithm.distance = Distance.diagonalShortcut;
                 break;
             default:
-                algorithm.distance = Distance.euklid;
+                algorithm.distance = Distance.euclid;
         }
 
         map.algorithmInstance = algorithm;

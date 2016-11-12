@@ -10,7 +10,7 @@ System.register([], function(exports_1, context_1) {
                     return Math.abs(previousCell.position.x - currentCell.position.x)
                         + Math.abs(previousCell.position.y - currentCell.position.y);
                 }
-                static euklid(previousCell, currentCell) {
+                static euclid(previousCell, currentCell) {
                     let x = previousCell.position.x - currentCell.position.x;
                     let y = previousCell.position.y - currentCell.position.y;
                     return Math.hypot(x, y);

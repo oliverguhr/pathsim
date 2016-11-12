@@ -6,7 +6,7 @@ export class PathAlgorithm {
     public distance: Function;
     public map: Map;
     constructor() {
-        this.distance = Distance.euklid;
+        this.distance = Distance.euclid;
     }
 
     public paintShortestPath() {

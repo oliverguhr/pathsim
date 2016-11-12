@@ -17,7 +17,7 @@ System.register(["./Distance", "../grid/index", "lodash"], function(exports_1, c
         execute: function() {
             PathAlgorithm = class PathAlgorithm {
                 constructor() {
-                    this.distance = Distance_1.Distance.euklid;
+                    this.distance = Distance_1.Distance.euclid;
                 }
                 paintShortestPath() {
                     let start = this.map.getStartCell();

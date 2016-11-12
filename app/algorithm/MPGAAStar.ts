@@ -118,14 +118,13 @@ export class MPGAAStar extends PathAlgorithm {
         }
     }
 
-    private aStar(init: Cell): Cell {
-        // todo: add code
+    private aStar(init: Cell): Cell {        
         // cell.distance = g(x)
         // cell.estimatedDistance = f(x)
         // h(x) = this.distance(x,this.goal)
-        // f Pfad vom Start zum Ziel f(x)=g(x)+h(x)
-        // g(x) die bisherigen Kosten vom Startknoten
-        // h(x) die geschätzten Kosten von x bis zum Zielknoten
+        // f path from start to goal f(x)=g(x)+h(x)
+        // g(x) accumulated costs from start to current position
+        // h(x) the estimated costs from the cell to the goal
 
         this.initializeState(init);
         this.parent.set(init, undefined);
@@ -223,11 +222,11 @@ export class MPGAAStar extends PathAlgorithm {
         }
     }
 
-    private reestablishConsitency(cell: Cell) {
+    private reestablishConsistency(cell: Cell) {
         /*
-            For the sake of simplicty we call this method everytime we found a
-            new cell with decreased edege (read arc) costs. 
-            To improve the performace one should mark all these cells and process 
+            For the sake of simplicity we call this method every time we found a
+            new cell with decreased edge (read arc) costs. 
+            To improve the performance one should mark all these cells and process 
             them in one run.
         */
 
@@ -263,18 +262,18 @@ export class MPGAAStar extends PathAlgorithm {
             We remove all cells with increased edge costs from the current path.
             In our case, we remove blocked cells from the path.
         */
-        let distance = Distance.euklid(changedCell, this.currentCell);
+        let distance = Distance.euclid(changedCell, this.currentCell);
         if (distance < this.visibilityRange) { // arcs in the range of visibility from s
             if (changedCell.isBlocked) {
                 this.next.delete(changedCell);
             } else {
                 /*
                     Todo: Fix this. 
-                    ReestablishConsitency should only be called, if the cell was blocked befor. 
-                    Sice the map does not provide the old value yet, we can't tell if the state has changed.
-                    However, until this is fixed we invoke it everytime. This should not hurt, but reduce the performance. 
+                    ReestablishConsistency should only be called, if the cell was blocked before. 
+                    Since the map does not provide the old value yet, we can't tell if the state has changed.
+                    However, until this is fixed we invoke it every time. This should not hurt, but reduce the performance. 
                 */
-                this.reestablishConsitency(changedCell);
+                this.reestablishConsistency(changedCell);
             }
         } else {
             console.info("cell change ignored, cell out of sight", changedCell);

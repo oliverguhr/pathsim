@@ -6,7 +6,7 @@ export class Distance {
               + Math.abs(previousCell.position.y - currentCell.position.y);
     }
 
-    public static euklid(previousCell: Cell, currentCell: Cell) {
+    public static euclid(previousCell: Cell, currentCell: Cell) {
         let x = previousCell.position.x - currentCell.position.x;
         let y = previousCell.position.y - currentCell.position.y;
         return Math.hypot(x, y); // short form for Math.sqrt( x*x + y*y );
