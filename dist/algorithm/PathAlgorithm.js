@@ -1,4 +1,4 @@
-System.register(["./Distance", '../Grid/index', "lodash"], function(exports_1, context_1) {
+System.register(["./Distance", "../grid/index", "lodash"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Distance_1, index_1, _;
@@ -15,34 +15,17 @@ System.register(["./Distance", '../Grid/index', "lodash"], function(exports_1, c
                 _ = _1;
             }],
         execute: function() {
-            class PathAlgorithm {
+            PathAlgorithm = class PathAlgorithm {
                 constructor() {
-                    this.distance = Distance_1.Distance.euklid;
-                }
-                getNeighbors(cell, condition) {
-                    let neighbors = new Array();
-                    this.addCellIfpassable(cell.position.x + 0, cell.position.y - 1, neighbors, condition);
-                    this.addCellIfpassable(cell.position.x + 0, cell.position.y + 1, neighbors, condition);
-                    this.addCellIfpassable(cell.position.x + 1, cell.position.y + 0, neighbors, condition);
-                    this.addCellIfpassable(cell.position.x - 1, cell.position.y + 0, neighbors, condition);
-                    this.addCellIfpassable(cell.position.x + 1, cell.position.y + 1, neighbors, condition);
-                    this.addCellIfpassable(cell.position.x - 1, cell.position.y + 1, neighbors, condition);
-                    this.addCellIfpassable(cell.position.x + 1, cell.position.y - 1, neighbors, condition);
-                    this.addCellIfpassable(cell.position.x - 1, cell.position.y - 1, neighbors, condition);
-                    return neighbors;
-                }
-                addCellIfpassable(x, y, neighbors, condition) {
-                    let cell = this.map.getCell(x, y);
-                    if (cell !== undefined && condition(cell)) {
-                        neighbors.push(cell);
-                    }
+                    this.distance = Distance_1.Distance.euclid;
                 }
                 paintShortestPath() {
                     let start = this.map.getStartCell();
                     let node = this.map.getGoalCell();
                     let nodeDistance = (cell) => cell.distance;
                     do {
-                        let predecessors = this.getNeighbors(node, (cell) => !cell.isBlocked).filter(node => Number.isFinite(node.distance));
+                        let predecessors = this.getNeighbors(node, (cell) => !cell.isBlocked)
+                            .filter(node => Number.isFinite(node.distance));
                         if (predecessors.length === 0) {
                             console.log("path is blocked");
                             break;
@@ -54,7 +37,25 @@ System.register(["./Distance", '../Grid/index', "lodash"], function(exports_1, c
                         }
                     } while (node !== start);
                 }
-            }
+                getNeighbors(cell, condition) {
+                    let neighbors = new Array();
+                    this.addCellIfPassable(cell.position.x + 0, cell.position.y - 1, neighbors, condition);
+                    this.addCellIfPassable(cell.position.x + 0, cell.position.y + 1, neighbors, condition);
+                    this.addCellIfPassable(cell.position.x + 1, cell.position.y + 0, neighbors, condition);
+                    this.addCellIfPassable(cell.position.x - 1, cell.position.y + 0, neighbors, condition);
+                    this.addCellIfPassable(cell.position.x + 1, cell.position.y + 1, neighbors, condition);
+                    this.addCellIfPassable(cell.position.x - 1, cell.position.y + 1, neighbors, condition);
+                    this.addCellIfPassable(cell.position.x + 1, cell.position.y - 1, neighbors, condition);
+                    this.addCellIfPassable(cell.position.x - 1, cell.position.y - 1, neighbors, condition);
+                    return neighbors;
+                }
+                addCellIfPassable(x, y, neighbors, condition) {
+                    let cell = this.map.getCell(x, y);
+                    if (cell !== undefined && condition(cell)) {
+                        neighbors.push(cell);
+                    }
+                }
+            };
             exports_1("PathAlgorithm", PathAlgorithm);
         }
     }

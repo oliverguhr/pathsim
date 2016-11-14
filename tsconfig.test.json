@@ -1,0 +1,15 @@
+{
+"compilerOptions": {
+      "module": "commonjs",
+      "noImplicitAny": true,      
+      "sourceMap": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "target": "es6",      
+      "removeComments": false,
+      "outDir": "test",
+      "noEmitOnError":true   
+  },
+  "exclude": ["node_modules", "app/App.ts"],
+  "compileOnSave": true
+}

@@ -1,4 +1,4 @@
-System.register(["./PathAlgorithm", '../Grid/index', "lodash"], function(exports_1, context_1) {
+System.register(["./PathAlgorithm", "../grid/index", "lodash"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var PathAlgorithm_1, index_1, _;
@@ -15,7 +15,7 @@ System.register(["./PathAlgorithm", '../Grid/index', "lodash"], function(exports
                 _ = _1;
             }],
         execute: function() {
-            class Dijkstra extends PathAlgorithm_1.PathAlgorithm {
+            Dijkstra = class Dijkstra extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map) {
                     super();
                     this.map = map;
@@ -44,8 +44,9 @@ System.register(["./PathAlgorithm", '../Grid/index', "lodash"], function(exports
                     _.pull(this.cells, currentCell);
                     let neighbors = this.getNeighbors(currentCell, (cell) => !cell.isBlocked && !cell.isVisited);
                     for (let neighbor of neighbors) {
-                        if (isRunning)
+                        if (isRunning) {
                             this.updateDistance(currentCell, neighbor);
+                        }
                         if (neighbor.isGoal) {
                             this.paintShortestPath();
                             isRunning = false;
@@ -64,7 +65,7 @@ System.register(["./PathAlgorithm", '../Grid/index', "lodash"], function(exports
                         currentCell.type = index_1.CellType.Visited;
                     }
                 }
-            }
+            };
             exports_1("Dijkstra", Dijkstra);
         }
     }

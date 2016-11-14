@@ -1,7 +1,7 @@
-System.register(['../Grid/index', './PathAlgorithm', '../SimplePriorityQueue', "lodash"], function(exports_1, context_1) {
+System.register(["../grid/index", "./PathAlgorithm", "../tools/index", "lodash"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var index_1, PathAlgorithm_1, SimplePriorityQueue_1, _;
+    var index_1, PathAlgorithm_1, index_2, _;
     var LpaStar;
     return {
         setters:[
@@ -11,27 +11,23 @@ System.register(['../Grid/index', './PathAlgorithm', '../SimplePriorityQueue', "
             function (PathAlgorithm_1_1) {
                 PathAlgorithm_1 = PathAlgorithm_1_1;
             },
-            function (SimplePriorityQueue_1_1) {
-                SimplePriorityQueue_1 = SimplePriorityQueue_1_1;
+            function (index_2_1) {
+                index_2 = index_2_1;
             },
             function (_1) {
                 _ = _1;
             }],
         execute: function() {
-            class LpaStar extends PathAlgorithm_1.PathAlgorithm {
+            LpaStar = class LpaStar extends PathAlgorithm_1.PathAlgorithm {
                 constructor(map) {
                     super();
                     this.neighborsFilter = (x) => !x.isBlocked && !x.isVisited;
                     this.isInitialized = false;
                     this.map = map;
-                    this.openCells = new SimplePriorityQueue_1.SimplePriorityQueue();
+                    this.openCells =
+                        new index_2.SimplePriorityQueue(LpaStar.compareKeys, [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY]);
                     this.goal = this.map.getGoalCell();
                     this.start = this.map.getStartCell();
-                }
-                calcKey(cell) {
-                    let k2 = Math.min(cell.distance, cell.rhs);
-                    let k1 = k2 + this.distance(cell, this.goal);
-                    return [Math.round(k1), Math.round(k2)];
                 }
                 static compareKeys(a, b) {
                     if (a[0] > b[0]) {
@@ -54,16 +50,53 @@ System.register(['../Grid/index', './PathAlgorithm', '../SimplePriorityQueue', "
                 }
                 initialize() {
                     let cells = this.map.cells;
-                    for (var i = 0; i < cells.length; i++) {
+                    for (let i = 0; i < cells.length; i++) {
                         cells[i].distance = Number.POSITIVE_INFINITY;
                         cells[i].rhs = Number.POSITIVE_INFINITY;
                     }
                     this.start.rhs = 0;
                     this.openCells.insert(this.start, this.calcKey(this.start));
                 }
+                run() {
+                    this.initialize();
+                    this.computeShortestPath();
+                    this.paintShortestPath();
+                    this.isInitialized = true;
+                }
+                paintShortestPath() {
+                    if (!Number.isFinite(this.goal.distance)) {
+                        return;
+                    }
+                    this.map.cells.forEach(cell => {
+                        if (Number.isFinite(cell.distance) && cell.isFree) {
+                            cell.type = index_1.CellType.Visited;
+                        }
+                    });
+                    let node = this.goal;
+                    let nodeDistance = (cell) => cell.distance;
+                    do {
+                        let predecessors = this.getNeighbors(node, (x) => !x.isBlocked)
+                            .filter(node => Number.isFinite(node.distance));
+                        if (predecessors.length === 0) {
+                            console.log("path is blocked");
+                            break;
+                        }
+                        node = _.minBy(predecessors, nodeDistance);
+                        if (node.isVisited) {
+                            node.type = index_1.CellType.Current;
+                            node.color = undefined;
+                        }
+                    } while (node !== this.start);
+                }
+                calcKey(cell) {
+                    let k2 = Math.min(cell.distance, cell.rhs);
+                    let k1 = k2 + this.distance(cell, this.goal);
+                    return [Math.round(k1), Math.round(k2)];
+                }
                 updateVertex(cell) {
                     if (cell !== this.start) {
-                        let predecessorsRhsValues = this.getNeighbors(cell, this.neighborsFilter).map(x => x.distance + this.distance(x, cell));
+                        let predecessorsRhsValues = this.getNeighbors(cell, this.neighborsFilter)
+                            .map(x => x.distance + this.distance(x, cell));
                         cell.rhs = Math.min(...predecessorsRhsValues);
                     }
                     if (this.openCells.has(cell)) {
@@ -89,36 +122,6 @@ System.register(['../Grid/index', './PathAlgorithm', '../SimplePriorityQueue', "
                         }
                     }
                 }
-                paintShortestPath() {
-                    if (!Number.isFinite(this.goal.distance)) {
-                        return;
-                    }
-                    this.map.cells.forEach(cell => {
-                        if (Number.isFinite(cell.distance) && cell.isFree) {
-                            cell.type = index_1.CellType.Visited;
-                        }
-                    });
-                    let node = this.goal;
-                    let nodeDistance = (cell) => cell.distance;
-                    do {
-                        let predecessors = this.getNeighbors(node, (x) => !x.isBlocked).filter(node => Number.isFinite(node.distance));
-                        if (predecessors.length === 0) {
-                            console.log("path is blocked");
-                            break;
-                        }
-                        node = _.minBy(predecessors, nodeDistance);
-                        if (node.isVisited) {
-                            node.type = index_1.CellType.Current;
-                            node.color = undefined;
-                        }
-                    } while (node !== this.start);
-                }
-                run() {
-                    this.initialize();
-                    this.computeShortestPath();
-                    this.paintShortestPath();
-                    this.isInitialized = true;
-                }
                 mapUpdate(cells) {
                     let updateList = new Array();
                     cells.forEach(cell => {
@@ -134,7 +137,7 @@ System.register(['../Grid/index', './PathAlgorithm', '../SimplePriorityQueue', "
                     this.computeShortestPath();
                     this.paintShortestPath();
                 }
-            }
+            };
             exports_1("LpaStar", LpaStar);
         }
     }

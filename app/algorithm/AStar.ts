@@ -1,27 +1,27 @@
-import {Cell,Map, CellType} from '../Grid/index';
-import {PathAlgorithm} from './PathAlgorithm';
+import {Cell, Map, CellType} from "../grid/index";
+import {PathAlgorithm} from "./PathAlgorithm";
 import * as PriorityQueue from "js-priority-queue";
 
 export class AStar extends PathAlgorithm {
-    private goal:Cell;
-    private start:Cell;
-    private openCells:PriorityQueue<Cell>;
+    private goal: Cell;
+    private start: Cell;
+    private openCells: PriorityQueue<Cell>;
 
-    constructor(map:Map) {
+    constructor(map: Map) {
         super();
         let queueConfig = {
-            comparator: (a:Cell, b:Cell) => a.estimatedDistance - b.estimatedDistance
+            comparator: (a: Cell, b: Cell) => a.estimatedDistance - b.estimatedDistance,
         };
-        this.map = map;        
+        this.map = map;
         this.openCells = new PriorityQueue.ArrayStrategy<Cell>(queueConfig);
         this.goal = this.map.getGoalCell();
         this.start = this.map.getStartCell();
         this.initialize();
     }
-    initialize() {
+    public initialize() {
         let cells = this.map.cells.filter(cell => !cell.isBlocked);
 
-        for (var i = 0; i < cells.length; i++) {
+        for (let i = 0; i < cells.length; i++) {
             cells[i].previous = undefined;
             cells[i].distance = Number.POSITIVE_INFINITY;
             cells[i].isOpen = true;
@@ -32,11 +32,11 @@ export class AStar extends PathAlgorithm {
         this.openCells.queue(this.start);
     }
 
-    run() {
-        while (this.step()) {}
+    public run() {
+        while (this.step()) { }
     }
 
-    step() {
+    public step() {
         if (this.openCells.length !== 0) {
             let currentNode = this.openCells.dequeue();
 
@@ -52,9 +52,9 @@ export class AStar extends PathAlgorithm {
         return false;
     }
 
-    expendNode(currentNode:Cell) {
-        let neighbors = this.getNeighbors(currentNode, (cell:Cell) => !cell.isBlocked /*todo && !cell.isVisited */ );
-        for (var i = 0; i < neighbors.length; i++) {
+    private expendNode(currentNode: Cell) {
+        let neighbors = this.getNeighbors(currentNode, (cell: Cell) => !cell.isBlocked /*todo && !cell.isVisited */);
+        for (let i = 0; i < neighbors.length; i++) {
             if (!neighbors[i].isOpen) {
                 continue; // Ignore the neighbor which is already evaluated.
             }

@@ -1,18 +1,18 @@
-import {Cell} from '../Grid/index'
+import {Cell} from "../grid/index";
 
 export class Distance {
-    public static manhattan(previousCell:Cell, currentCell:Cell) {
+    public static manhattan(previousCell: Cell, currentCell: Cell) {
         return Math.abs(previousCell.position.x - currentCell.position.x)
               + Math.abs(previousCell.position.y - currentCell.position.y);
     }
 
-    public static euklid(previousCell:Cell, currentCell:Cell) {
+    public static euclid(previousCell: Cell, currentCell: Cell) {
         let x = previousCell.position.x - currentCell.position.x;
         let y = previousCell.position.y - currentCell.position.y;
         return Math.hypot(x, y); // short form for Math.sqrt( x*x + y*y );
     }
 
-    public static diagonalShortcut(previousCell:Cell, currentCell:Cell) {
+    public static diagonalShortcut(previousCell: Cell, currentCell: Cell) {
         /* See  http://www.policyalmanac.org/games/heuristics.htm  for details*/
         let xDistance = Math.abs(previousCell.position.x - currentCell.position.x);
         let yDistance = Math.abs(previousCell.position.y - currentCell.position.y);

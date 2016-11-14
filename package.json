@@ -10,20 +10,26 @@
     "lodash": "^4.7.0",
     "systemjs": "^0.19.38"
   },
-  "devDependencies": {    
-    "concurrently": "^2.0.0",
-    "lite-server": "^2.2.0",
-    "tape": "^4.5.1",
-    "typescript": "^1.8.10",
-    "typings": "^1.3.3"    
+  "devDependencies": {
+    "concurrently": "^3.1.0",
+    "lite-server": "^2.2.2",
+    "mocha": "^3.1.0",
+    "mocha-typescript": "^1.0.10",
+    "typescript": "^2.0.6",
+    "typings": "^1.5.0"
   },
   "scripts": {
     "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" ",
-    "test": "node_modules/tape/bin/tape  'tests/**/*.js'",
-    "watch-test": "watch \"node_modules/tape/bin/tape 'tests/**/*.js'\" tests/",
+    "dev-test-watch": "mocha-typescript-watch",
+    "pretest": "rm -rf test && tsc  -p tsconfig.test.json",
+    "pretestWindows": "rd test /s /q & tsc  -p tsconfig.test.json",
+    "test": "pretest && mocha test/ --colors --recursive",
+    "test:w": "npm run pretest && concurrently \"tsc -w -p tsconfig.test.json\" \"mocha test/ --watch --recursive --colors --reporter spec\"",
+    "test:ww": "npm run pretestWindows & concurrently \"tsc -w -p tsconfig.test.json\" \"mocha test/ --watch --recursive --colors --reporter spec\"",
     "lite": "lite-server",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
+    "lint": "tslint --project tsconfig.json",
     "typings": "typings",
     "postinstall": "typings install"
   },

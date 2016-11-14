@@ -1,47 +1,40 @@
-System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./PathCostVisualizer", "./ObstacleGenerator", "./DynmicObstacleGenerator", "angular"], function(exports_1, context_1) {
+System.register(['./algorithm/GAAStar', "./algorithm/index", "./grid/index", "./tools/index", "angular"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var index_1, index_2, MazeGenerator_1, PathCostVisualizer_1, ObstacleGenerator_1, DynmicObstacleGenerator_1, angular;
+    var GAAStar_1, index_1, index_2, index_3, angular;
     var app;
     return {
         setters:[
+            function (GAAStar_1_1) {
+                GAAStar_1 = GAAStar_1_1;
+            },
             function (index_1_1) {
                 index_1 = index_1_1;
             },
             function (index_2_1) {
                 index_2 = index_2_1;
             },
-            function (MazeGenerator_1_1) {
-                MazeGenerator_1 = MazeGenerator_1_1;
-            },
-            function (PathCostVisualizer_1_1) {
-                PathCostVisualizer_1 = PathCostVisualizer_1_1;
-            },
-            function (ObstacleGenerator_1_1) {
-                ObstacleGenerator_1 = ObstacleGenerator_1_1;
-            },
-            function (DynmicObstacleGenerator_1_1) {
-                DynmicObstacleGenerator_1 = DynmicObstacleGenerator_1_1;
+            function (index_3_1) {
+                index_3 = index_3_1;
             },
             function (angular_1) {
                 angular = angular_1;
             }],
         execute: function() {
             exports_1("app", app = angular.module("pathsim", []));
-            app.controller('MapController', function ($attrs, $interval) {
-                var map = this;
+            app.controller("MapController", function ($attrs, $interval) {
+                let map = this;
                 map.name = "test";
                 map.cols = $attrs.cols;
                 map.rows = $attrs.rows;
                 map.robots = undefined;
-                map.algorithm = "AStar";
+                map.algorithm = "MPGAAStar";
                 map.algorithmInstance = undefined;
                 map.distance = "euklid";
                 map.isVisualizePathEnabled = true;
                 map.stat = {};
                 map.start = undefined;
                 map.goal = undefined;
-                console.log("test");
                 map.initializeMap = (predefinedMap) => {
                     if (predefinedMap === undefined) {
                         map.map = new index_2.Map(map.rows, map.cols);
@@ -57,6 +50,9 @@ System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./Path
                     map.widthPx = map.map.cols * map.cellSize;
                     map.heightPx = map.map.rows * map.cellSize;
                     map.map.notifyOnChange((cell) => {
+                        if (map.robotIsMoving) {
+                            return;
+                        }
                         try {
                             map.algorithmInstance = map.getAlgorithmInstance();
                         }
@@ -70,10 +66,10 @@ System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./Path
                             map.algorithmInstance.mapUpdate([cell]);
                             console.timeEnd(map.algorithm);
                             map.visualizePathCosts();
-                            map.calulateStatistic();
+                            map.calculateStatistic();
                         }
                         if (map.algorithmInstance.isInitialized === undefined || map.algorithmInstance.isInitialized === false) {
-                            map.calulatePath();
+                            map.calculatePath();
                         }
                     });
                 };
@@ -88,41 +84,74 @@ System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./Path
                     map.map.resetPath();
                     map.clearRobots();
                     let pathFinder = map.getAlgorithmInstance();
-                    var intervall = $interval(() => {
+                    let interval = $interval(() => {
                         if (!pathFinder.step()) {
-                            $interval.cancel(intervall);
+                            $interval.cancel(interval);
                         }
                         else {
                             map.visualizePathCosts();
                         }
-                        map.calulateStatistic();
+                        map.calculateStatistic();
                     }, 10);
+                };
+                map.robotStepInterval = 500;
+                map.robotIsMoving = false;
+                map.startRobot = () => {
+                    map.robotIsMoving = true;
+                    map.map.resetPath();
+                    let pathFinder = map.getAlgorithmInstance();
+                    let onMapUpdate = (cell) => { pathFinder.observe(cell); };
+                    map.map.notifyOnChange(onMapUpdate);
+                    let start = map.map.getStartCell();
+                    let goal = map.map.getGoalCell();
+                    let lastPosition;
+                    let interval = $interval(() => {
+                        map.map.cells.filter((x) => x.isVisited).forEach((x) => { x.type = index_2.CellType.Free; x.color = undefined; });
+                        let nextCell = pathFinder.calculatePath(start, goal);
+                        start = nextCell;
+                        if (start.isGoal) {
+                            $interval.cancel(interval);
+                            map.map.removeChangeListener(onMapUpdate);
+                            map.robotIsMoving = false;
+                        }
+                        else {
+                            map.visualizePathCosts();
+                            if (lastPosition !== undefined) {
+                                lastPosition.cellType = index_2.CellType.Free;
+                                lastPosition.color = undefined;
+                            }
+                            nextCell.cellType = index_2.CellType.Visited;
+                            nextCell.color = "#ee00f2";
+                            lastPosition = nextCell;
+                        }
+                        map.calculateStatistic();
+                    }, map.robotStepInterval);
                 };
                 map.visualizePathCosts = () => {
                     if (map.isVisualizePathEnabled === true) {
-                        let visual = new PathCostVisualizer_1.PathCostVisualizer(map.map);
+                        let visual = new index_3.PathCostVisualizer(map.map);
                         visual.paint();
                     }
                 };
                 map.addRandomObstacles = () => {
                     map.map.resetPath();
                     map.algorithmInstance = undefined;
-                    let generator = new ObstacleGenerator_1.ObstacleGenerator(map.map);
+                    let generator = new index_3.ObstacleGenerator(map.map);
                     generator.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
                     map.algorithmInstance = map.getAlgorithmInstance();
-                    map.calulatePath();
+                    map.calculatePath();
                 };
                 map.addWalls = () => {
                     map.map.resetPath();
                     map.algorithmInstance = undefined;
-                    let generator = new MazeGenerator_1.MazeGenerator(map.map);
+                    let generator = new index_3.MazeGenerator(map.map);
                     generator.createMaze();
                     map.algorithmInstance = map.getAlgorithmInstance();
-                    map.calulatePath();
+                    map.calculatePath();
                 };
                 map.addDynamicObstacle = () => {
                     if (map.robots === undefined) {
-                        map.robots = new DynmicObstacleGenerator_1.DynmicObstacleGenerator(map.map);
+                        map.robots = new index_3.DynmicObstacleGenerator(map.map);
                     }
                     map.robots.add();
                     if (map.robotIntervall !== undefined) {
@@ -134,11 +163,12 @@ System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./Path
                 };
                 map.clearRobots = () => {
                     $interval.cancel(map.robotIntervall);
-                    if (map.robots !== undefined)
+                    if (map.robots !== undefined) {
                         map.robots.robots.forEach((robot) => map.map.getCell(robot.position.x, robot.position.y).cellType = 0);
+                    }
                     map.robots = undefined;
                 };
-                map.calulatePath = () => {
+                map.calculatePath = () => {
                     let pathFinder = map.getAlgorithmInstance();
                     if (pathFinder.isInitialized === undefined || pathFinder.isInitialized === false) {
                         console.time(map.algorithm);
@@ -146,9 +176,9 @@ System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./Path
                         console.timeEnd(map.algorithm);
                     }
                     map.visualizePathCosts();
-                    map.calulateStatistic();
+                    map.calculateStatistic();
                 };
-                map.calulateStatistic = () => {
+                map.calculateStatistic = () => {
                     map.stat.pathLength = map.map.cells.filter((x) => x.isCurrent).length;
                     map.stat.visitedCells = map.stat.pathLength + map.map.cells.filter((x) => x.isVisited).length;
                 };
@@ -186,7 +216,7 @@ System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./Path
                     }
                 };
                 map.mouseOverCell = (cell, event) => {
-                    if (event.buttons == 1) {
+                    if (event.buttons === 1) {
                         this.clickOnCell(cell);
                     }
                     map.stat.cell = cell.toString();
@@ -196,15 +226,15 @@ System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./Path
                     map.algorithmInstance = undefined;
                     map.algorithmInstance = map.getAlgorithmInstance();
                     map.map.resetPath();
-                    map.calulatePath();
+                    map.calculatePath();
                 };
                 map.getAlgorithmInstance = () => {
                     let algorithm;
                     switch (map.algorithm) {
-                        case 'Dijkstra':
+                        case "Dijkstra":
                             algorithm = new index_1.Dijkstra(map.map);
                             break;
-                        case 'LpaStar':
+                        case "LpaStar":
                             if (map.algorithmInstance instanceof index_1.LpaStar) {
                                 algorithm = map.algorithmInstance;
                             }
@@ -212,8 +242,15 @@ System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./Path
                                 algorithm = new index_1.LpaStar(map.map);
                             }
                             break;
-                        default:
+                        case "AStar":
                             algorithm = new index_1.AStar(map.map);
+                            break;
+                        case "GAAStar":
+                            algorithm = new GAAStar_1.GAAStar(map.map, 500);
+                            break;
+                        default:
+                            algorithm = new index_1.MPGAAStar(map.map, 500);
+                            break;
                     }
                     switch (map.distance) {
                         case "manhattan":
@@ -223,13 +260,13 @@ System.register(["./algorithm/index", "./Grid/index", "./MazeGenerator", "./Path
                             algorithm.distance = index_1.Distance.diagonalShortcut;
                             break;
                         default:
-                            algorithm.distance = index_1.Distance.euklid;
+                            algorithm.distance = index_1.Distance.euclid;
                     }
                     map.algorithmInstance = algorithm;
                     return algorithm;
                 };
             });
-            angular.bootstrap(document.documentElement, ['pathsim']);
+            angular.bootstrap(document.documentElement, ["pathsim"]);
         }
     }
 });

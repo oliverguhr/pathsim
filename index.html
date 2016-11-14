@@ -4,8 +4,8 @@
     <link rel="stylesheet" type="text/css" href="styles/svg.css" />
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
 
- 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.38/system.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.38/system.js"></script>
    	<script type="text/javascript" src="./system.config.js"></script>
 
 
@@ -29,7 +29,7 @@
                     <fieldset>
                         <legend>Map Options</legend>
                         <input type="button" ng-click="map.cleanMap()" value="Reset map" />
-                        <input type="button" ng-click="map.addDynamicObstacle()" value="Add robot" />
+                        <input type="button" ng-click="map.addDynamicObstacle()" value="Add moving block" />
                         <input type="button" ng-click="map.addRandomObstacles()" value="Add random blocks" />
                         <input type="button" ng-click="map.addWalls()" value="Add Walls" />
 
@@ -46,6 +46,8 @@
                                 <option value="Dijkstra">Dijkstra</option>
                                 <option value="AStar">A*</option>
                                 <option value="LpaStar">Lifelong Planning A*</option>
+                                <option value="GAAStar">GAA*</option>
+                                <option value="MPGAAStar">MPGAA*</option>
                             </select>
                             <span>Distance:</span>
                             <select name="distance" id="distance" ng-model="map.distance" ng-change="map.changeAlgorithm();">
@@ -55,8 +57,12 @@
                             </select>
                         </label>
 
-                        <input type="button" ng-click="map.runStepByStep()" value="Run step by step" ng-hide="map.algorithm == 'LpaStar'" />
-
+                        <input type="button" ng-click="map.runStepByStep()" value="Run step by step" ng-hide="map.algorithm == 'LpaStar' || map.algorithm == 'MPGAAStar'|| map.algorithm == 'GAAStar'" />
+                        
+                        <div ng-show="map.algorithm == 'MPGAAStar' || map.algorithm == 'GAAStar'" >
+                         <input type="number" class="inputWithLabel"  value="" ng-model="map.robotStepInterval" ng-disabled="map.robotIsMoving"  /> <label>ms step interval</label>
+                         <input type="button" ng-click="map.startRobot()" value="Start Robot" ng-disabled="map.robotIsMoving" />
+                        </div>
                     </fieldset>
 
                     <fieldset>
@@ -72,11 +78,17 @@
                               <td>Position</td><td>{{map.hoveredCell.position.x}} {{map.hoveredCell.position.y}}<td>
                             </tr>
                             <tr ng-show="map.hoveredCell.distance">
-                              <td>Distance</td><td>{{map.hoveredCell.distance | number:3}}<td>
+                              <td>Distance g(x)</td><td>{{map.hoveredCell.distance | number:3}}<td>
                             </tr>
                             <tr ng-show="map.hoveredCell.rhs">
                               <td>Rhs</td><td>{{map.hoveredCell.rhs | number:3}}<td>
-                            </tr>
+                            </tr>  
+                             <tr ng-show="map.hoveredCell.estimatedDistance">
+                              <td>est. Distance f(x)</td><td>{{map.hoveredCell.estimatedDistance | number:3}}<td>
+                            </tr>  
+                             <tr ng-show="map.hoveredCell.heuristicDistance">
+                              <td>heuristic Distance h(x)</td><td>{{map.hoveredCell.heuristicDistance | number:3}}<td>
+                            </tr>                           
                           </tbody>
                         </table>
                     </fieldset>

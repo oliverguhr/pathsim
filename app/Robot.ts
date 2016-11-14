@@ -1,18 +1,19 @@
 import * as _ from "lodash";
-import { Map, Moveable, CellType } from "./Grid/index";
+import { Map, Moveable, CellType } from "./grid/index";
 
 export class Robot {
-    currentDistance:number;
-    robot: Moveable;
+    private currentDistance: number;
+    private robot: Moveable;
 
-    constructor(private map:Map) {
+    constructor(private map: Map) {
         this.robot = new Moveable(map, CellType.Current);
         this.robot.moveTo(map.getStartCell().position);
 
     }
 
-    step() {
-        let nextCell = _.minBy(this.map.cells.filter(cell => cell.isCurrent && cell.distance > this.currentDistance), cell => cell.distance);
+    public step() {
+        let path = this.map.cells.filter(cell => cell.isCurrent && cell.distance > this.currentDistance);
+        let nextCell = _.minBy(path, cell => cell.distance);
 
         if (nextCell === undefined) {
             return;

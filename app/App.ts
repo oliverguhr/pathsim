@@ -1,11 +1,8 @@
-import {LpaStar, AStar, Dijkstra, Distance} from "./algorithm/index";
-import { Map, Moveable, CellType, Position, Cell } from "./Grid/index";
-import {MazeGenerator} from "./MazeGenerator";
-import {PathCostVisualizer} from "./PathCostVisualizer";
-import {ObstacleGenerator} from "./ObstacleGenerator";
-import {DynmicObstacleGenerator} from "./DynmicObstacleGenerator";
+import { GAAStar } from './algorithm/GAAStar';
+import { LpaStar, AStar, Dijkstra, Distance, MPGAAStar } from "./algorithm/index";
+import { Map, Moveable, CellType, Position, Cell } from "./grid/index";
+import { DynmicObstacleGenerator, MazeGenerator, PathCostVisualizer, ObstacleGenerator } from "./tools/index";
 import * as angular from "angular";
-
 
 /* Change map from regular js
 angular.element($0).scope().$apply((scope) => {scope.map.map[0][0].isBlocked = scope.map.map[0][0].isBlocked!})
@@ -14,13 +11,13 @@ angular.element($0).scope().$apply((scope) => {console.log(scope)})
 
 export var app = angular.module("pathsim", []);
 
-app.controller('MapController', function($attrs, $interval) {
-    var map = this;
+app.controller("MapController", function ($attrs, $interval) {
+    let map = this;
     map.name = "test";
     map.cols = $attrs.cols;
     map.rows = $attrs.rows;
     map.robots = undefined;
-    map.algorithm = "AStar";
+    map.algorithm = "MPGAAStar";
     map.algorithmInstance = undefined;
     map.distance = "euklid";
     map.isVisualizePathEnabled = true;
@@ -28,9 +25,7 @@ app.controller('MapController', function($attrs, $interval) {
     map.start = undefined;
     map.goal = undefined;
 
-    console.log("test");
-
-    map.initializeMap = (predefinedMap:Map) => {
+    map.initializeMap = (predefinedMap: Map) => {
         if (predefinedMap === undefined) {
             map.map = new Map(map.rows, map.cols);
 
@@ -48,7 +43,11 @@ app.controller('MapController', function($attrs, $interval) {
         map.widthPx = map.map.cols * map.cellSize;
         map.heightPx = map.map.rows * map.cellSize;
 
-        map.map.notifyOnChange((cell:Cell) => {
+        map.map.notifyOnChange((cell: Cell) => {
+            if (map.robotIsMoving) {
+                return;
+            }
+
             try {
                 map.algorithmInstance = map.getAlgorithmInstance();
             } catch (e) {
@@ -61,10 +60,10 @@ app.controller('MapController', function($attrs, $interval) {
                 map.algorithmInstance.mapUpdate([cell]);
                 console.timeEnd(map.algorithm);
                 map.visualizePathCosts();
-                map.calulateStatistic();
+                map.calculateStatistic();
             }
             if (map.algorithmInstance.isInitialized === undefined || map.algorithmInstance.isInitialized === false) {
-                map.calulatePath();
+                map.calculatePath();
             }
         });
     };
@@ -81,15 +80,57 @@ app.controller('MapController', function($attrs, $interval) {
         map.clearRobots();
         let pathFinder = map.getAlgorithmInstance();
 
-        var intervall = $interval(() => {
+        let interval = $interval(() => {
             if (!pathFinder.step()) {
-                $interval.cancel(intervall);
+                $interval.cancel(interval);
             } else {
                 map.visualizePathCosts();
             }
-            map.calulateStatistic();
+            map.calculateStatistic();
         }, 10);
     };
+
+    map.robotStepInterval = 500;
+    map.robotIsMoving = false;
+    map.startRobot = () => {
+        map.robotIsMoving = true;
+        map.map.resetPath();
+        let pathFinder = map.getAlgorithmInstance();
+
+        let onMapUpdate = (cell: Cell) => { pathFinder.observe(cell) };
+        map.map.notifyOnChange(onMapUpdate);
+
+        let start = map.map.getStartCell() as Cell;
+        let goal = map.map.getGoalCell();
+        let lastPosition:Cell;
+
+        let interval = $interval(() => {
+            //cleanup old visited cells, to show which cells are calculated by the algorithm 
+            map.map.cells.filter((x:Cell) => x.isVisited).forEach((x:Cell) =>{ x.type = CellType.Free; x.color = undefined});
+            
+            let nextCell = pathFinder.calculatePath(start, goal) as Cell;            
+            start = nextCell;
+            if (start.isGoal) {
+                $interval.cancel(interval);
+                map.map.removeChangeListener(onMapUpdate);
+                map.robotIsMoving = false;
+            } else {
+                map.visualizePathCosts();
+                if(lastPosition !== undefined)
+                {
+                    lastPosition.cellType = CellType.Free;
+                    lastPosition.color = undefined;
+                }
+
+                nextCell.cellType = CellType.Visited;
+                nextCell.color = "#ee00f2";
+                lastPosition=nextCell;
+                
+            }
+            map.calculateStatistic();
+
+        }, map.robotStepInterval);
+    }
 
     map.visualizePathCosts = () => {
         if (map.isVisualizePathEnabled === true) {
@@ -104,7 +145,7 @@ app.controller('MapController', function($attrs, $interval) {
         let generator = new ObstacleGenerator(map.map);
         generator.addRandomObstacles((map.map.cols * map.map.rows) * 0.1);
         map.algorithmInstance = map.getAlgorithmInstance();
-        map.calulatePath();
+        map.calculatePath();
     };
 
     map.addWalls = () => {
@@ -113,7 +154,7 @@ app.controller('MapController', function($attrs, $interval) {
         let generator = new MazeGenerator(map.map);
         generator.createMaze();
         map.algorithmInstance = map.getAlgorithmInstance();
-        map.calulatePath();
+        map.calculatePath();
     };
 
     map.addDynamicObstacle = () => {
@@ -133,32 +174,35 @@ app.controller('MapController', function($attrs, $interval) {
 
     map.clearRobots = () => {
         $interval.cancel(map.robotIntervall);
-        if (map.robots !== undefined)
-            map.robots.robots.forEach((robot:Cell) => map.map.getCell(robot.position.x, robot.position.y).cellType = 0);
+        if (map.robots !== undefined) {
+            map.robots.robots.forEach(
+                (robot: Cell) => map.map.getCell(robot.position.x, robot.position.y).cellType = 0
+            );
+        }
         map.robots = undefined;
     };
 
-    map.calulatePath = () => {
+    map.calculatePath = () => {
         let pathFinder = map.getAlgorithmInstance();
         if (pathFinder.isInitialized === undefined || pathFinder.isInitialized === false) {
             console.time(map.algorithm);
-            //console.profile("Dijkstra");
+            // console.profile("Dijkstra");
             pathFinder.run();
-            //console.profileEnd("Dijkstra");
+            // console.profileEnd("Dijkstra");
             console.timeEnd(map.algorithm);
         }
         map.visualizePathCosts();
-        map.calulateStatistic();
+        map.calculateStatistic();
     };
 
-    map.calulateStatistic = () => {
-        map.stat.pathLength = map.map.cells.filter((x:Cell) => x.isCurrent).length;
-        map.stat.visitedCells = map.stat.pathLength + map.map.cells.filter((x:Cell)  => x.isVisited).length;
+    map.calculateStatistic = () => {
+        map.stat.pathLength = map.map.cells.filter((x: Cell) => x.isCurrent).length;
+        map.stat.visitedCells = map.stat.pathLength + map.map.cells.filter((x: Cell) => x.isVisited).length;
     };
 
     map.editStartCell = false;
     map.editGoalCell = false;
-    map.clickOnCell = (cell:Cell) => {
+    map.clickOnCell = (cell: Cell) => {
         if (map.editStartCell) {
             map.start.moveTo(cell.position);
             map.editStartCell = false;
@@ -173,7 +217,7 @@ app.controller('MapController', function($attrs, $interval) {
                 case CellType.Current:
                 case CellType.Visited:
                 case CellType.Free:
-                    cell.color = undefined;
+                    cell.color = undefined;                   
                     cell.type = CellType.Blocked;
                     break;
                 case CellType.Start:
@@ -188,8 +232,8 @@ app.controller('MapController', function($attrs, $interval) {
         }
     };
 
-    map.mouseOverCell = (cell:Cell, event:any) => {
-        if (event.buttons == 1) {
+    map.mouseOverCell = (cell: Cell, event: any) => {
+        if (event.buttons === 1) {
             this.clickOnCell(cell);
         }
 
@@ -201,25 +245,31 @@ app.controller('MapController', function($attrs, $interval) {
         map.algorithmInstance = undefined;
         map.algorithmInstance = map.getAlgorithmInstance();
         map.map.resetPath();
-        map.calulatePath();
+        map.calculatePath();
     };
 
     map.getAlgorithmInstance = () => {
-        let algorithm : any;
+        let algorithm: any;
         switch (map.algorithm) {
-            case 'Dijkstra':
+            case "Dijkstra":
                 algorithm = new Dijkstra(map.map);
                 break;
-            case 'LpaStar':
+            case "LpaStar":
                 if (map.algorithmInstance instanceof LpaStar) {
                     algorithm = map.algorithmInstance;
                 } else {
                     algorithm = new LpaStar(map.map);
                 }
-
+                break;
+            case "AStar":
+                algorithm = new AStar(map.map);
+                break;
+            case "GAAStar":
+                algorithm = new GAAStar(map.map, 500);
                 break;
             default:
-                algorithm = new AStar(map.map);
+                algorithm = new MPGAAStar(map.map, 500);
+                break;
         }
 
         switch (map.distance) {
@@ -230,7 +280,7 @@ app.controller('MapController', function($attrs, $interval) {
                 algorithm.distance = Distance.diagonalShortcut;
                 break;
             default:
-                algorithm.distance = Distance.euklid;
+                algorithm.distance = Distance.euclid;
         }
 
         map.algorithmInstance = algorithm;
@@ -239,4 +289,4 @@ app.controller('MapController', function($attrs, $interval) {
 
 });
 
-angular.bootstrap(document.documentElement, ['pathsim']);
+angular.bootstrap(document.documentElement, ["pathsim"]);

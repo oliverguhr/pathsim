@@ -21,20 +21,19 @@ Pathsim is playground for different path planning algorithms. Due to its focus o
 10. Implement LPA*
 
 ## Todos
-1. Robot
-2. Proper Tests
-3. D* Lite
-4. Add build steps, remove node_modules folder
+1. Implement new algorithms
+2. Add propper tests
+
 
 ## Tests
 Run all tests:
 - npm test
 
-To watch test folder for changes and rerun tests please install:
-- npm install watch -g
+Watch tests:
+- npm run test:w
 
-than type:
-- npm run watch-test
+Watch tests on Windows:
+- npm run test:ww
 
 ## Licence
 MIT
