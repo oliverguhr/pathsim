@@ -149,7 +149,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                     }
                 }
                 reestablishConsistency(cell) {
-                    let queue = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => b - a, 0);
+                    let queue = new SimplePriorityQueue_1.SimplePriorityQueue((a, b) => a - b, 0);
                     let neighbors = this.getNeighbors(cell, neighbor => !neighbor.isBlocked);
                     neighbors.forEach(x => this.insertState(x, cell, queue));
                     while (!queue.isEmpty) {

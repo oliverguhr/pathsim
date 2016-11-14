@@ -229,7 +229,7 @@ export class MPGAAStar extends PathAlgorithm {
             them in one run.
         */
 
-        let queue = new SimplePriorityQueue<Cell, number>((a, b) => b - a, 0);
+        let queue = new SimplePriorityQueue<Cell, number>((a, b) => a-b, 0);
 
         // for each (s, s') such that c(s, s') decreased do
         let neighbors = this.getNeighbors(cell,neighbor => !neighbor.isBlocked);
