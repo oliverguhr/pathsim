@@ -158,7 +158,7 @@ System.register(["../grid/index", "./PathAlgorithm", "./Distance", "./../tools/i
                             this.next.set(lowCell, this.support.get(lowCell));
                         }
                         let lowNeighbors = this.getNeighbors(lowCell, (x) => !x.isBlocked);
-                        lowNeighbors.forEach(x => this.insertState(lowCell, x, queue));
+                        lowNeighbors.forEach(x => this.insertState(x, lowCell, queue));
                     }
                 }
                 observe(changedCell) {

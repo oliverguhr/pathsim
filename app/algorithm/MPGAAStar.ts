@@ -214,7 +214,7 @@ export class MPGAAStar extends PathAlgorithm {
             } else {
                 queue.insert(s, s.heuristicDistance);
             }
-            // debug code. check why wavefront does not grow bigger... 
+            // debug code.
                if (!(s.isGoal || s.isStart)) {
                     s.cellType = CellType.Visited;
                 }
@@ -246,7 +246,7 @@ export class MPGAAStar extends PathAlgorithm {
             }
 
             let lowNeighbors = this.getNeighbors(lowCell, (x: Cell) => !x.isBlocked);
-            lowNeighbors.forEach(x => this.insertState(lowCell, x, queue));
+            lowNeighbors.forEach(x => this.insertState(x,lowCell, queue));
         }
     }
 
